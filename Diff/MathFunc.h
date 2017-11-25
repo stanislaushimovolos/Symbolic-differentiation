@@ -4,12 +4,12 @@
 
 #pragma once
 
-DEF_CMD_OPERATOR('+', operator_)
+DEF_CMD_OPERATOR('+', operator_, {})
 
-DEF_CMD_OPERATOR('*', operator_)
+DEF_CMD_OPERATOR('*', operator_, {})
 
-DEF_CMD_OPERATOR('/', operator_)
+DEF_CMD_OPERATOR('/', operator_, {})
 
-DEF_CMD_OPERATOR('-', operator_)
+DEF_CMD_OPERATOR('-', operator_, {})
 
-DEF_CMD_OPERATOR('^', operator_)
+DEF_CMD_OPERATOR('^', operator_, {})

@@ -19,7 +19,6 @@ struct Node {
 	Node *Left;
 	Node *Right;
 	Node *Parent;
-
 	char type;
 	char *content;
 };
@@ -62,6 +61,8 @@ void destructNode (Node *node);
 void destructTree (Tree *tree);
 
 void destructTreeRec (Node *node);
+
+Node *NodeCopy (const Node *node);
 
 Node *TreeSearcher (const Tree *const tree, char *const target);
 

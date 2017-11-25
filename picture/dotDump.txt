@@ -1,10 +1,16 @@
 digraph dump
 {
-Node010111B8 [shape = record,  color = red, label = "{ { 645435| '010111B8' } | { Parent| '00000000' }  | { type | '0' } | { Left = 01011278 | Right = 010112D8 } }"]
-Node01011278 [shape = record,  color = red, label = "{ { -| '01011278' } | { Parent| '010111B8' }  | { type | '1' } | { Left = 00000000 | Right = 00000000 } }"]
+Node008D11B8 [shape = record,  color = red, label = "{ { x| '008D11B8' } | { Parent| '00000000' }  | { type | '2' } | { Left = 008D1298 | Right = 008D0F00 } }"]
+Node008D1298 [shape = record,  color = red, label = "{ { dsfdsf| '008D1298' } | { Parent| '008D11B8' }  | { type | '3' } | { Left = 00000000 | Right = 00000000 } }"]
 
-Node010111B8 -> Node01011278
-Node010112D8 [shape = record,  color = red, label = "{ { /dsfdsf| '010112D8' } | { Parent| '010111B8' }  | { type | '0' } | { Left = 00000000 | Right = 00000000 } }"]
+Node008D11B8 -> Node008D1298
+Node008D0F00 [shape = record,  color = red, label = "{ { +| '008D0F00' } | { Parent| '008D11B8' }  | { type | '1' } | { Left = 008D0F30 | Right = 008D0F60 } }"]
+Node008D0F30 [shape = record,  color = red, label = "{ { 15| '008D0F30' } | { Parent| '008D0F00' }  | { type | '0' } | { Left = 00000000 | Right = 00000000 } }"]
 
-Node010111B8 -> Node010112D8
+Node008D0F00 -> Node008D0F30
+Node008D0F60 [shape = record,  color = red, label = "{ { y| '008D0F60' } | { Parent| '008D0F00' }  | { type | '3' } | { Left = 00000000 | Right = 00000000 } }"]
+
+Node008D0F00 -> Node008D0F60
+
+Node008D11B8 -> Node008D0F00
 }

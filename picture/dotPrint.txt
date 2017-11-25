@@ -1,7 +1,11 @@
 digraph dump
 {
-Node010111B8 [shape = record,  color = blue, label = " { 645435 }"] Node01011278 [shape = record,  color = blue, label = " { - }"] 
-Node010111B8 -> Node01011278
-Node010112D8 [shape = record,  color = blue, label = " { /dsfdsf }"] 
-Node010111B8 -> Node010112D8
+Node008D11B8 [shape = record,  color = blue, label = " { x }"] Node008D1298 [shape = record,  color = blue, label = " { dsfdsf }"] 
+Node008D11B8 -> Node008D1298
+Node008D0F00 [shape = record,  color = blue, label = " { + }"] Node008D0F30 [shape = record,  color = blue, label = " { 15 }"] 
+Node008D0F00 -> Node008D0F30
+Node008D0F60 [shape = record,  color = blue, label = " { y }"] 
+Node008D0F00 -> Node008D0F60
+
+Node008D11B8 -> Node008D0F00
 }

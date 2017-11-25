@@ -9,7 +9,8 @@
 #include "Diff.h"
 
 
-char *getBufferFromFileGetSzOfBuf (const char *_inputFileName, size_t *sizeOfBuffer) {
+char *getBufferFromFileGetSzOfBuf (const char *_inputFileName, size_t *sizeOfBuffer)
+{
 
 	assert (_inputFileName);
 
@@ -32,41 +33,62 @@ char *getBufferFromFileGetSzOfBuf (const char *_inputFileName, size_t *sizeOfBuf
 	return helpBuffer;
 }
 
-bool elemConstruct (Elem *elem) {
-	elem->content = NULL;
-	elem->type = 0;
-}
-
-bool elemDestruct (Elem *elem) {
-	free (elem->content);
-	elem->type = 0;
-}
-
-#define DEF_CMD_OPERATOR(operator_, number)             \
-    case operator_ :                                    \
-     {                                                  \
-        node->type = number;                            \
-        break;                                          \
+#define DEF_CMD_OPERATOR(operator_, number, code)           \
+    case operator_ :                                        \
+     {                                                      \
+        node->type = number;                                \
+        operatorFlag = 1;                                    \
+        break;                                              \
     }
 
 
-char contentAnalyze (Node *node) {
-	char *NumHelper = (node->content);
+char contentAnalyze (Node *node, const char *const currValue)
+{
 
+	char *NumHelper = (node->content);
 	strtod (node->content, &NumHelper);
+	bool operatorFlag = 0;
 
 	if (NumHelper != node->content)
 		node->type = number;
 
-	else if (strlen (node->content)) {
+	else if (strcmp (currValue, node->content) == 0)
+		node->type = curVariable;
 
-		switch (node->content[0]) {
+	else if (strlen (node->content) == 1)
+	{
+		switch (*node->content)
+		{
 
 #include "MathFunc.h"
 
 			default:
 				break;
 		}
-	}
 
+		if (!operatorFlag)
+			node->type = charConst;
+	}
+	else
+		node->type = charConst;
+}
+
+#undef DEF_CMD_OPERATOR
+
+Node *diffMain (const Node *const node, const char *const currValue)
+{
+
+}
+
+Node *diffRec (const Node *const node, const char *const currValue)
+{
+	switch (node->type)
+	{
+		case number:
+
+		case curVariable:
+
+		default:
+			break;
+	}
 }

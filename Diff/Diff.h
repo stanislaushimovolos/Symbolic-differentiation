@@ -5,17 +5,20 @@
 #pragma  once
 
 #include "../Tree_t/Tree.h"
-enum {
-	number,
-	operator_,
-	variable
+
+enum
+{
+	number, operator_, curVariable, charConst
 
 };
 
-struct Elem {
+struct Elem
+{
 	char type;
 	char *content;
 };
+
+const char MainVariable[] = "x";
 
 const char inputFilename[] = "../base/base.txt";
 const char outFilename[] = "../dumps/base.txt";
@@ -24,5 +27,9 @@ const char outFilenameForDotPrint[] = "../picture/dotPrint.txt";
 
 char *getBufferFromFileGetSzOfBuf (const char *_inputFileName, size_t *sizeOfBuffer = NULL);
 
-char contentAnalyze (Node * node);
+char contentAnalyze (Node *node, const char *const currValue);
+
+Node *diffRec (const Node *const node, const char *const currValue);
+
+Node *diffMain (const Node *const node, const char *const currValue);
 
