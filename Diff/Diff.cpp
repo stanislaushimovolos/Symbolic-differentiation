@@ -1,10 +1,12 @@
 //
 // Created by Tom on 22.11.2017.
 //
+
 #include <assert.h>
 #include <iostream>
 #include <cstring>
 #include "../Tree_t/Tree.h"
+#include <stdlib.h>
 
 #include "Diff.h"
 
@@ -75,19 +77,153 @@ char contentAnalyze (Node *node, const char *const currValue)
 
 #undef DEF_CMD_OPERATOR
 
-Node *diffMain (const Node *const node, const char *const currValue)
+Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const currValue)
 {
+	assert (BegTree);
+	assert (FinalTree);
+	assert (currValue);
+
+	Node *helpNode = {};
+	nodeConstruct (&helpNode);
+
+	helpNode = NodeCopy (BegTree->root);
+	helpNode->myTree = FinalTree;
+
+	FinalTree->root = diffRec (helpNode, MainVariable, FinalTree);
 
 }
 
-Node *diffRec (const Node *const node, const char *const currValue)
+Node *diffRec (const Node *const node, const char *const currValue, Tree *FinalTree)
 {
 	switch (node->type)
 	{
 		case number:
+			return createNode (number, FinalTree);
 
 		case curVariable:
+			return createNode (curVariable, FinalTree);
 
+		case operator_:
+		{
+			Node *LeftCopy = NodeCopy (node->Left);
+			LeftCopy->myTree = FinalTree;
+
+			Node *RightCopy = NodeCopy (node->Right);
+			RightCopy->myTree = FinalTree;
+
+			Node *dL = diffRec (LeftCopy, currValue, FinalTree);
+			Node *dR = diffRec (RightCopy, currValue, FinalTree);
+
+			return createNode (operator_, *node->content, dL, dR, FinalTree);
+		}
+
+		case charConst:
+			return createNode (charConst, FinalTree);
+		default:
+			break;
+	}
+}
+
+Node *createNode (const char type, Tree *FinalTree)
+{
+	switch (type)
+	{
+		case number:
+		{
+			Node *helpNode = {};
+			nodeConstruct (&helpNode);
+
+			helpNode->myTree = FinalTree;
+
+			helpNode->content = (char *) calloc (2, sizeof (char));
+			strcpy (helpNode->content, "0");
+			helpNode->type = number;
+
+			return helpNode;
+		}
+
+		case charConst:
+		{
+			Node *helpNode = {};
+			nodeConstruct (&helpNode);
+
+			helpNode->myTree = FinalTree;
+
+			helpNode->content = (char *) calloc (2, sizeof (char));
+			strcpy (helpNode->content, "0");
+			helpNode->type = number;
+
+			return helpNode;
+
+		}
+
+		case curVariable:
+		{
+			Node *helpNode = {};
+			nodeConstruct (&helpNode);
+
+			helpNode->myTree = FinalTree;
+
+			helpNode->content = (char *) calloc (2, sizeof (char));
+			strcpy (helpNode->content, "1");
+			helpNode->type = number;
+
+			return helpNode;
+		}
+
+		default:
+			break;
+	}
+}
+
+#define DEF_CMD_OPERATOR(operator_, number, code)          \
+    case operator_ :                                       \
+    {                                                      \
+       code                                                \
+    }
+
+Node *createNode (char type, char operator_, Node *dL, Node *dR, Tree *FinalTree)
+{
+	switch (operator_)
+	{
+
+//#include "MathFunc.h"
+
+		case '+':
+		{
+			char operatorPtr[] = "+";
+			Node *mainNode = {};
+			nodeConstruct (&mainNode);
+
+			mainNode->myTree = FinalTree;
+
+			mainNode->content = (char *) calloc (2, sizeof (char));
+			strcpy (mainNode->content, operatorPtr);
+
+			connectLeft (mainNode, dL);
+			connectRight (mainNode, dR);
+
+			return mainNode;
+
+		}
+
+		case '-':
+		{
+			char operatorPtr[] = "-";
+			Node *mainNode = {};
+			nodeConstruct (&mainNode);
+
+			mainNode->myTree = FinalTree;
+
+			mainNode->content = (char *) calloc (2, sizeof (char));
+			strcpy (mainNode->content, operatorPtr);
+
+			connectLeft (mainNode, dL);
+			connectRight (mainNode, dR);
+
+			return mainNode;
+
+		}
 		default:
 			break;
 	}

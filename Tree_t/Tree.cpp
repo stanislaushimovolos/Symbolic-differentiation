@@ -73,6 +73,9 @@ Node *NodeCopy (const Node *node)
 	retNode->content = (char *) calloc (sizeof (char) + 1, strlen (node->content));
 	strcpy (retNode->content, node->content);
 
+	retNode->Right = node->Right;
+	retNode->Left = node->Left;
+
 	return retNode;
 }
 

@@ -29,7 +29,10 @@ char *getBufferFromFileGetSzOfBuf (const char *_inputFileName, size_t *sizeOfBuf
 
 char contentAnalyze (Node *node, const char *const currValue);
 
-Node *diffRec (const Node *const node, const char *const currValue);
+Node *diffRec (const Node *const node, const char *const currValue, Tree *FinalTree);
 
-Node *diffMain (const Node *const node, const char *const currValue);
+Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const currValue);
 
+Node *createNode (char type, Tree *FinalTree);
+
+Node *createNode (char type, char operator_, Node *dL, Node *dR, Tree *FinalTree);

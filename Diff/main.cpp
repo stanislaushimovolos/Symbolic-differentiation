@@ -14,9 +14,11 @@ int main ()
 
 	createBase (buffer, begTree.root);
 
-	printTreeFile (&begTree, outFilename);
-	printTree (&begTree, outFilenameForDotPrint);
+	diffMain (&begTree, &diffTree, MainVariable);
 
-	dumpTreePicture (&begTree, outFilenameForDotDump);
+	printTreeFile (&diffTree, outFilename);
+	printTree (&diffTree, outFilenameForDotPrint);
+
+	dumpTreePicture (&diffTree, outFilenameForDotDump);
 	return 0;
 }
