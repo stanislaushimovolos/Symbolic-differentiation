@@ -62,9 +62,9 @@ int nodeSetName (Node *node, char *content)
 	RETURN_COND (node->content)
 }
 
-Node *NodeCopy (const Node *node)
+Node *NodeCopy (const Node *node, Tree *newTree)
 {
-
+	assert (node);
 	Node *retNode;
 	nodeConstruct (&retNode);
 
@@ -73,8 +73,25 @@ Node *NodeCopy (const Node *node)
 	retNode->content = (char *) calloc (sizeof (char) + 1, strlen (node->content));
 	strcpy (retNode->content, node->content);
 
-	retNode->Right = node->Right;
-	retNode->Left = node->Left;
+	if (node->Left)
+	{
+		retNode->Left = NodeCopy (node->Left, newTree);
+		retNode->Left->Parent = retNode;
+		retNode->Left->myTree = newTree;
+
+		//if(!(retNode->Left->Right) && !(retNode->Left->Left))
+			newTree->nodeAmount++;
+	}
+
+	if (node->Right )
+	{
+		retNode->Right = NodeCopy (node->Right, newTree);
+		retNode->Right->Parent = retNode;
+		retNode->Right->myTree = newTree;
+
+		//if(!(retNode->Right->Right) && !(retNode->Right->Left))
+			newTree->nodeAmount++;
+	}
 
 	return retNode;
 }
@@ -347,8 +364,8 @@ int createBaseRec (Node *node, char **base)
 int dumpRecNode (const Node *const n, int *NodeCounter, FILE *outPictureFile1)
 {
 	fprintf (outPictureFile1,
-	         "Node%p [shape = record,  color = red, label = \"{ { %s| '%p' } | { Parent| '%p' }  | { type | '%d' } | ",
-	         n, (char *) n->content, n, n->Parent, n->type);
+	         "Node%p [shape = record,  color = red, label = \"{ { %s| '%p' } | { Parent| '%p' }  | { type | '%d' } | { Tree| '%p' }| ",
+	         n, (char *) n->content, n, n->Parent, n->type, n->myTree);
 
 	fprintf (outPictureFile1, "{ Left = %p ", n->Left);
 	fprintf (outPictureFile1, "| Right = %p } }\"]\n", n->Right);
@@ -360,6 +377,7 @@ int dumpRecNode (const Node *const n, int *NodeCounter, FILE *outPictureFile1)
 	PRINTOUT_REC(dumpRecNode)
 
 	return CycleChecker;
+
 }
 
 
@@ -370,11 +388,13 @@ int printRecNode (const Node *const n, int *NodeCounter, FILE *outPictureFile1)
 		         (char *) n->content);
 	(*NodeCounter)++;
 
+
 	CYCLE_CHEACK
 
 	PRINTOUT_REC(printRecNode);
 
 	return CycleChecker;
+
 }
 
 

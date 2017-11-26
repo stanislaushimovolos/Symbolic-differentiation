@@ -13,12 +13,12 @@ int main ()
 	readBase (&buffer, inputFilename);
 
 	createBase (buffer, begTree.root);
+	free (buffer);
 
 	diffMain (&begTree, &diffTree, MainVariable);
 
 	printTreeFile (&diffTree, outFilename);
-	printTree (&diffTree, outFilenameForDotPrint);
 
-	dumpTreePicture (&diffTree, outFilenameForDotDump);
+	printTree (&diffTree, outFilenameForDotPrint);
 	return 0;
 }

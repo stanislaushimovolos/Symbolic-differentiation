@@ -1,22 +1,7 @@
 digraph dump
 {
-Node0079A210 [shape = record,  color = red, label = "{ { +| '0079A210' } | { Parent| '00000000' }  | { type | '0' } | { Left = 0079A070 | Right = 0079A1B0 } }"]
-Node0079A070 [shape = record,  color = red, label = "{ { +| '0079A070' } | { Parent| '0079A210' }  | { type | '0' } | { Left = 00791100 | Right = 0079A190 } }"]
-Node00791100 [shape = record,  color = red, label = "{ { 0| '00791100' } | { Parent| '0079A070' }  | { type | '0' } | { Left = 00000000 | Right = 00000000 } }"]
-
-Node0079A070 -> Node00791100
-Node0079A190 [shape = record,  color = red, label = "{ { 1| '0079A190' } | { Parent| '0079A070' }  | { type | '0' } | { Left = 00000000 | Right = 00000000 } }"]
-
-Node0079A070 -> Node0079A190
-
-Node0079A210 -> Node0079A070
-Node0079A1B0 [shape = record,  color = red, label = "{ { +| '0079A1B0' } | { Parent| '0079A210' }  | { type | '0' } | { Left = 00799E70 | Right = 00799E50 } }"]
-Node00799E70 [shape = record,  color = red, label = "{ { 0| '00799E70' } | { Parent| '0079A1B0' }  | { type | '0' } | { Left = 00000000 | Right = 00000000 } }"]
-
-Node0079A1B0 -> Node00799E70
-Node00799E50 [shape = record,  color = red, label = "{ { 0| '00799E50' } | { Parent| '0079A1B0' }  | { type | '0' } | { Left = 00000000 | Right = 00000000 } }"]
-
-Node0079A1B0 -> Node00799E50
-
-Node0079A210 -> Node0079A1B0
+Node00FE11B8 [shape = record,  color = blue, label = " { / }"] Node00FE12C8 [shape = record,  color = blue, label = " { 5 }"] 
+Node00FE11B8 -> Node00FE12C8
+Node00FE0F00 [shape = record,  color = blue, label = " { x }"] 
+Node00FE11B8 -> Node00FE0F00
 }

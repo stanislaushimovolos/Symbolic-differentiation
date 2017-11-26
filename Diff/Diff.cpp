@@ -1,7 +1,6 @@
 //
 // Created by Tom on 22.11.2017.
 //
-
 #include <assert.h>
 #include <iostream>
 #include <cstring>
@@ -86,10 +85,10 @@ Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const cu
 	Node *helpNode = {};
 	nodeConstruct (&helpNode);
 
-	helpNode = NodeCopy (BegTree->root);
+	helpNode = NodeCopy (BegTree->root, FinalTree);
 	helpNode->myTree = FinalTree;
 
-	FinalTree->root = diffRec (helpNode, MainVariable, FinalTree);
+	FinalTree->root = diffRec (helpNode, currValue, FinalTree);
 
 }
 
@@ -98,33 +97,146 @@ Node *diffRec (const Node *const node, const char *const currValue, Tree *FinalT
 	switch (node->type)
 	{
 		case number:
-			return createNode (number, FinalTree);
+			return createNode (number, 0, FinalTree);
 
 		case curVariable:
-			return createNode (curVariable, FinalTree);
+			return createNode (curVariable, 1, FinalTree);
 
 		case operator_:
 		{
-			Node *LeftCopy = NodeCopy (node->Left);
-			LeftCopy->myTree = FinalTree;
+			switch (*node->content)
+			{
 
-			Node *RightCopy = NodeCopy (node->Right);
-			RightCopy->myTree = FinalTree;
+//#include "MathFunc.h"
 
-			Node *dL = diffRec (LeftCopy, currValue, FinalTree);
-			Node *dR = diffRec (RightCopy, currValue, FinalTree);
+				case '+':
+				{
+					Node *LeftCopy = NodeCopy (node->Left, FinalTree);
+					LeftCopy->myTree = FinalTree;
 
-			return createNode (operator_, *node->content, dL, dR, FinalTree);
+					Node *RightCopy = NodeCopy (node->Right, FinalTree);
+					RightCopy->myTree = FinalTree;
+
+					Node *dL = diffRec (LeftCopy, currValue, FinalTree);
+					Node *dR = diffRec (RightCopy, currValue, FinalTree);
+
+					Node *mainNode = createNode (operator_, *node->content, FinalTree);
+
+					connectLeft (mainNode, dL);
+					connectRight (mainNode, dR);
+
+					return mainNode;
+
+				}
+
+				case '-':
+				{
+					Node *LeftCopy = NodeCopy (node->Left, FinalTree);
+					LeftCopy->myTree = FinalTree;
+
+					Node *RightCopy = NodeCopy (node->Right, FinalTree);
+					RightCopy->myTree = FinalTree;
+
+					Node *dL = diffRec (LeftCopy, currValue, FinalTree);
+					Node *dR = diffRec (RightCopy, currValue, FinalTree);
+
+					Node *mainNode = createNode (operator_, *node->content, FinalTree);
+
+					connectLeft (mainNode, dL);
+					connectRight (mainNode, dR);
+
+					return mainNode;
+				}
+
+				case '*':
+				{
+
+					Node *LeftCopy = NodeCopy (node->Left, FinalTree);
+					LeftCopy->myTree = FinalTree;
+
+					Node *RightCopy = NodeCopy (node->Right, FinalTree);
+					RightCopy->myTree = FinalTree;
+
+					Node *dL = diffRec (LeftCopy, currValue, FinalTree);
+					Node *dR = diffRec (RightCopy, currValue, FinalTree);
+
+					Node *mainNode = createNode (operator_, '+', FinalTree);
+
+					Node *FirstProNode = createNode (operator_, *node->content, FinalTree);
+					Node *SecondProNode = createNode (operator_, *node->content, FinalTree);
+
+					connectRight (FirstProNode, dL);
+					connectLeft (FirstProNode, RightCopy);
+
+					connectRight (SecondProNode, dR);
+					connectLeft (SecondProNode, LeftCopy);
+
+					connectLeft (mainNode, FirstProNode);
+					connectRight (mainNode, SecondProNode);
+
+					return mainNode;
+				}
+
+				case '/':
+				{
+
+					Node *LeftCopy = NodeCopy (node->Left, FinalTree);
+					LeftCopy->myTree = FinalTree;
+
+					Node *RightCopy = NodeCopy (node->Right, FinalTree);
+					RightCopy->myTree = FinalTree;
+
+					Node *dL = diffRec (LeftCopy, currValue, FinalTree);
+					Node *dR = diffRec (RightCopy, currValue, FinalTree);
+
+					Node *minusNode = createNode (operator_, '-', FinalTree);
+
+					Node *FirstProNode = createNode (operator_, '*', FinalTree);
+					Node *SecondProNode = createNode (operator_, '*', FinalTree);
+
+					connectRight (FirstProNode, dL);
+					connectLeft (FirstProNode, RightCopy);
+
+					connectRight (SecondProNode, dR);
+					connectLeft (SecondProNode, LeftCopy);
+
+					connectLeft (minusNode, FirstProNode);
+					connectRight (minusNode, SecondProNode);
+
+					Node *denPro = createNode (operator_, '*', FinalTree);
+
+
+					Node *RightCopy1 = NodeCopy (node->Right, FinalTree);
+					RightCopy1->myTree = FinalTree;
+
+
+					Node *RightCopy2 = NodeCopy (node->Right, FinalTree);
+					RightCopy2->myTree = FinalTree;
+
+					connectRight (denPro, RightCopy1);
+					connectLeft (denPro, RightCopy2);
+
+					Node *MainNode = createNode (operator_, '/', FinalTree);
+
+					connectLeft (MainNode, minusNode);
+					connectRight (MainNode, denPro);
+
+					return MainNode;
+				}
+
+				default:
+					break;
+			}
 		}
 
 		case charConst:
-			return createNode (charConst, FinalTree);
+			return createNode (charConst, 0, FinalTree);
 		default:
 			break;
 	}
 }
 
-Node *createNode (const char type, Tree *FinalTree)
+Node *createNode (const char type, int value, Tree *FinalTree)
 {
 	switch (type)
 	{
@@ -136,7 +248,7 @@ Node *createNode (const char type, Tree *FinalTree)
 			helpNode->myTree = FinalTree;
 
 			helpNode->content = (char *) calloc (2, sizeof (char));
-			strcpy (helpNode->content, "0");
+			itoa (value, helpNode->content, 10);
 			helpNode->type = number;
 
 			return helpNode;
@@ -150,7 +262,7 @@ Node *createNode (const char type, Tree *FinalTree)
 			helpNode->myTree = FinalTree;
 
 			helpNode->content = (char *) calloc (2, sizeof (char));
-			strcpy (helpNode->content, "0");
+			itoa (value, helpNode->content, 10);
 			helpNode->type = number;
 
 			return helpNode;
@@ -165,7 +277,7 @@ Node *createNode (const char type, Tree *FinalTree)
 			helpNode->myTree = FinalTree;
 
 			helpNode->content = (char *) calloc (2, sizeof (char));
-			strcpy (helpNode->content, "1");
+			itoa (value, helpNode->content, 10);
 			helpNode->type = number;
 
 			return helpNode;
@@ -182,49 +294,15 @@ Node *createNode (const char type, Tree *FinalTree)
        code                                                \
     }
 
-Node *createNode (char type, char operator_, Node *dL, Node *dR, Tree *FinalTree)
+
+Node *createNode (const char type, char operator__, Tree *FinalTree)
 {
-	switch (operator_)
-	{
+	Node *mainNode = {};
+	nodeConstruct (&mainNode);
 
-//#include "MathFunc.h"
+	mainNode->myTree = FinalTree;
+	mainNode->content = (char *) calloc (2, sizeof (char));
 
-		case '+':
-		{
-			char operatorPtr[] = "+";
-			Node *mainNode = {};
-			nodeConstruct (&mainNode);
-
-			mainNode->myTree = FinalTree;
-
-			mainNode->content = (char *) calloc (2, sizeof (char));
-			strcpy (mainNode->content, operatorPtr);
-
-			connectLeft (mainNode, dL);
-			connectRight (mainNode, dR);
-
-			return mainNode;
-
-		}
-
-		case '-':
-		{
-			char operatorPtr[] = "-";
-			Node *mainNode = {};
-			nodeConstruct (&mainNode);
-
-			mainNode->myTree = FinalTree;
-
-			mainNode->content = (char *) calloc (2, sizeof (char));
-			strcpy (mainNode->content, operatorPtr);
-
-			connectLeft (mainNode, dL);
-			connectRight (mainNode, dR);
-
-			return mainNode;
-
-		}
-		default:
-			break;
-	}
+	*mainNode->content = operator__;
+	return mainNode;
 }
