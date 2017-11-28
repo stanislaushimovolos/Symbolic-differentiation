@@ -90,6 +90,10 @@ Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const cu
 
 	FinalTree->root = diffRec (helpNode, currValue, FinalTree);
 
+	FinalTree->nodeAmount = 0;
+
+	treeVisitorInf (FinalTree->root, nodeCount);
+
 }
 
 
@@ -252,10 +256,16 @@ Node *sinDiff (Node *node, Tree *FinalTree)
 
 Node *cosDiff (Node *node, Tree *FinalTree)
 {
-	Node *mainNode = createNode (binOperator_, '/', FinalTree);
-	Node *leftNode = createNode (number, 1, FinalTree);
+	char sin[] = "sin";
+
+	Node *mainNode = createNode (binOperator_, '*', FinalTree);
+	Node *rightNode = createNode (number, -1, FinalTree);
+
+	Node *leftNode = createNode (binOperator_, sin, FinalTree);
+	connectLeft (leftNode, node);
+
+	connectRight (mainNode, rightNode);
 	connectLeft (mainNode, leftNode);
-	connectRight (mainNode, node);
+
 	return mainNode;
 }
-

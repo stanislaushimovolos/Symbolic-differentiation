@@ -1,94 +1,124 @@
 digraph dump
 {
-Node00F0AFC8 [shape = record,  color = red, label = "{ { /| '00F0AFC8' } | { Parent| '00000000' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00F0A090 | Right = 00F0A1B0 } }"]
-Node00F0A090 [shape = record,  color = red, label = "{ { -| '00F0A090' } | { Parent| '00F0AFC8' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00F0A050 | Right = 00F0A010 } }"]
-Node00F0A050 [shape = record,  color = red, label = "{ { *| '00F0A050' } | { Parent| '00F0A090' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00F0A110 | Right = 00F09F10 } }"]
-Node00F0A110 [shape = record,  color = red, label = "{ { sin| '00F0A110' } | { Parent| '00F0A050' }  | { type | '2' } | { Tree| '0062FF20' }| { Left = 00F09EF0 | Right = 00000000 } }"]
-Node00F09EF0 [shape = record,  color = red, label = "{ { *| '00F09EF0' } | { Parent| '00F0A110' }  | { type | '1' } | { Tree| '0062FF20' }| { Left = 00F09FF0 | Right = 00F09F30 } }"]
-Node00F09FF0 [shape = record,  color = red, label = "{ { 5| '00F09FF0' } | { Parent| '00F09EF0' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+Node007A76A0 [shape = record,  color = red, label = "{ { +| '007A76A0' } | { Parent| '00000000' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A7740 | Right = 007A7790 } }"]
+Node007A7740 [shape = record,  color = red, label = "{ { *| '007A7740' } | { Parent| '007A76A0' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A76F0 | Right = 007A7830 } }"]
+Node007A76F0 [shape = record,  color = red, label = "{ { *| '007A76F0' } | { Parent| '007A7740' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A78D0 | Right = 007A7BF0 } }"]
+Node007A78D0 [shape = record,  color = red, label = "{ { ln| '007A78D0' } | { Parent| '007A76F0' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A7150 | Right = 00000000 } }"]
+Node007A7150 [shape = record,  color = red, label = "{ { x| '007A7150' } | { Parent| '007A78D0' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F09EF0 -> Node00F09FF0
-Node00F09F30 [shape = record,  color = red, label = "{ { x| '00F09F30' } | { Parent| '00F09EF0' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+Node007A78D0 -> Node007A7150
 
-Node00F09EF0 -> Node00F09F30
+Node007A76F0 -> Node007A78D0
+Node007A7BF0 [shape = record,  color = red, label = "{ { +| '007A7BF0' } | { Parent| '007A76F0' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A7C90 | Right = 007A7CE0 } }"]
+Node007A7C90 [shape = record,  color = red, label = "{ { *| '007A7C90' } | { Parent| '007A7BF0' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A7C40 | Right = 007A7D80 } }"]
+Node007A7C40 [shape = record,  color = red, label = "{ { *| '007A7C40' } | { Parent| '007A7C90' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A7E20 | Right = 007A7E70 } }"]
+Node007A7E20 [shape = record,  color = red, label = "{ { ln| '007A7E20' } | { Parent| '007A7C40' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A7920 | Right = 00000000 } }"]
+Node007A7920 [shape = record,  color = red, label = "{ { x| '007A7920' } | { Parent| '007A7E20' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F0A110 -> Node00F09EF0
+Node007A7E20 -> Node007A7920
 
-Node00F0A050 -> Node00F0A110
-Node00F09F10 [shape = record,  color = red, label = "{ { 0| '00F09F10' } | { Parent| '00F0A050' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+Node007A7C40 -> Node007A7E20
+Node007A7E70 [shape = record,  color = red, label = "{ { 1| '007A7E70' } | { Parent| '007A7C40' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F0A050 -> Node00F09F10
+Node007A7C40 -> Node007A7E70
 
-Node00F0A090 -> Node00F0A050
-Node00F0A010 [shape = record,  color = red, label = "{ { *| '00F0A010' } | { Parent| '00F0A090' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00F09ED0 | Right = 00F0A130 } }"]
-Node00F09ED0 [shape = record,  color = red, label = "{ { 1| '00F09ED0' } | { Parent| '00F0A010' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+Node007A7C90 -> Node007A7C40
+Node007A7D80 [shape = record,  color = red, label = "{ { ^| '007A7D80' } | { Parent| '007A7C90' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A7970 | Right = 007A7AB0 } }"]
+Node007A7970 [shape = record,  color = red, label = "{ { x| '007A7970' } | { Parent| '007A7D80' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F0A010 -> Node00F09ED0
-Node00F0A130 [shape = record,  color = red, label = "{ { *| '00F0A130' } | { Parent| '00F0A010' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00F09F50 | Right = 00F0A190 } }"]
-Node00F09F50 [shape = record,  color = red, label = "{ { cos| '00F09F50' } | { Parent| '00F0A130' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00F09FB0 | Right = 00000000 } }"]
-Node00F09FB0 [shape = record,  color = red, label = "{ { *| '00F09FB0' } | { Parent| '00F09F50' }  | { type | '1' } | { Tree| '0062FF20' }| { Left = 00F0A0B0 | Right = 00F0A150 } }"]
-Node00F0A0B0 [shape = record,  color = red, label = "{ { 5| '00F0A0B0' } | { Parent| '00F09FB0' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+Node007A7D80 -> Node007A7970
+Node007A7AB0 [shape = record,  color = red, label = "{ { x| '007A7AB0' } | { Parent| '007A7D80' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F09FB0 -> Node00F0A0B0
-Node00F0A150 [shape = record,  color = red, label = "{ { x| '00F0A150' } | { Parent| '00F09FB0' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+Node007A7D80 -> Node007A7AB0
 
-Node00F09FB0 -> Node00F0A150
+Node007A7C90 -> Node007A7D80
 
-Node00F09F50 -> Node00F09FB0
+Node007A7BF0 -> Node007A7C90
+Node007A7CE0 [shape = record,  color = red, label = "{ { *| '007A7CE0' } | { Parent| '007A7BF0' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A7D30 | Right = 007A7DD0 } }"]
+Node007A7D30 [shape = record,  color = red, label = "{ { *| '007A7D30' } | { Parent| '007A7CE0' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A7B00 | Right = 007A7EC0 } }"]
+Node007A7B00 [shape = record,  color = red, label = "{ { x| '007A7B00' } | { Parent| '007A7D30' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F0A130 -> Node00F09F50
-Node00F0A190 [shape = record,  color = red, label = "{ { +| '00F0A190' } | { Parent| '00F0A130' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00F09F90 | Right = 00F09E50 } }"]
-Node00F09F90 [shape = record,  color = red, label = "{ { *| '00F09F90' } | { Parent| '00F0A190' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00F09FD0 | Right = 00F0A0D0 } }"]
-Node00F09FD0 [shape = record,  color = red, label = "{ { x| '00F09FD0' } | { Parent| '00F09F90' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+Node007A7D30 -> Node007A7B00
+Node007A7EC0 [shape = record,  color = red, label = "{ { 1| '007A7EC0' } | { Parent| '007A7D30' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F09F90 -> Node00F09FD0
-Node00F0A0D0 [shape = record,  color = red, label = "{ { 0| '00F0A0D0' } | { Parent| '00F09F90' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+Node007A7D30 -> Node007A7EC0
 
-Node00F09F90 -> Node00F0A0D0
+Node007A7CE0 -> Node007A7D30
+Node007A7DD0 [shape = record,  color = red, label = "{ { ^| '007A7DD0' } | { Parent| '007A7CE0' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A7A10 | Right = 007A7BA0 } }"]
+Node007A7A10 [shape = record,  color = red, label = "{ { x| '007A7A10' } | { Parent| '007A7DD0' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F0A190 -> Node00F09F90
-Node00F09E50 [shape = record,  color = red, label = "{ { *| '00F09E50' } | { Parent| '00F0A190' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00F09F70 | Right = 00F0A170 } }"]
-Node00F09F70 [shape = record,  color = red, label = "{ { 5| '00F09F70' } | { Parent| '00F09E50' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+Node007A7DD0 -> Node007A7A10
+Node007A7BA0 [shape = record,  color = red, label = "{ { -| '007A7BA0' } | { Parent| '007A7DD0' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A7B50 | Right = 007A7F10 } }"]
+Node007A7B50 [shape = record,  color = red, label = "{ { x| '007A7B50' } | { Parent| '007A7BA0' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F09E50 -> Node00F09F70
-Node00F0A170 [shape = record,  color = red, label = "{ { 1| '00F0A170' } | { Parent| '00F09E50' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+Node007A7BA0 -> Node007A7B50
+Node007A7F10 [shape = record,  color = red, label = "{ { 1| '007A7F10' } | { Parent| '007A7BA0' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F09E50 -> Node00F0A170
+Node007A7BA0 -> Node007A7F10
 
-Node00F0A190 -> Node00F09E50
+Node007A7DD0 -> Node007A7BA0
 
-Node00F0A130 -> Node00F0A190
+Node007A7CE0 -> Node007A7DD0
 
-Node00F0A010 -> Node00F0A130
+Node007A7BF0 -> Node007A7CE0
 
-Node00F0A090 -> Node00F0A010
+Node007A76F0 -> Node007A7BF0
 
-Node00F0AFC8 -> Node00F0A090
-Node00F0A1B0 [shape = record,  color = red, label = "{ { *| '00F0A1B0' } | { Parent| '00F0AFC8' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00F0A0F0 | Right = 00F0A030 } }"]
-Node00F0A0F0 [shape = record,  color = red, label = "{ { sin| '00F0A0F0' } | { Parent| '00F0A1B0' }  | { type | '2' } | { Tree| '0062FF20' }| { Left = 00F09E70 | Right = 00000000 } }"]
-Node00F09E70 [shape = record,  color = red, label = "{ { *| '00F09E70' } | { Parent| '00F0A0F0' }  | { type | '1' } | { Tree| '0062FF20' }| { Left = 00F09EB0 | Right = 00F0AE68 } }"]
-Node00F09EB0 [shape = record,  color = red, label = "{ { 5| '00F09EB0' } | { Parent| '00F09E70' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+Node007A7740 -> Node007A76F0
+Node007A7830 [shape = record,  color = red, label = "{ { ^| '007A7830' } | { Parent| '007A7740' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A71A0 | Right = 007A7380 } }"]
+Node007A71A0 [shape = record,  color = red, label = "{ { x| '007A71A0' } | { Parent| '007A7830' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F09E70 -> Node00F09EB0
-Node00F0AE68 [shape = record,  color = red, label = "{ { x| '00F0AE68' } | { Parent| '00F09E70' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+Node007A7830 -> Node007A71A0
+Node007A7380 [shape = record,  color = red, label = "{ { ^| '007A7380' } | { Parent| '007A7830' }  | { type | '1' } | { Tree| '0062FF20' }| { Left = 007A73D0 | Right = 007A7420 } }"]
+Node007A73D0 [shape = record,  color = red, label = "{ { x| '007A73D0' } | { Parent| '007A7380' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F09E70 -> Node00F0AE68
+Node007A7380 -> Node007A73D0
+Node007A7420 [shape = record,  color = red, label = "{ { x| '007A7420' } | { Parent| '007A7380' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F0A0F0 -> Node00F09E70
+Node007A7380 -> Node007A7420
 
-Node00F0A1B0 -> Node00F0A0F0
-Node00F0A030 [shape = record,  color = red, label = "{ { sin| '00F0A030' } | { Parent| '00F0A1B0' }  | { type | '2' } | { Tree| '0062FF20' }| { Left = 00F0A070 | Right = 00000000 } }"]
-Node00F0A070 [shape = record,  color = red, label = "{ { *| '00F0A070' } | { Parent| '00F0A030' }  | { type | '1' } | { Tree| '0062FF20' }| { Left = 00F09E90 | Right = 00F0A1D0 } }"]
-Node00F09E90 [shape = record,  color = red, label = "{ { 5| '00F09E90' } | { Parent| '00F0A070' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+Node007A7830 -> Node007A7380
 
-Node00F0A070 -> Node00F09E90
-Node00F0A1D0 [shape = record,  color = red, label = "{ { x| '00F0A1D0' } | { Parent| '00F0A070' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+Node007A7740 -> Node007A7830
 
-Node00F0A070 -> Node00F0A1D0
+Node007A76A0 -> Node007A7740
+Node007A7790 [shape = record,  color = red, label = "{ { *| '007A7790' } | { Parent| '007A76A0' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A77E0 | Right = 007A7880 } }"]
+Node007A77E0 [shape = record,  color = red, label = "{ { *| '007A77E0' } | { Parent| '007A7790' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A7470 | Right = 007A7F60 } }"]
+Node007A7470 [shape = record,  color = red, label = "{ { ^| '007A7470' } | { Parent| '007A77E0' }  | { type | '1' } | { Tree| '0062FF20' }| { Left = 007A74C0 | Right = 007A7510 } }"]
+Node007A74C0 [shape = record,  color = red, label = "{ { x| '007A74C0' } | { Parent| '007A7470' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F0A030 -> Node00F0A070
+Node007A7470 -> Node007A74C0
+Node007A7510 [shape = record,  color = red, label = "{ { x| '007A7510' } | { Parent| '007A7470' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F0A1B0 -> Node00F0A030
+Node007A7470 -> Node007A7510
 
-Node00F0AFC8 -> Node00F0A1B0
+Node007A77E0 -> Node007A7470
+Node007A7F60 [shape = record,  color = red, label = "{ { 1| '007A7F60' } | { Parent| '007A77E0' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+
+Node007A77E0 -> Node007A7F60
+
+Node007A7790 -> Node007A77E0
+Node007A7880 [shape = record,  color = red, label = "{ { ^| '007A7880' } | { Parent| '007A7790' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A7240 | Right = 007A7650 } }"]
+Node007A7240 [shape = record,  color = red, label = "{ { x| '007A7240' } | { Parent| '007A7880' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+
+Node007A7880 -> Node007A7240
+Node007A7650 [shape = record,  color = red, label = "{ { -| '007A7650' } | { Parent| '007A7880' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 007A7560 | Right = 007A7FB0 } }"]
+Node007A7560 [shape = record,  color = red, label = "{ { ^| '007A7560' } | { Parent| '007A7650' }  | { type | '1' } | { Tree| '0062FF20' }| { Left = 007A75B0 | Right = 007A7600 } }"]
+Node007A75B0 [shape = record,  color = red, label = "{ { x| '007A75B0' } | { Parent| '007A7560' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+
+Node007A7560 -> Node007A75B0
+Node007A7600 [shape = record,  color = red, label = "{ { x| '007A7600' } | { Parent| '007A7560' }  | { type | '3' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+
+Node007A7560 -> Node007A7600
+
+Node007A7650 -> Node007A7560
+Node007A7FB0 [shape = record,  color = red, label = "{ { 1| '007A7FB0' } | { Parent| '007A7650' }  | { type | '0' } | { Tree| '0062FF20' }| { Left = 00000000 | Right = 00000000 } }"]
+
+Node007A7650 -> Node007A7FB0
+
+Node007A7880 -> Node007A7650
+
+Node007A7790 -> Node007A7880
+
+Node007A76A0 -> Node007A7790
 }

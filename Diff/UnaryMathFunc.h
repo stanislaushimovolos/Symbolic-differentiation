@@ -5,3 +5,5 @@
 DEF_CMD_UNARY_OPERATOR(ln, unaryOperator_)
 
 DEF_CMD_UNARY_OPERATOR(sin, unaryOperator_)
+
+DEF_CMD_UNARY_OPERATOR(cos, unaryOperator_)

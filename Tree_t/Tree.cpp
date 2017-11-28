@@ -27,6 +27,21 @@ void connectLeft (Node *mainNode, Node *leftNode)
 	mainNode->myTree->nodeAmount++;
 }
 
+void treeVisitorInf (Node *node, void nodeFunc (Node *node))
+{
+	if (node->Left)
+		treeVisitorInf (node->Left, nodeFunc);
+	if (node->Right)
+		treeVisitorInf (node->Right, nodeFunc);
+	nodeFunc (node);
+}
+
+void nodeCount (Node *node)
+{
+		node->myTree->nodeAmount++;
+
+}
+
 #define RETURN_COND(cond)   return (cond) ? 0 : 1;
 
 
@@ -71,11 +86,6 @@ Node *NodeCopy (const Node *node, Tree *newTree)
 		retNode->Left = NodeCopy (node->Left, newTree);
 		retNode->Left->Parent = retNode;
 		retNode->Left->myTree = newTree;
-
-		if (!(retNode->Left->Right) && !(retNode->Left->Left))
-		{
-			newTree->nodeAmount++;
-		}
 	}
 
 	if (node->Right)
@@ -83,11 +93,6 @@ Node *NodeCopy (const Node *node, Tree *newTree)
 		retNode->Right = NodeCopy (node->Right, newTree);
 		retNode->Right->Parent = retNode;
 		retNode->Right->myTree = newTree;
-
-		if (!(retNode->Right->Right) && !(retNode->Right->Left))
-		{
-			newTree->nodeAmount++;
-		}
 	}
 
 	return retNode;

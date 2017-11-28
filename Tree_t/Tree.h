@@ -9,12 +9,14 @@ const int maxWayLength = 700;
 
 struct Node;
 
-struct Tree {
+struct Tree
+{
 	Node *root;
 	int nodeAmount;
 };
 
-struct Node {
+struct Node
+{
 	Tree *myTree;
 	Node *Left;
 	Node *Right;
@@ -23,7 +25,8 @@ struct Node {
 	char *content;
 };
 
-struct NodeWay {
+struct NodeWay
+{
 	Node *node;
 	bool state;
 };
@@ -62,6 +65,10 @@ void destructTree (Tree *tree);
 
 void destructTreeRec (Node *node);
 
+void nodeCount (Node *node);
+
+void treeVisitorInf (Node *node, void nodeFunc (Node *node));
+
 Node *NodeCopy (const Node *node, Tree *newTree);
 
 Node *TreeSearcher (const Tree *const tree, char *const target);
@@ -69,3 +76,4 @@ Node *TreeSearcher (const Tree *const tree, char *const target);
 Node *TreeSearcherRec (Node *node, char **target);
 
 NodeWay *createArrOfParents (const Tree *const tree, Node *CurrentNode, int *NodeCounter);
+
