@@ -1,11 +1,8 @@
-// Created by Tom on 22.11.2017.
-//
 #include <iostream>
 #include <assert.h>
 #include <cstring>
 
 #include "../Diff/Diff.h"
-#include "Tree.h"
 
 void connectRight (Node *mainNode, Node *rightNode)
 {
@@ -30,16 +27,11 @@ void connectLeft (Node *mainNode, Node *leftNode)
 	mainNode->myTree->nodeAmount++;
 }
 
-#define RETURN_COND(cond)           \
-                                    \
-if (cond)                           \
-    return 0;                       \
-return 1;                           \
+#define RETURN_COND(cond)   return (cond) ? 0 : 1;
 
 
 int nodeConstruct (Node **node)
 {
-
 	Node *elem = (Node *) calloc (1, sizeof (Node));
 
 	elem->Left = NULL;
@@ -72,6 +64,7 @@ Node *NodeCopy (const Node *node, Tree *newTree)
 
 	retNode->content = (char *) calloc (sizeof (char) + 1, strlen (node->content));
 	strcpy (retNode->content, node->content);
+	retNode->myTree = node->myTree;
 
 	if (node->Left)
 	{
@@ -79,18 +72,22 @@ Node *NodeCopy (const Node *node, Tree *newTree)
 		retNode->Left->Parent = retNode;
 		retNode->Left->myTree = newTree;
 
-		//if(!(retNode->Left->Right) && !(retNode->Left->Left))
+		if (!(retNode->Left->Right) && !(retNode->Left->Left))
+		{
 			newTree->nodeAmount++;
+		}
 	}
 
-	if (node->Right )
+	if (node->Right)
 	{
 		retNode->Right = NodeCopy (node->Right, newTree);
 		retNode->Right->Parent = retNode;
 		retNode->Right->myTree = newTree;
 
-		//if(!(retNode->Right->Right) && !(retNode->Right->Left))
+		if (!(retNode->Right->Right) && !(retNode->Right->Left))
+		{
 			newTree->nodeAmount++;
+		}
 	}
 
 	return retNode;
@@ -197,7 +194,6 @@ int readBase (char **retBuffer, const char *_inputFilename)
 	{
 		if (buffer[counterMain] == '(' || buffer[counterMain] == ')' || buffer[counterMain] == SEPARATOR)
 		{
-
 			if (buffer[counterMain] == SEPARATOR)
 			{
 				secBuf[counterPilot++] = buffer[counterMain++];
@@ -205,14 +201,12 @@ int readBase (char **retBuffer, const char *_inputFilename)
 				{
 					secBuf[counterPilot++] = buffer[counterMain++];
 				}
-
 				if (counterMain >= sizeOfBuf)
 					break;
 
 				secBuf[counterPilot++] = buffer[counterMain++];
 				continue;
 			}
-
 			secBuf[counterPilot++] = buffer[counterMain];
 			counterMain++;
 			continue;
@@ -222,7 +216,6 @@ int readBase (char **retBuffer, const char *_inputFilename)
 	}
 
 	free (buffer);
-
 	*retBuffer = secBuf;
 
 	RETURN_COND (*buffer)
@@ -235,6 +228,22 @@ int readBase (char **retBuffer, const char *_inputFilename)
 int createBase (char *base, Node *node)
 {
 	assert (node);
+	assert (base);
+
+	char sepCheck = 0;
+
+	for (int i = 0; i < strlen (base); i++)
+	{
+		if (base[i] == SEPARATOR)
+			sepCheck++;
+	}
+
+	if ((sepCheck % 2))
+	{
+		fprintf (stderr, "Separator is absent\n");
+		return 1;
+	}
+
 
 	if (*base + 1 < *base + strlen (base))
 	{
@@ -247,25 +256,14 @@ int createBase (char *base, Node *node)
 
 	char *separatorPtr = 0;
 	size_t lengthOfContent = 0;
-
 	separatorPtr = strchr (base, SEPARATOR);
 
 	lengthOfContent = (size_t) (separatorPtr - base);
-
 	node->content = (char *) calloc (lengthOfContent + 1, sizeof (char));
 
-	if (separatorPtr)
-		memcpy (node->content, base, lengthOfContent);
-	else
-	{
-		printf ("Some problem with base\n the last working elem is\n%s\n", node->Parent->content);
-		return 0;
-	}
-
+	memcpy (node->content, base, lengthOfContent);
 	contentAnalyze (node, MainVariable);
-
 	base += lengthOfContent + 1;
-
 	createBaseRec (node, &base);
 }
 
@@ -290,16 +288,11 @@ int createBase (char *base, Node *node)
                                                                                     \
     separatorPtr = strchr (*base, SEPARATOR);                                       \
                                                                                     \
-    if (separatorPtr)   {                                                           \
         lengthOfContent = (size_t) (separatorPtr - *base) ;                         \
         nodeHelp->content = (char *) calloc (lengthOfContent + 2, sizeof (char));   \
         memcpy (nodeHelp->content, *base, lengthOfContent);                         \
-    }                                                                               \
-    else {                                                                          \
-        printf ("Some problem with base\n                                           \
-	    the last working elem is\n%s\n", nodeHelp->Parent->content);                \
-    return 0;                                                                       \
-    }                                                                               \
+                                                                                    \
+        printf;\
     *base += lengthOfContent + 1;
 
 
@@ -307,20 +300,31 @@ int createBaseRec (Node *node, char **base)
 {
 	assert (node);
 
-	static char *separatorPtr = 0;
-	static size_t lengthOfContent = 0;
+	char *separatorPtr = 0;
+	size_t lengthOfContent = 0;
 	static int rightSideChecker = 0;
 
-	Node *nodeHelp;
+	Node *nodeHelp = {};
+	nodeConstruct (&nodeHelp);
 
 	RETURN_CONDITION
 
-	NODE_ADDING
+	if (*base + 1 < *base + strlen (*base))
+	{
+		*base += 2;
+	}
 
+	separatorPtr = strchr (*base, SEPARATOR);
+
+	lengthOfContent = (size_t) (separatorPtr - *base);
+	nodeHelp->content = (char *) calloc (lengthOfContent + 2, sizeof (char));
+	memcpy (nodeHelp->content, *base, lengthOfContent);
+
+
+	*base += lengthOfContent + 1;
 	contentAnalyze (nodeHelp, MainVariable);
 
 	connectLeft (node, nodeHelp);
-
 	rightSideChecker = createBaseRec (nodeHelp, base);
 
 
@@ -329,9 +333,7 @@ int createBaseRec (Node *node, char **base)
 		NODE_ADDING
 
 		contentAnalyze (nodeHelp, MainVariable);
-
 		connectRight (node, nodeHelp);
-
 		rightSideChecker = createBaseRec (nodeHelp, base);
 
 	}
@@ -387,7 +389,6 @@ int printRecNode (const Node *const n, int *NodeCounter, FILE *outPictureFile1)
 		fprintf (outPictureFile1, "Node%p [shape = record,  color = blue, label = \" { %s }\"] ", n,
 		         (char *) n->content);
 	(*NodeCounter)++;
-
 
 	CYCLE_CHEACK
 
@@ -477,7 +478,7 @@ int dumpTreePicture (const Tree *const tree, const char *outFileName)
 
 int printTree (const Tree *const tree, const char *outFileName)
 {
-
+	assert (tree->root->content);
 
 	FILE *outPictureFile = fopen (outFileName, "w");
 

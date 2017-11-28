@@ -1,6 +1,3 @@
-//
-// Created by Tom on 22.11.2017.
-//
 #include <assert.h>
 #include <iostream>
 #include <cstring>
@@ -24,7 +21,7 @@ char *getBufferFromFileGetSzOfBuf (const char *_inputFileName, size_t *sizeOfBuf
 	sizeOfBuffer1 = (size_t) ftell (file);
 	fseek (file, 0, SEEK_SET);
 
-	char *helpBuffer = (char *) calloc (sizeOfBuffer1 + 1, sizeof (char));
+	char *helpBuffer = (char *) calloc (sizeOfBuffer1 + 2, sizeof (char));
 	fread (helpBuffer, 1, sizeOfBuffer1, file);
 	fclose (file);
 
@@ -34,12 +31,17 @@ char *getBufferFromFileGetSzOfBuf (const char *_inputFileName, size_t *sizeOfBuf
 	return helpBuffer;
 }
 
-#define DEF_CMD_OPERATOR(operator_, number, code)           \
-    case operator_ :                                        \
+
+#define DEF_CMD_BIN_OPERATOR(operator_, number, code)           \
+    else if (strcmp (#operator_, node->content) == 0)            \
      {                                                      \
         node->type = number;                                \
-        operatorFlag = 1;                                    \
-        break;                                              \
+    }
+
+#define DEF_CMD_UNARY_OPERATOR(operator_, number)      \
+    else if (strcmp (#operator_, node->content) == 0)        \
+     {                                                      \
+        node->type = number;                                \
     }
 
 
@@ -48,7 +50,6 @@ char contentAnalyze (Node *node, const char *const currValue)
 
 	char *NumHelper = (node->content);
 	strtod (node->content, &NumHelper);
-	bool operatorFlag = 0;
 
 	if (NumHelper != node->content)
 		node->type = number;
@@ -56,31 +57,30 @@ char contentAnalyze (Node *node, const char *const currValue)
 	else if (strcmp (currValue, node->content) == 0)
 		node->type = curVariable;
 
-	else if (strlen (node->content) == 1)
-	{
-		switch (*node->content)
-		{
 
 #include "MathFunc.h"
 
-			default:
-				break;
-		}
+#include "UnaryMathFunc.h"
 
-		if (!operatorFlag)
-			node->type = charConst;
-	}
+
 	else
 		node->type = charConst;
+
 }
 
-#undef DEF_CMD_OPERATOR
+
+#undef DEF_CMD_BIN_OPERATOR
+#undef DEF_CMD_UNARY_OPERATOR
+
 
 Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const currValue)
 {
 	assert (BegTree);
 	assert (FinalTree);
 	assert (currValue);
+
+	if (!BegTree->root->content)
+		return 0;
 
 	Node *helpNode = {};
 	nodeConstruct (&helpNode);
@@ -92,6 +92,21 @@ Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const cu
 
 }
 
+
+#define DEF_CMD_BIN_OPERATOR(operator_, number, code)       \
+    if (strcmp (#operator_, node->content) == 0)            \
+     {                                                      \
+        code                                                \
+    }
+
+#define DEF_CMD_UNARY_OPERATOR(operator_, number)                           \
+     if (strcmp (#operator_, node->content) == 0)                                   \
+    {                                                                               \
+        Node *LeftCopy = NodeCopy (node->Left, FinalTree);                          \
+        return complicatedDiff (LeftCopy, FinalTree, MainVariable, operator_##Diff);                                                           \
+    }
+
+
 Node *diffRec (const Node *const node, const char *const currValue, Tree *FinalTree)
 {
 	switch (node->type)
@@ -102,139 +117,29 @@ Node *diffRec (const Node *const node, const char *const currValue, Tree *FinalT
 		case curVariable:
 			return createNode (curVariable, 1, FinalTree);
 
-		case operator_:
+		case binOperator_:
 		{
-			switch (*node->content)
-			{
 
-//#include "MathFunc.h"
+#include "MathFunc.h"
 
-				case '+':
-				{
-					Node *LeftCopy = NodeCopy (node->Left, FinalTree);
-					LeftCopy->myTree = FinalTree;
+		}
 
-					Node *RightCopy = NodeCopy (node->Right, FinalTree);
-					RightCopy->myTree = FinalTree;
+		case unaryOperator_:
+		{
 
-					Node *dL = diffRec (LeftCopy, currValue, FinalTree);
-					Node *dR = diffRec (RightCopy, currValue, FinalTree);
+#include "UnaryMathFunc.h"
 
-					Node *mainNode = createNode (operator_, *node->content, FinalTree);
-
-					connectLeft (mainNode, dL);
-					connectRight (mainNode, dR);
-
-					return mainNode;
-
-				}
-
-				case '-':
-				{
-					Node *LeftCopy = NodeCopy (node->Left, FinalTree);
-					LeftCopy->myTree = FinalTree;
-
-					Node *RightCopy = NodeCopy (node->Right, FinalTree);
-					RightCopy->myTree = FinalTree;
-
-					Node *dL = diffRec (LeftCopy, currValue, FinalTree);
-					Node *dR = diffRec (RightCopy, currValue, FinalTree);
-
-					Node *mainNode = createNode (operator_, *node->content, FinalTree);
-
-					connectLeft (mainNode, dL);
-					connectRight (mainNode, dR);
-
-					return mainNode;
-				}
-
-				case '*':
-				{
-
-					Node *LeftCopy = NodeCopy (node->Left, FinalTree);
-					LeftCopy->myTree = FinalTree;
-
-					Node *RightCopy = NodeCopy (node->Right, FinalTree);
-					RightCopy->myTree = FinalTree;
-
-					Node *dL = diffRec (LeftCopy, currValue, FinalTree);
-					Node *dR = diffRec (RightCopy, currValue, FinalTree);
-
-					Node *mainNode = createNode (operator_, '+', FinalTree);
-
-					Node *FirstProNode = createNode (operator_, *node->content, FinalTree);
-					Node *SecondProNode = createNode (operator_, *node->content, FinalTree);
-
-					connectRight (FirstProNode, dL);
-					connectLeft (FirstProNode, RightCopy);
-
-					connectRight (SecondProNode, dR);
-					connectLeft (SecondProNode, LeftCopy);
-
-					connectLeft (mainNode, FirstProNode);
-					connectRight (mainNode, SecondProNode);
-
-					return mainNode;
-				}
-
-				case '/':
-				{
-
-					Node *LeftCopy = NodeCopy (node->Left, FinalTree);
-					LeftCopy->myTree = FinalTree;
-
-					Node *RightCopy = NodeCopy (node->Right, FinalTree);
-					RightCopy->myTree = FinalTree;
-
-					Node *dL = diffRec (LeftCopy, currValue, FinalTree);
-					Node *dR = diffRec (RightCopy, currValue, FinalTree);
-
-					Node *minusNode = createNode (operator_, '-', FinalTree);
-
-					Node *FirstProNode = createNode (operator_, '*', FinalTree);
-					Node *SecondProNode = createNode (operator_, '*', FinalTree);
-
-					connectRight (FirstProNode, dL);
-					connectLeft (FirstProNode, RightCopy);
-
-					connectRight (SecondProNode, dR);
-					connectLeft (SecondProNode, LeftCopy);
-
-					connectLeft (minusNode, FirstProNode);
-					connectRight (minusNode, SecondProNode);
-
-					Node *denPro = createNode (operator_, '*', FinalTree);
-
-
-					Node *RightCopy1 = NodeCopy (node->Right, FinalTree);
-					RightCopy1->myTree = FinalTree;
-
-
-					Node *RightCopy2 = NodeCopy (node->Right, FinalTree);
-					RightCopy2->myTree = FinalTree;
-
-					connectRight (denPro, RightCopy1);
-					connectLeft (denPro, RightCopy2);
-
-					Node *MainNode = createNode (operator_, '/', FinalTree);
-
-					connectLeft (MainNode, minusNode);
-					connectRight (MainNode, denPro);
-
-					return MainNode;
-				}
-
-				default:
-					break;
-			}
 		}
 
 		case charConst:
 			return createNode (charConst, 0, FinalTree);
+
 		default:
 			break;
 	}
 }
+
+#undef DEF_CMD_BIN_OPERATOR
 
 Node *createNode (const char type, int value, Tree *FinalTree)
 {
@@ -288,12 +193,6 @@ Node *createNode (const char type, int value, Tree *FinalTree)
 	}
 }
 
-#define DEF_CMD_OPERATOR(operator_, number, code)          \
-    case operator_ :                                       \
-    {                                                      \
-       code                                                \
-    }
-
 
 Node *createNode (const char type, char operator__, Tree *FinalTree)
 {
@@ -306,3 +205,57 @@ Node *createNode (const char type, char operator__, Tree *FinalTree)
 	*mainNode->content = operator__;
 	return mainNode;
 }
+
+Node *createNode (const char type, const char *const func, Tree *FinalTree)
+{
+	assert (func);
+	assert (FinalTree);
+
+	Node *mainNode = {};
+	nodeConstruct (&mainNode);
+
+	mainNode->myTree = FinalTree;
+	mainNode->content = (char *) calloc (strlen (func) + 1, sizeof (char));
+
+	strcpy (mainNode->content, func);
+	return mainNode;
+}
+
+
+Node *complicatedDiff (Node *mainNode, Tree *FinalTree, const char *const currValue,
+                       Node *(diff) (Node *node, Tree *FinalTree))
+{
+	Node *mul = createNode (binOperator_, '*', FinalTree);
+	connectLeft (mul, diff (mainNode, FinalTree));
+	connectRight (mul, diffRec (mainNode, currValue, FinalTree));
+
+	return mul;
+}
+
+
+Node *lnDiff (Node *node, Tree *FinalTree)
+{
+	Node *mainNode = createNode (binOperator_, '/', FinalTree);
+	Node *leftNode = createNode (number, 1, FinalTree);
+	connectLeft (mainNode, leftNode);
+	connectRight (mainNode, node);
+	return mainNode;
+}
+
+Node *sinDiff (Node *node, Tree *FinalTree)
+{
+	char cos[] = "cos";
+	Node *mainNode = createNode (binOperator_, cos, FinalTree);
+	connectLeft (mainNode, node);
+	return mainNode;
+}
+
+Node *cosDiff (Node *node, Tree *FinalTree)
+{
+	Node *mainNode = createNode (binOperator_, '/', FinalTree);
+	Node *leftNode = createNode (number, 1, FinalTree);
+	connectLeft (mainNode, leftNode);
+	connectRight (mainNode, node);
+	return mainNode;
+}
+

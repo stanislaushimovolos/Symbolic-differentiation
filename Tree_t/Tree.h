@@ -62,7 +62,7 @@ void destructTree (Tree *tree);
 
 void destructTreeRec (Node *node);
 
-Node *NodeCopy (const Node *node, Tree * newTree);
+Node *NodeCopy (const Node *node, Tree *newTree);
 
 Node *TreeSearcher (const Tree *const tree, char *const target);
 
