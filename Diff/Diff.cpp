@@ -92,6 +92,7 @@ Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const cu
 
 	FinalTree->nodeAmount = 0;
 
+	treeVisitorInf (FinalTree->root, simpleTree);
 	treeVisitorInf (FinalTree->root, nodeCount);
 
 }
@@ -207,6 +208,7 @@ Node *createNode (const char type, char operator__, Tree *FinalTree)
 	mainNode->content = (char *) calloc (2, sizeof (char));
 
 	*mainNode->content = operator__;
+	mainNode->type = type;
 	return mainNode;
 }
 
@@ -222,6 +224,7 @@ Node *createNode (const char type, const char *const func, Tree *FinalTree)
 	mainNode->content = (char *) calloc (strlen (func) + 1, sizeof (char));
 
 	strcpy (mainNode->content, func);
+	mainNode->type = type;
 	return mainNode;
 }
 
@@ -268,4 +271,121 @@ Node *cosDiff (Node *node, Tree *FinalTree)
 	connectLeft (mainNode, leftNode);
 
 	return mainNode;
+}
+
+void simpleTree (Node *node)
+{
+	if (node->type == binOperator_)
+	{
+		switch (*(node->content))
+		{
+			case '*':
+			{
+				if (strcmp (node->Left->content, "0") == 0 || strcmp (node->Right->content, "0") == 0)
+				{
+					destructTreeRec (node->Left);
+					destructTreeRec (node->Right);
+					*(node->content) = '0';
+					node->type = number;
+					node->Right = NULL;
+					node->Left = NULL;
+				}
+				if (strcmp (node->Right->content, "1") == 0)
+				{
+					if (node->Parent)
+					{
+						destructTreeRec (node->Right);
+						if (node == node->Parent->Right)
+							connectRight (node->Parent, node->Left);
+
+						if (node == node->Parent->Left)
+							connectLeft (node->Parent, node->Left);
+
+						destructNode (node);
+					}
+					else
+					{
+						node->myTree->root = node->Left;
+						node->Left->Parent = NULL;
+						destructNode (node->Right);
+						destructNode (node);
+					}
+				}
+				if (strcmp (node->Right->content, "1") == 0)
+				{
+					if (node->Parent)
+					{
+						destructTreeRec (node->Right);
+						if (node == node->Parent->Right)
+							connectRight (node->Parent, node->Left);
+
+						if (node == node->Parent->Left)
+							connectLeft (node->Parent, node->Left);
+
+						destructNode (node);
+					}
+					else
+					{
+						node->myTree->root = node->Left;
+						node->Left->Parent = NULL;
+						destructNode (node->Right);
+						destructNode (node);
+					}
+				}
+				break;
+
+			}
+			case '+':
+			{
+
+				if (strcmp (node->Left->content, "0") == 0)
+				{
+					if (node->Parent)
+					{
+						destructTreeRec (node->Left);
+						if (node == node->Parent->Right)
+							connectRight (node->Parent, node->Right);
+
+						if (node == node->Parent->Left)
+							connectLeft (node->Parent, node->Right);
+
+						destructNode (node);
+					}
+					else
+					{
+						node->myTree->root = node->Right;
+						node->Right->Parent = NULL;
+						destructNode (node->Left);
+						destructNode (node);
+					}
+				}
+
+				if (strcmp (node->Right->content, "0") == 0)
+				{
+					if (node->Parent)
+					{
+						destructTreeRec (node->Right);
+						if (node == node->Parent->Right)
+							connectRight (node->Parent, node->Left);
+
+						if (node == node->Parent->Left)
+							connectLeft (node->Parent, node->Left);
+
+						destructNode (node);
+					}
+					else
+					{
+						node->myTree->root = node->Left;
+						node->Left->Parent = NULL;
+						destructNode (node->Right);
+						destructNode (node);
+					}
+				}
+				break;
+
+			}
+			default:
+				break;
+		}
+	}
 }

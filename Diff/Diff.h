@@ -35,13 +35,16 @@ Node *createNode (char type, char operator__, Node *LeftCopy, Node *RightCopy, T
 
 Node *createNode (const char type, char operator__, Tree *FinalTree);
 
-Node *createNode (const char type, const char * const func, Tree *FinalTree);
+Node *createNode (const char type, const char *const func, Tree *FinalTree);
 
-Node *complicatedDiff (Node *mainNode, Tree *FinalTree, const char *const currValue, Node *(diff) (Node *node, Tree *FilTree));
+Node *complicatedDiff (Node *mainNode, Tree *FinalTree, const char *const currValue,
+                       Node *(diff) (Node *node, Tree *FilTree));
 
 Node *lnDiff (Node *node, Tree *FinalTree);
 
 Node *sinDiff (Node *node, Tree *FinalTree);
 
 Node *cosDiff (Node *node, Tree *FinalTree);
+
+void simpleTree (Node *node);
 
