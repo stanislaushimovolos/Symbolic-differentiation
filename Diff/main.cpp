@@ -1,7 +1,6 @@
 #include <iostream>
 #include "../Tree_t/Tree.h"
 #include "../Diff/Diff.h"
-#include <cstring>
 
 int main ()
 {

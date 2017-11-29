@@ -93,8 +93,8 @@ Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const cu
 	FinalTree->root = diffRec (helpNode, currValue, FinalTree);
 
 	FinalTree->nodeAmount = 0;
-	treeVisitorInf (FinalTree->root, simpleTree);
 
+	treeVisitorInf (FinalTree->root, simpleTree);
 	treeVisitorInf (FinalTree->root, nodeCount);
 
 }
@@ -279,7 +279,7 @@ Node *cosDiff (Node *node, Tree *FinalTree)
 #define STANDARD_SIMPLIFICATION_LEFT                    \
     if (node->Parent)                                   \
     {                                                   \
-        destructTreeRec (node->Right);                  \
+        destructTreeRec(node->Left);                    \
         if (node == node->Parent->Right)                \
             connectRight (node->Parent, node->Right);   \
                                                         \
@@ -294,13 +294,15 @@ Node *cosDiff (Node *node, Tree *FinalTree)
         node->Right->Parent = NULL;                     \
         destructNode (node->Left);                      \
         destructNode (node);                            \
-    }\
+    }                                                   \
     break;
+
 
 #define STANDARD_SIMPLIFICATION_RIGHT                   \
                                                         \
     if (node->Parent)                                   \
     {                                                   \
+        destructTreeRec(node->Right);                   \
         if (node == node->Parent->Right)                \
             connectRight (node->Parent, node->Left);    \
                                                         \
@@ -308,6 +310,7 @@ Node *cosDiff (Node *node, Tree *FinalTree)
             connectLeft (node->Parent, node->Left);     \
                                                         \
         destructNode (node);                            \
+        break;                                          \
     }                                                   \
     else                                                \
     {                                                   \
@@ -321,29 +324,29 @@ Node *cosDiff (Node *node, Tree *FinalTree)
 
 #define  CONST_FOLD(operator_)                                                                          \
     char **ptrEnd = NULL;                                                                               \
-    double val = strtod (node->Right->content, ptrEnd) operator_ strtod (node->Right->content, ptrEnd); \
+    double val = strtod (node->Left->content, ptrEnd) operator_ strtod (node->Right->content, ptrEnd);  \
     double FrVal = 0;                                                                                   \
     double WhVal = 0;                                                                                   \
-																										\
+                                                                                                        \
     destructNode (node->Left);                                                                          \
     destructNode (node->Right);                                                                         \
-																										\
+                                                                                                        \
     FrVal = modf (val, &WhVal);                                                                         \
     int numCounter = 0;                                                                                 \
-																										\
-    if (WhVal != 0)\
-    {                                                                                                   \
+                                                                                                        \
         int helper = (int) WhVal;                                                                       \
         while (helper > 0)                                                                              \
         {                                                                                               \
             helper /= 10;                                                                               \
             numCounter++;                                                                               \
         }                                                                                               \
-																										\
-    }                                                                                                   \
+                                                                                                        \
+                                                                                                        \
     node->content = (char *) calloc ((size_t) (numCounter + 1), sizeof (char));                         \
     sprintf (node->content, "%d", (int) WhVal);                                                         \
     node->type = number;                                                                                \
+    node->Left = NULL;                                                                                  \
+    node->Right = NULL;                                                                                 \
     break;                                                                                              \
 
 
@@ -381,7 +384,7 @@ void simpleTree (Node *node)
 				{
 					CONST_FOLD(*);
 				}
-
+				break;
 			}
 			case '+':
 			{
@@ -400,8 +403,10 @@ void simpleTree (Node *node)
 				{
 					CONST_FOLD(+);
 				}
+				break;
 
 			}
+
 			case '-':
 			{
 				if (strcmp (node->Right->content, "0") == 0)
@@ -415,12 +420,57 @@ void simpleTree (Node *node)
 					char str2[] = "*";
 					nodeSetName (node->Left, str1);
 					nodeSetName (node, str2);
+					break;
 				}
 
 				if (node->Right->type == number && node->Left->type == number)
 				{
 					CONST_FOLD(-);
 				}
+				break;
+
+			}
+
+			case '^':
+			{
+				if (strcmp (node->Left->content, "0") == 0)
+				{
+					destructTreeRec (node->Left);
+					destructTreeRec (node->Right);
+					*(node->content) = '0';
+					node->type = number;
+					node->Right = NULL;
+					node->Left = NULL;
+					break;
+				}
+
+				if (strcmp (node->Left->content, "1") == 0)
+				{
+					destructTreeRec (node->Left);
+					destructTreeRec (node->Right);
+					*(node->content) = '1';
+					node->type = number;
+					node->Right = NULL;
+					node->Left = NULL;
+					break;
+				}
+
+				if (strcmp (node->Right->content, "0") == 0)
+				{
+					destructTreeRec (node->Left);
+					destructTreeRec (node->Right);
+					*(node->content) = '1';
+					node->type = number;
+					node->Right = NULL;
+					node->Left = NULL;
+					break;
+				}
+
+				if (strcmp (node->Right->content, "1") == 0)
+				{
+					STANDARD_SIMPLIFICATION_RIGHT
+				}
+
 
 			}
 			default:

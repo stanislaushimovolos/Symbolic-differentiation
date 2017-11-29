@@ -38,7 +38,7 @@ void treeVisitorInf (Node *node, void nodeFunc (Node *node))
 
 void nodeCount (Node *node)
 {
-		node->myTree->nodeAmount++;
+	node->myTree->nodeAmount++;
 
 }
 
