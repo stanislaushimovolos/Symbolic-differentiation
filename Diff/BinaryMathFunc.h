@@ -140,6 +140,7 @@ DEF_CMD_BIN_OPERATOR(^, binOperator_, {
 	Node *Ln = {};
 	nodeConstruct (&Ln);
 	nodeSetName (Ln, ln);
+	Ln->type = unaryOperator_;
 
 	connectLeft (ProNode1, Ln);
 	connectLeft (Ln, base1);

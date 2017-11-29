@@ -67,7 +67,7 @@ void destructTreeRec (Node *node);
 
 void nodeCount (Node *node);
 
-void treeVisitorInf (Node *node, void nodeFunc (Node *node));
+void treeVisitorInf (Node *node, void nodeFunc (Node *Node));
 
 Node *NodeCopy (const Node *node, Tree *newTree);
 
@@ -76,4 +76,3 @@ Node *TreeSearcher (const Tree *const tree, char *const target);
 Node *TreeSearcherRec (Node *node, char **target);
 
 NodeWay *createArrOfParents (const Tree *const tree, Node *CurrentNode, int *NodeCounter);
-

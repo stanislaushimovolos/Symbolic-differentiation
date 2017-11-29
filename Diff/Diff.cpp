@@ -1,8 +1,10 @@
 #include <assert.h>
 #include <iostream>
 #include <cstring>
+#include <cstdlib>
 #include "../Tree_t/Tree.h"
 #include <stdlib.h>
+#include <math.h>
 
 #include "Diff.h"
 
@@ -58,7 +60,7 @@ char contentAnalyze (Node *node, const char *const currValue)
 		node->type = curVariable;
 
 
-#include "MathFunc.h"
+#include "BinaryMathFunc.h"
 
 #include "UnaryMathFunc.h"
 
@@ -91,8 +93,8 @@ Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const cu
 	FinalTree->root = diffRec (helpNode, currValue, FinalTree);
 
 	FinalTree->nodeAmount = 0;
-
 	treeVisitorInf (FinalTree->root, simpleTree);
+
 	treeVisitorInf (FinalTree->root, nodeCount);
 
 }
@@ -125,7 +127,7 @@ Node *diffRec (const Node *const node, const char *const currValue, Tree *FinalT
 		case binOperator_:
 		{
 
-#include "MathFunc.h"
+#include "BinaryMathFunc.h"
 
 		}
 
@@ -273,6 +275,78 @@ Node *cosDiff (Node *node, Tree *FinalTree)
 	return mainNode;
 }
 
+
+#define STANDARD_SIMPLIFICATION_LEFT                    \
+    if (node->Parent)                                   \
+    {                                                   \
+        destructTreeRec (node->Right);                  \
+        if (node == node->Parent->Right)                \
+            connectRight (node->Parent, node->Right);   \
+                                                        \
+        if (node == node->Parent->Left)                 \
+            connectLeft (node->Parent, node->Right);    \
+                                                        \
+        destructNode (node);                            \
+    }                                                   \
+    else                                                \
+    {                                                   \
+        node->myTree->root = node->Right;               \
+        node->Right->Parent = NULL;                     \
+        destructNode (node->Left);                      \
+        destructNode (node);                            \
+    }\
+    break;
+
+#define STANDARD_SIMPLIFICATION_RIGHT                   \
+                                                        \
+    if (node->Parent)                                   \
+    {                                                   \
+        if (node == node->Parent->Right)                \
+            connectRight (node->Parent, node->Left);    \
+                                                        \
+        if (node == node->Parent->Left)                 \
+            connectLeft (node->Parent, node->Left);     \
+                                                        \
+        destructNode (node);                            \
+    }                                                   \
+    else                                                \
+    {                                                   \
+        node->myTree->root = node->Left;                \
+        node->Left->Parent = NULL;                      \
+        destructNode (node->Right);                     \
+        destructNode (node);                            \
+        break;                                          \
+    }
+
+
+#define  CONST_FOLD(operator_)                                                                          \
+    char **ptrEnd = NULL;                                                                               \
+    double val = strtod (node->Right->content, ptrEnd) operator_ strtod (node->Right->content, ptrEnd); \
+    double FrVal = 0;                                                                                   \
+    double WhVal = 0;                                                                                   \
+																										\
+    destructNode (node->Left);                                                                          \
+    destructNode (node->Right);                                                                         \
+																										\
+    FrVal = modf (val, &WhVal);                                                                         \
+    int numCounter = 0;                                                                                 \
+																										\
+    if (WhVal != 0)\
+    {                                                                                                   \
+        int helper = (int) WhVal;                                                                       \
+        while (helper > 0)                                                                              \
+        {                                                                                               \
+            helper /= 10;                                                                               \
+            numCounter++;                                                                               \
+        }                                                                                               \
+																										\
+    }                                                                                                   \
+    node->content = (char *) calloc ((size_t) (numCounter + 1), sizeof (char));                         \
+    sprintf (node->content, "%d", (int) WhVal);                                                         \
+    node->type = number;                                                                                \
+    break;                                                                                              \
+
+
 void simpleTree (Node *node)
 {
 	if (node->type == binOperator_)
@@ -289,50 +363,24 @@ void simpleTree (Node *node)
 					node->type = number;
 					node->Right = NULL;
 					node->Left = NULL;
+					break;
 				}
+
 				if (strcmp (node->Right->content, "1") == 0)
 				{
-					if (node->Parent)
-					{
-						destructTreeRec (node->Right);
-						if (node == node->Parent->Right)
-							connectRight (node->Parent, node->Left);
+					STANDARD_SIMPLIFICATION_RIGHT
 
-						if (node == node->Parent->Left)
-							connectLeft (node->Parent, node->Left);
-
-						destructNode (node);
-					}
-					else
-					{
-						node->myTree->root = node->Left;
-						node->Left->Parent = NULL;
-						destructNode (node->Right);
-						destructNode (node);
-					}
 				}
-				if (strcmp (node->Right->content, "1") == 0)
+
+				if (strcmp (node->Left->content, "1") == 0)
 				{
-					if (node->Parent)
-					{
-						destructTreeRec (node->Right);
-						if (node == node->Parent->Right)
-							connectRight (node->Parent, node->Left);
-
-						if (node == node->Parent->Left)
-							connectLeft (node->Parent, node->Left);
-
-						destructNode (node);
-					}
-					else
-					{
-						node->myTree->root = node->Left;
-						node->Left->Parent = NULL;
-						destructNode (node->Right);
-						destructNode (node);
-					}
+					STANDARD_SIMPLIFICATION_LEFT
 				}
-				break;
+
+				if (node->Right->type == number && node->Left->type == number)
+				{
+					CONST_FOLD(*);
+				}
 
 			}
 			case '+':
@@ -340,48 +388,39 @@ void simpleTree (Node *node)
 
 				if (strcmp (node->Left->content, "0") == 0)
 				{
-					if (node->Parent)
-					{
-						destructTreeRec (node->Left);
-						if (node == node->Parent->Right)
-							connectRight (node->Parent, node->Right);
-
-						if (node == node->Parent->Left)
-							connectLeft (node->Parent, node->Right);
-
-						destructNode (node);
-					}
-					else
-					{
-						node->myTree->root = node->Right;
-						node->Right->Parent = NULL;
-						destructNode (node->Left);
-						destructNode (node);
-					}
+					STANDARD_SIMPLIFICATION_LEFT
 				}
 
 				if (strcmp (node->Right->content, "0") == 0)
 				{
-					if (node->Parent)
-					{
-						destructTreeRec (node->Right);
-						if (node == node->Parent->Right)
-							connectRight (node->Parent, node->Left);
-
-						if (node == node->Parent->Left)
-							connectLeft (node->Parent, node->Left);
-
-						destructNode (node);
-					}
-					else
-					{
-						node->myTree->root = node->Left;
-						node->Left->Parent = NULL;
-						destructNode (node->Right);
-						destructNode (node);
-					}
+					STANDARD_SIMPLIFICATION_RIGHT
 				}
-				break;
+
+				if (node->Right->type == number && node->Left->type == number)
+				{
+					CONST_FOLD(+);
+				}
+
+			}
+			case '-':
+			{
+				if (strcmp (node->Right->content, "0") == 0)
+				{
+					STANDARD_SIMPLIFICATION_RIGHT
+				}
+
+				if (strcmp (node->Left->content, "0") == 0)
+				{
+					char str1[] = "-1";
+					char str2[] = "*";
+					nodeSetName (node->Left, str1);
+					nodeSetName (node, str2);
+				}
+
+				if (node->Right->type == number && node->Left->type == number)
+				{
+					CONST_FOLD(-);
+				}
 
 			}
 			default:
