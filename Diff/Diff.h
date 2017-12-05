@@ -8,7 +8,7 @@
 
 enum
 {
-	number, binOperator_, unaryOperator_, curVariable, charConst, Add, Sub, Mul, Div, Ln, Sin, Cos, Expo
+	number, curVariable, charConst, Add, Sub, Mul, Div, Ln, Sin, Cos, Expo
 
 };
 
@@ -19,6 +19,11 @@ const char inputFilename[] = "../base/base.txt";
 const char outFilename[] = "../dumps/base.txt";
 const char outFilenameForDotDump[] = "../picture/dotDump.txt";
 const char outFilenameForDotPrint[] = "../picture/dotPrint.txt";
+
+
+int printResultRec (const Node *const Node, int prior, FILE *outBaseFile1);
+
+int printResultFile (const Tree *const tree, const char *outFileName);
 
 int simpleTree (Node *node);
 

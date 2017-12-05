@@ -82,15 +82,17 @@ Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const cu
 	FinalTree->root = diffRec (helpNode, currValue, FinalTree);
 
 	FinalTree->nodeAmount = 0;
+	treeVisitorInf (FinalTree->root, nodeCount);
 
-	treeVisitorInf (FinalTree->root, simpleTree);
+	FinalTree->nodeAmount = 0;
+
 	treeVisitorInf (FinalTree->root, nodeCount);
 
 }
 
 
 #define  DEF_CMD(operator_, number, code)                   \
-    case number :                                         \
+    case number :                                           \
      {                                                      \
        code                                                 \
     }
@@ -188,6 +190,168 @@ Node *createNode (const char type, char operator__, Tree *FinalTree)
 	return mainNode;
 }
 
+int printResultFile (const Tree *const tree, const char *outFileName)
+{
+	FILE *outBaseFile = fopen (outFileName, "w");
+	int NodeCounterRec = 0, priorityHelper = 0;
+
+	fprintf (outBaseFile, "\\documentclass[12pt]{article}\n"
+			"\\usepackage[cp1251]{inputenc}\n"
+			"\\usepackage[russian]{babel}\n"
+			"\\begin{document}\n\n");
+
+	fprintf (outBaseFile, "\\[");
+
+	printResultRec (tree->root, priorityHelper, outBaseFile);
+
+	fprintf (outBaseFile, "\\]");
+
+	fprintf (outBaseFile, "\n\n\\end{document}");
+
+	fclose (outBaseFile);
+
+	system ("pdflatex.exe -synctex=1 -interaction=nonstopmode ../dumps/base.txt");
+	system ("start base.pdf");
+}
+
+
+int printResultRec (const Node *const Node, int prior, FILE *outBaseFile1)
+{
+	switch (Node->type)
+	{
+		case Add :
+		{
+			if (prior == 0)
+			{
+				printResultRec (Node->Left, 0, outBaseFile1);
+				fprintf (outBaseFile1, " + ");
+				printResultRec (Node->Right, 0, outBaseFile1);
+			}
+
+			else
+			{
+				fprintf (outBaseFile1, "(");
+				printResultRec (Node->Left, 0, outBaseFile1);
+				fprintf (outBaseFile1, " + ");
+				printResultRec (Node->Right, 0, outBaseFile1);
+				fprintf (outBaseFile1, ")");
+			}
+
+			break;
+		}
+
+		case Ln :
+		{
+			fprintf (outBaseFile1, "\\ln(");
+			printResultRec (Node->Left, 0, outBaseFile1);
+			fprintf (outBaseFile1, ")");
+
+			break;
+		}
+
+		case Cos :
+		{
+			fprintf (outBaseFile1, "\\cos(");
+			printResultRec (Node->Left, 0, outBaseFile1);
+			fprintf (outBaseFile1, ")");
+
+			break;
+		}
+
+		case Sin :
+		{
+			fprintf (outBaseFile1, "\\sin(");
+			printResultRec (Node->Left, 0, outBaseFile1);
+			fprintf (outBaseFile1, ")");
+
+			break;
+		}
+
+		case Sub :
+		{
+			if (prior == 0)
+			{
+				printResultRec (Node->Left, 0, outBaseFile1);
+				fprintf (outBaseFile1, " - ");
+				printResultRec (Node->Right, 0, outBaseFile1);
+			}
+
+			else
+			{
+				fprintf (outBaseFile1, "(");
+				printResultRec (Node->Left, 0, outBaseFile1);
+				fprintf (outBaseFile1, " - ");
+				printResultRec (Node->Right, 0, outBaseFile1);
+				fprintf (outBaseFile1, ")");
+			}
+
+			break;
+		}
+
+
+		case number:
+		{
+			if (*(Node->content) == '-')
+			{
+				fprintf (outBaseFile1, "(%s)", Node->content);
+			}
+
+			else
+				fprintf (outBaseFile1, "%s", Node->content);
+
+			break;
+		}
+
+		case charConst:
+		{
+			fprintf (outBaseFile1, "%s", Node->content);
+			break;
+		}
+
+		case curVariable:
+		{
+			fprintf (outBaseFile1, "%s", Node->content);
+			break;
+		}
+
+
+		case Mul :
+		{
+
+			printResultRec (Node->Left, 1, outBaseFile1);
+			fprintf (outBaseFile1, "\\cdot ");
+			printResultRec (Node->Right, 1, outBaseFile1);
+
+
+			break;
+		}
+
+		case Div :
+		{
+			fprintf (outBaseFile1, "\\frac{");
+			printResultRec (Node->Left, 0, outBaseFile1);
+			fprintf (outBaseFile1, "}{");
+			printResultRec (Node->Right, 0, outBaseFile1);
+			fprintf (outBaseFile1, "}");
+
+			break;
+		}
+
+		case Expo :
+		{
+			printResultRec (Node->Left, 0, outBaseFile1);
+			fprintf (outBaseFile1, "^{");
+			printResultRec (Node->Right, 0, outBaseFile1);
+			fprintf (outBaseFile1, "}");
+
+			break;
+		}
+
+		default:
+			break;
+	}
+}
+
 
 Node *createNode (const char type, const char *const func, Tree *FinalTree)
 {
@@ -209,7 +373,7 @@ Node *createNode (const char type, const char *const func, Tree *FinalTree)
 Node *complicatedDiff (Node *mainNode, Tree *FinalTree, const char *const currValue,
                        Node *(diff) (Node *node, Tree *FinalTree, const char *const currValue))
 {
-	Node *mul = createNode (binOperator_, '*', FinalTree);
+	Node *mul = createNode (Mul, '*', FinalTree);
 	connectLeft (mul, diff (mainNode, FinalTree, currValue));
 	connectRight (mul, diffRec (mainNode, currValue, FinalTree));
 
@@ -360,7 +524,9 @@ int simpleTree (Node *node)
 			char str1[] = "-1";
 			char str2[] = "*";
 			nodeSetName (node->Left, str1);
+			node->Left->type = number;
 			nodeSetName (node, str2);
+			node->type = Mul;
 			return 0;
 		}
 
@@ -420,7 +586,7 @@ int simpleTree (Node *node)
 
 Node *lnDiff (Node *node, Tree *FinalTree, const char *const currValue)
 {
-	Node *mainNode = createNode (binOperator_, '/', FinalTree);
+	Node *mainNode = createNode (Div, '/', FinalTree);
 	Node *leftNode = createNode (number, 1, FinalTree);
 	connectLeft (mainNode, leftNode);
 	connectRight (mainNode, node);
@@ -431,7 +597,7 @@ Node *lnDiff (Node *node, Tree *FinalTree, const char *const currValue)
 Node *sinDiff (Node *node, Tree *FinalTree, const char *const currValue)
 {
 	char cos[] = "cos";
-	Node *mainNode = createNode (binOperator_, cos, FinalTree);
+	Node *mainNode = createNode (Cos, cos, FinalTree);
 	connectLeft (mainNode, node);
 	return mainNode;
 }
@@ -441,10 +607,10 @@ Node *cosDiff (Node *node, Tree *FinalTree, const char *const currValue)
 {
 	char sin[] = "sin";
 
-	Node *mainNode = createNode (binOperator_, '*', FinalTree);
+	Node *mainNode = createNode (Mul, '*', FinalTree);
 	Node *rightNode = createNode (number, -1, FinalTree);
 
-	Node *leftNode = createNode (binOperator_, sin, FinalTree);
+	Node *leftNode = createNode (Sin, sin, FinalTree);
 	connectLeft (leftNode, node);
 
 	connectRight (mainNode, rightNode);
@@ -465,7 +631,7 @@ Node *addDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 	Node *dL = diffRec (LeftCopy, currValue, FinalTree);
 	Node *dR = diffRec (RightCopy, currValue, FinalTree);
 
-	Node *mainNode = createNode (binOperator_, *node->content, FinalTree);
+	Node *mainNode = createNode (Add, *node->content, FinalTree);
 
 	connectLeft (mainNode, dL);
 	connectRight (mainNode, dR);
@@ -486,7 +652,7 @@ Node *subDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 	Node *dL = diffRec (LeftCopy, currValue, FinalTree);
 	Node *dR = diffRec (RightCopy, currValue, FinalTree);
 
-	Node *mainNode = createNode (binOperator_, *node->content, FinalTree);
+	Node *mainNode = createNode (Sub, *node->content, FinalTree);
 
 	connectLeft (mainNode, dL);
 	connectRight (mainNode, dR);
@@ -507,10 +673,10 @@ Node *mulDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 	Node *dL = diffRec (LeftCopy, currValue, FinalTree);
 	Node *dR = diffRec (RightCopy, currValue, FinalTree);
 
-	Node *mainNode = createNode (binOperator_, '+', FinalTree);
+	Node *mainNode = createNode (Add, '+', FinalTree);
 
-	Node *FirstProNode = createNode (binOperator_, *node->content, FinalTree);
-	Node *SecondProNode = createNode (binOperator_, *node->content, FinalTree);
+	Node *FirstProNode = createNode (Mul, *node->content, FinalTree);
+	Node *SecondProNode = createNode (Mul, *node->content, FinalTree);
 
 	connectRight (FirstProNode, dL);
 	connectLeft (FirstProNode, RightCopy);
@@ -537,10 +703,10 @@ Node *divDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 	Node *dL = diffRec (LeftCopy, currValue, FinalTree);
 	Node *dR = diffRec (RightCopy, currValue, FinalTree);
 
-	Node *minusNode = createNode (binOperator_, '-', FinalTree);
+	Node *minusNode = createNode (Sub, '-', FinalTree);
 
-	Node *FirstProNode = createNode (binOperator_, '*', FinalTree);
-	Node *SecondProNode = createNode (binOperator_, '*', FinalTree);
+	Node *FirstProNode = createNode (Mul, '*', FinalTree);
+	Node *SecondProNode = createNode (Mul, '*', FinalTree);
 
 	connectRight (FirstProNode, dL);
 	connectLeft (FirstProNode, RightCopy);
@@ -551,7 +717,7 @@ Node *divDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 	connectLeft (minusNode, FirstProNode);
 	connectRight (minusNode, SecondProNode);
 
-	Node *denPro = createNode (binOperator_, '*', FinalTree);
+	Node *denPro = createNode (Mul, '*', FinalTree);
 
 	Node *RightCopy1 = NodeCopy (node->Right, FinalTree);
 	RightCopy1->myTree = FinalTree;
@@ -563,7 +729,7 @@ Node *divDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 	connectRight (denPro, RightCopy1);
 	connectLeft (denPro, RightCopy2);
 
-	Node *MainNode = createNode (binOperator_, '/', FinalTree);
+	Node *MainNode = createNode (Div, '/', FinalTree);
 
 	connectLeft (MainNode, minusNode);
 	connectRight (MainNode, denPro);
@@ -587,23 +753,23 @@ Node *expoDiff (const Node *const node, Tree *FinalTree, const char *const currV
 	Node *index3 = NodeCopy (node->Right, FinalTree);
 	Node *index4 = NodeCopy (node->Right, FinalTree);
 
-	Node *mainMinus = createNode (binOperator_, '-', FinalTree);
-	Node *MainPlus = createNode (binOperator_, '+', FinalTree);
-	Node *ProNode1 = createNode (binOperator_, '*', FinalTree);
-	Node *ProNode2 = createNode (binOperator_, '*', FinalTree);
-	Node *ProNode3 = createNode (binOperator_, '*', FinalTree);
-	Node *ProNode4 = createNode (binOperator_, '*', FinalTree);
+	Node *mainMinus = createNode (Sub, '-', FinalTree);
+	Node *MainPlus = createNode (Add, '+', FinalTree);
+	Node *ProNode1 = createNode (Mul, '*', FinalTree);
+	Node *ProNode2 = createNode (Mul, '*', FinalTree);
+	Node *ProNode3 = createNode (Mul, '*', FinalTree);
+	Node *ProNode4 = createNode (Mul, '*', FinalTree);
 
-	Node *Cap1 = createNode (binOperator_, '^', FinalTree);
-	Node *Cap2 = createNode (binOperator_, '^', FinalTree);
+	Node *Cap1 = createNode (Expo, '^', FinalTree);
+	Node *Cap2 = createNode (Expo, '^', FinalTree);
 
-	Node *Ln = {};
-	nodeConstruct (&Ln);
-	nodeSetName (Ln, ln);
-	Ln->type = unaryOperator_;
+	Node *LN = {};
+	nodeConstruct (&LN);
+	nodeSetName (LN, ln);
+	LN->type = Ln;
 
-	connectLeft (ProNode1, Ln);
-	connectLeft (Ln, base1);
+	connectLeft (ProNode1, LN);
+	connectLeft (LN, base1);
 	connectRight (ProNode1, diffRec (index1, currValue, FinalTree));
 	connectLeft (ProNode2, ProNode1);
 	connectRight (ProNode2, Cap1);
@@ -625,5 +791,3 @@ Node *expoDiff (const Node *const node, Tree *FinalTree, const char *const currV
 	connectLeft (mainMinus, index4);
 	return MainPlus;
 }
-
-

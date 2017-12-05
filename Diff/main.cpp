@@ -13,11 +13,11 @@ int main ()
 	readBase (&buffer, inputFilename);
 	createBase (buffer, begTree.root);
 
-	dumpTreePicture (&begTree, outFilenameForDotDump);
-
 	diffMain (&begTree, &diffTree, MainVariable);
 
-	printTree (&diffTree, outFilenameForDotPrint);
+	printResultFile (&diffTree, outFilename);
+
+	dumpTreePicture (&diffTree, outFilenameForDotDump);
 	free (buffer);
 
 

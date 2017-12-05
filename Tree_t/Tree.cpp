@@ -415,6 +415,7 @@ int printTreeFile (const Tree *const tree, const char *outFileName)
 	printTreeFileRec (tree->root, &(tree->nodeAmount), &NodeCounterRec, outBaseFile);
 }
 
+
 int printTreeFileRec (const Node *const Node, const int *const NodeAmount, int *NodeCounterRec, FILE *outBaseFile1)
 {
 	static int tabsAmount = -1;
