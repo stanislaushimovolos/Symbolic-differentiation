@@ -1,10 +1,16 @@
 digraph dump
 {
-Node00F611B8 [shape = record,  color = red, label = "{ { ^| '00F611B8' } | { Parent| '00000000' }  | { type | '12' } | { Tree| '0062FF28' }| { Left = 00F61298 | Right = 00F60F00 } }"]
-Node00F61298 [shape = record,  color = red, label = "{ { x| '00F61298' } | { Parent| '00F611B8' }  | { type | '3' } | { Tree| '0062FF28' }| { Left = 00000000 | Right = 00000000 } }"]
+Node00F211B8 [shape = record,  color = red, label = "{ { ^| '00F211B8' } | { Parent| '00000000' }  | { type | '12' } | { Tree| '0062FF28' }| { Left = 00F21298 | Right = 00F20F20 } }"]
+Node00F21298 [shape = record,  color = red, label = "{ { x| '00F21298' } | { Parent| '00F211B8' }  | { type | '3' } | { Tree| '0062FF28' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F611B8 -> Node00F61298
-Node00F60F00 [shape = record,  color = red, label = "{ { x| '00F60F00' } | { Parent| '00F611B8' }  | { type | '3' } | { Tree| '0062FF28' }| { Left = 00000000 | Right = 00000000 } }"]
+Node00F211B8 -> Node00F21298
+Node00F20F20 [shape = record,  color = red, label = "{ { ^| '00F20F20' } | { Parent| '00F211B8' }  | { type | '12' } | { Tree| '0062FF28' }| { Left = 00F20F40 | Right = 00F20F90 } }"]
+Node00F20F40 [shape = record,  color = red, label = "{ { x| '00F20F40' } | { Parent| '00F20F20' }  | { type | '3' } | { Tree| '0062FF28' }| { Left = 00000000 | Right = 00000000 } }"]
 
-Node00F611B8 -> Node00F60F00
+Node00F20F20 -> Node00F20F40
+Node00F20F90 [shape = record,  color = red, label = "{ { x| '00F20F90' } | { Parent| '00F20F20' }  | { type | '3' } | { Tree| '0062FF28' }| { Left = 00000000 | Right = 00000000 } }"]
+
+Node00F20F20 -> Node00F20F90
+
+Node00F211B8 -> Node00F20F20
 }

@@ -6,6 +6,13 @@
 
 #include "../Tree_t/Tree.h"
 
+enum
+{
+	number, binOperator_, unaryOperator_, curVariable, charConst, Add, Sub, Mul, Div, Ln, Sin, Cos, Expo
+
+};
+
+
 const char MainVariable[] = "x";
 
 const char inputFilename[] = "../base/base.txt";

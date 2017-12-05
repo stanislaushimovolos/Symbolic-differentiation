@@ -8,11 +8,6 @@
 
 #include "Diff.h"
 
-enum
-{
-	number, binOperator_, unaryOperator_, curVariable, charConst, Add, Sub, Mul, Div, Ln, Sin, Cos, Expo
-
-};
 
 char *getBufferFromFileGetSzOfBuf (const char *_inputFileName, size_t *sizeOfBuffer)
 {
@@ -125,6 +120,7 @@ Node *diffRec (const Node *const node, const char *const currValue, Tree *FinalT
 
 
 #undef DEF_CMD_BIN_OPERATOR
+
 
 Node *createNode (const char type, int value, Tree *FinalTree)
 {
@@ -297,7 +293,6 @@ Node *complicatedDiff (Node *mainNode, Tree *FinalTree, const char *const currVa
 
 int simpleTree (Node *node)
 {
-
 
 	if (strcmp (node->content, "*") == 0)
 	{
@@ -577,6 +572,7 @@ Node *divDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 
 }
 
+
 Node *expoDiff (const Node *const node, Tree *FinalTree, const char *const currValue)
 {
 	char ln[] = "ln";
@@ -627,9 +623,7 @@ Node *expoDiff (const Node *const node, Tree *FinalTree, const char *const currV
 
 	connectRight (mainMinus, createNode (number, 1, FinalTree));
 	connectLeft (mainMinus, index4);
-
 	return MainPlus;
 }
-
 
 
