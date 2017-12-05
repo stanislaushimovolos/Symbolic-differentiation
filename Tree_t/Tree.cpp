@@ -27,7 +27,7 @@ void connectLeft (Node *mainNode, Node *leftNode)
 	mainNode->myTree->nodeAmount++;
 }
 
-void treeVisitorInf (Node *node, void nodeFunc (Node *node))
+void treeVisitorInf (Node *node, int nodeFunc (Node *node))
 {
 	if (node->Left)
 		treeVisitorInf (node->Left, nodeFunc);
@@ -36,9 +36,10 @@ void treeVisitorInf (Node *node, void nodeFunc (Node *node))
 	nodeFunc (node);
 }
 
-void nodeCount (Node *node)
+int nodeCount (Node *node)
 {
 	node->myTree->nodeAmount++;
+	return 0;
 
 }
 
