@@ -23,6 +23,7 @@ struct Node
 	Node *Parent;
 	char type;
 	char *content;
+	int value;
 };
 
 struct NodeWay
@@ -30,6 +31,9 @@ struct NodeWay
 	Node *node;
 	bool state;
 };
+
+
+int connector (Node *node, int evalue);
 
 int nodeConstruct (Node **node);
 
@@ -74,5 +78,11 @@ Node *NodeCopy (const Node *node, Tree *newTree);
 Node *TreeSearcher (const Tree *const tree, char *const target);
 
 Node *TreeSearcherRec (Node *node, char **target);
+
+Node *createNode (const char type, int value, Tree *FinalTree);
+
+Node *createNode (const char type, char operator__, Tree *FinalTree);
+
+Node *createNode (const char type, const char *const func, Tree *FinalTree);
 
 NodeWay *createArrOfParents (const Tree *const tree, Node *CurrentNode, int *NodeCounter);

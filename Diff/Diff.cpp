@@ -1,37 +1,11 @@
 #include <assert.h>
 #include <iostream>
 #include <cstring>
-#include <cstdlib>
-#include "../Tree_t/Tree.h"
-#include <stdlib.h>
+#include <windows.h>
 #include <math.h>
+#include <ctime>
 
 #include "Diff.h"
-
-
-char *getBufferFromFileGetSzOfBuf (const char *_inputFileName, size_t *sizeOfBuffer)
-{
-
-	assert (_inputFileName);
-
-	size_t sizeOfBuffer1 = 0;
-	FILE *file = fopen (_inputFileName, "r");
-
-	assert (file);
-
-	fseek (file, 0, SEEK_END);
-	sizeOfBuffer1 = (size_t) ftell (file);
-	fseek (file, 0, SEEK_SET);
-
-	char *helpBuffer = (char *) calloc (sizeOfBuffer1 + 2, sizeof (char));
-	fread (helpBuffer, 1, sizeOfBuffer1, file);
-	fclose (file);
-
-	if (sizeOfBuffer != NULL)
-		*sizeOfBuffer = sizeOfBuffer1;
-
-	return helpBuffer;
-}
 
 
 #define  DEF_CMD(operator_, number, code)                   \
@@ -64,8 +38,11 @@ char contentAnalyze (Node *node, const char *const currValue)
 #undef DEF_CMD
 
 
+int TreeChecker = 0;
+
 Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const currValue)
 {
+	FILE *outTexFile = fopen (outFilename, "w");
 	assert (BegTree);
 	assert (FinalTree);
 	assert (currValue);
@@ -73,38 +50,81 @@ Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const cu
 	if (!BegTree->root->content)
 		return 0;
 
+	fprintf (outTexFile, "\\documentclass{article}\n"
+			"\n"
+			"\\usepackage[utf8x]{inputenc}\n"
+			"\n"
+			"\\usepackage[russian]{babel}\n"
+			"\n"
+			"    \\usepackage{geometry}\n"
+			"\n"
+			"\\begin{document} \\begin{center} The original expression \n");
+
+	fprintf (outTexFile, " \\[ ");
+
+	TexExp (BegTree->root, outTexFile);
+
+	fprintf (outTexFile, " \\] ");
+
 	Node *helpNode = {};
 	nodeConstruct (&helpNode);
 
 	helpNode = NodeCopy (BegTree->root, FinalTree);
 	helpNode->myTree = FinalTree;
 
-	FinalTree->root = diffRec (helpNode, currValue, FinalTree);
+	FinalTree->root = diffRec (helpNode, currValue, FinalTree, outTexFile);
+
+	while (TreeChecker == 0)
+	{
+		treeVisitorInf (FinalTree->root, simpleTree);
+
+		if (TreeChecker == 0)
+		{
+			TreeChecker = 1;
+
+		}
+		else
+
+			TreeChecker = 0;
+	}
+
+	fprintf (outTexFile, "\n\\begin{center}\nThe final expression\n");
+
+	fprintf (outTexFile, " \\[ ");
+
+	TexExp (FinalTree->root, outTexFile);
+
+	fprintf (outTexFile, " \\]");
+
+	fprintf (outTexFile, "\n\n\\end{document}\n"
+			"\\end");
+
+	fclose (outTexFile);
+
+	system ("pdflatex.exe -synctex=1 -interaction=nonstopmode ../Tex/tex.txt");
+	system ("start tex.pdf");
 
 	FinalTree->nodeAmount = 0;
-	treeVisitorInf (FinalTree->root, nodeCount);
-
-	FinalTree->nodeAmount = 0;
 
 	treeVisitorInf (FinalTree->root, nodeCount);
 
+	outTexFile = NULL;
 }
 
 
 #define  DEF_CMD(operator_, number, code)                   \
     case number :                                           \
-     {                                                      \
+    {                                                       \
        code                                                 \
     }
 
 
-Node *diffRec (const Node *const node, const char *const currValue, Tree *FinalTree)
+Node *diffRec (const Node *const node, const char *const currValue, Tree *FinalTree, FILE *outFileName)
 {
 	switch (node->type)
 	{
 		case number:
 			return createNode (number, 0, FinalTree);
-
 		case curVariable:
 			return createNode (curVariable, 1, FinalTree);
 
@@ -113,7 +133,6 @@ Node *diffRec (const Node *const node, const char *const currValue, Tree *FinalT
 			return createNode (charConst, 0, FinalTree);
 
 #include "MathFunc.h"
-
 
 		default:
 			break;
@@ -124,94 +143,22 @@ Node *diffRec (const Node *const node, const char *const currValue, Tree *FinalT
 #undef DEF_CMD_BIN_OPERATOR
 
 
-Node *createNode (const char type, int value, Tree *FinalTree)
+void TexExp (const Node *const node, FILE *outBaseFile)
 {
-	switch (type)
-	{
-		case number:
-		{
-			Node *helpNode = {};
-			nodeConstruct (&helpNode);
-
-			helpNode->myTree = FinalTree;
-
-			helpNode->content = (char *) calloc (2, sizeof (char));
-			itoa (value, helpNode->content, 10);
-			helpNode->type = number;
-
-			return helpNode;
-		}
-
-		case charConst:
-		{
-			Node *helpNode = {};
-			nodeConstruct (&helpNode);
-
-			helpNode->myTree = FinalTree;
-
-			helpNode->content = (char *) calloc (2, sizeof (char));
-			itoa (value, helpNode->content, 10);
-			helpNode->type = number;
-
-			return helpNode;
-
-		}
-
-		case curVariable:
-		{
-			Node *helpNode = {};
-			nodeConstruct (&helpNode);
-
-			helpNode->myTree = FinalTree;
-
-			helpNode->content = (char *) calloc (2, sizeof (char));
-			itoa (value, helpNode->content, 10);
-			helpNode->type = number;
-
-			return helpNode;
-		}
-
-		default:
-			break;
-	}
+	int priorityHelper = 0;
+	printResultRec (node, priorityHelper, outBaseFile);
 }
 
+int strCounter = 0;
 
-Node *createNode (const char type, char operator__, Tree *FinalTree)
+void TexStr (FILE *outBaseFile)
 {
-	Node *mainNode = {};
-	nodeConstruct (&mainNode);
+	strCounter++;
+	strCounter = strCounter % JOKE_AMOUNT;
 
-	mainNode->myTree = FinalTree;
-	mainNode->content = (char *) calloc (2, sizeof (char));
-
-	*mainNode->content = operator__;
-	mainNode->type = type;
-	return mainNode;
-}
-
-int printResultFile (const Tree *const tree, const char *outFileName)
-{
-	FILE *outBaseFile = fopen (outFileName, "w");
-	int NodeCounterRec = 0, priorityHelper = 0;
-
-	fprintf (outBaseFile, "\\documentclass[12pt]{article}\n"
-			"\\usepackage[cp1251]{inputenc}\n"
-			"\\usepackage[russian]{babel}\n"
-			"\\begin{document}\n\n");
-
-	fprintf (outBaseFile, "\\[");
-
-	printResultRec (tree->root, priorityHelper, outBaseFile);
-
-	fprintf (outBaseFile, "\\]");
-
-	fprintf (outBaseFile, "\n\n\\end{document}");
-
-	fclose (outBaseFile);
-
-	system ("pdflatex.exe -synctex=1 -interaction=nonstopmode ../dumps/base.txt");
-	system ("start base.pdf");
+	fprintf (outBaseFile, "$$");
+	fprintf (outBaseFile, "%s\n", Comments[strCounter]);
+	fprintf (outBaseFile, "$$");
 }
 
 
@@ -353,36 +300,20 @@ int printResultRec (const Node *const Node, int prior, FILE *outBaseFile1)
 }
 
 
-Node *createNode (const char type, const char *const func, Tree *FinalTree)
-{
-	assert (func);
-	assert (FinalTree);
-
-	Node *mainNode = {};
-	nodeConstruct (&mainNode);
-
-	mainNode->myTree = FinalTree;
-	mainNode->content = (char *) calloc (strlen (func) + 1, sizeof (char));
-
-	strcpy (mainNode->content, func);
-	mainNode->type = type;
-	return mainNode;
-}
-
-
 Node *complicatedDiff (Node *mainNode, Tree *FinalTree, const char *const currValue,
-                       Node *(diff) (Node *node, Tree *FinalTree, const char *const currValue))
+                       Node *(diff) (Node *node, Tree *FinalTree, const char *const currValue, FILE *outFileName),
+                       FILE *outFileName)
 {
 	Node *mul = createNode (Mul, '*', FinalTree);
-	connectLeft (mul, diff (mainNode, FinalTree, currValue));
-	connectRight (mul, diffRec (mainNode, currValue, FinalTree));
+	connectLeft (mul, diff (mainNode, FinalTree, currValue, outFileName));
+	connectRight (mul, diffRec (mainNode, currValue, FinalTree, outFileName));
 
 	return mul;
 }
 
 
 #define STANDARD_SIMPLIFICATION_LEFT                    \
-    if (node->Parent)                                   \
+do {      if (node->Parent)                                   \
     {                                                   \
         destructTreeRec(node->Left);                    \
         if (node == node->Parent->Right)                \
@@ -400,10 +331,11 @@ Node *complicatedDiff (Node *mainNode, Tree *FinalTree, const char *const currVa
         destructNode (node->Left);                      \
         destructNode (node);                            \
     }                                                   \
-    return 0;
+} while (0)
 
 
 #define STANDARD_SIMPLIFICATION_RIGHT                   \
+do {                                                    \
                                                         \
     if (node->Parent)                                   \
     {                                                   \
@@ -415,7 +347,7 @@ Node *complicatedDiff (Node *mainNode, Tree *FinalTree, const char *const currVa
             connectLeft (node->Parent, node->Left);     \
                                                         \
         destructNode (node);                            \
-        return 0;                                       \
+                                                        \
     }                                                   \
     else                                                \
     {                                                   \
@@ -423,11 +355,13 @@ Node *complicatedDiff (Node *mainNode, Tree *FinalTree, const char *const currVa
         node->Left->Parent = NULL;                      \
         destructNode (node->Right);                     \
         destructNode (node);                            \
-        return 0;                                       \
-    }
+                                                        \
+    }                                                   \
+} while (0)
 
 
-#define  CONST_FOLD(operator_)                                                                          \
+#define  CONST_FOLD(operator_) \
+do { \
     char **ptrEnd = NULL;                                                                               \
     double val = strtod (node->Left->content, ptrEnd) operator_ strtod (node->Right->content, ptrEnd);  \
     double FrVal = 0;                                                                                   \
@@ -452,7 +386,7 @@ Node *complicatedDiff (Node *mainNode, Tree *FinalTree, const char *const currVa
     node->type = number;                                                                                \
     node->Left = NULL;                                                                                  \
     node->Right = NULL;                                                                                 \
-    return 0;                                                                                           \
+} while(0)
 
 
 int simpleTree (Node *node)
@@ -469,24 +403,33 @@ int simpleTree (Node *node)
 			node->type = number;
 			node->Right = NULL;
 			node->Left = NULL;
+			TreeChecker++;
 			return 0;
 		}
 
 		if (strcmp (node->Right->content, "1") == 0)
 		{
-			STANDARD_SIMPLIFICATION_RIGHT
+			STANDARD_SIMPLIFICATION_RIGHT;
+			TreeChecker++;
+			return 0;
 
 		}
 
 		if (strcmp (node->Left->content, "1") == 0)
 		{
-			STANDARD_SIMPLIFICATION_LEFT
+			STANDARD_SIMPLIFICATION_LEFT;
+			TreeChecker++;
+			return 0;
 		}
 
 		if (node->Right->type == number && node->Left->type == number)
 		{
 			CONST_FOLD(*);
+			TreeChecker++;
+			return 0;
 		}
+
+		return 0;
 	}
 
 	if (strcmp (node->content, "+") == 0)
@@ -495,17 +438,23 @@ int simpleTree (Node *node)
 
 		if (strcmp (node->Left->content, "0") == 0)
 		{
-			STANDARD_SIMPLIFICATION_LEFT
+			STANDARD_SIMPLIFICATION_LEFT;
+			TreeChecker++;
+			return 0;
 		}
 
 		if (strcmp (node->Right->content, "0") == 0)
 		{
-			STANDARD_SIMPLIFICATION_RIGHT
+			STANDARD_SIMPLIFICATION_RIGHT;
+			TreeChecker++;
+			return 0;
 		}
 
 		if (node->Right->type == number && node->Left->type == number)
 		{
 			CONST_FOLD(+);
+			TreeChecker++;
+			return 0;
 		}
 		return 0;
 	}
@@ -516,7 +465,9 @@ int simpleTree (Node *node)
 
 		if (strcmp (node->Right->content, "0") == 0)
 		{
-			STANDARD_SIMPLIFICATION_RIGHT
+			STANDARD_SIMPLIFICATION_RIGHT;
+			TreeChecker++;
+			return 0;
 		}
 
 		if (strcmp (node->Left->content, "0") == 0)
@@ -527,12 +478,15 @@ int simpleTree (Node *node)
 			node->Left->type = number;
 			nodeSetName (node, str2);
 			node->type = Mul;
+			TreeChecker++;
 			return 0;
 		}
 
 		if (node->Right->type == number && node->Left->type == number)
 		{
 			CONST_FOLD(-);
+			TreeChecker++;
+			return 0;
 		}
 		return 0;
 	}
@@ -549,6 +503,7 @@ int simpleTree (Node *node)
 			node->type = number;
 			node->Right = NULL;
 			node->Left = NULL;
+			TreeChecker++;
 			return 0;
 		}
 
@@ -560,6 +515,7 @@ int simpleTree (Node *node)
 			node->type = number;
 			node->Right = NULL;
 			node->Left = NULL;
+			TreeChecker++;
 			return 0;
 		}
 
@@ -571,20 +527,22 @@ int simpleTree (Node *node)
 			node->type = number;
 			node->Right = NULL;
 			node->Left = NULL;
+			TreeChecker++;
 			return 0;
 		}
 
 		if (strcmp (node->Right->content, "1") == 0)
 		{
-			STANDARD_SIMPLIFICATION_RIGHT
+			STANDARD_SIMPLIFICATION_RIGHT;
+			TreeChecker++;
 		}
+		return 0;
 	}
-
 
 }
 
 
-Node *lnDiff (Node *node, Tree *FinalTree, const char *const currValue)
+Node *lnDiff (Node *node, Tree *FinalTree, const char *const currValue, FILE *outFileName)
 {
 	Node *mainNode = createNode (Div, '/', FinalTree);
 	Node *leftNode = createNode (number, 1, FinalTree);
@@ -594,7 +552,7 @@ Node *lnDiff (Node *node, Tree *FinalTree, const char *const currValue)
 }
 
 
-Node *sinDiff (Node *node, Tree *FinalTree, const char *const currValue)
+Node *sinDiff (Node *node, Tree *FinalTree, const char *const currValue, FILE *outFileName)
 {
 	char cos[] = "cos";
 	Node *mainNode = createNode (Cos, cos, FinalTree);
@@ -603,7 +561,7 @@ Node *sinDiff (Node *node, Tree *FinalTree, const char *const currValue)
 }
 
 
-Node *cosDiff (Node *node, Tree *FinalTree, const char *const currValue)
+Node *cosDiff (Node *node, Tree *FinalTree, const char *const currValue, FILE *outFileName)
 {
 	char sin[] = "sin";
 
@@ -620,7 +578,7 @@ Node *cosDiff (Node *node, Tree *FinalTree, const char *const currValue)
 }
 
 
-Node *addDiff (const Node *const node, Tree *FinalTree, const char *const currValue)
+Node *addDiff (const Node *const node, Tree *FinalTree, const char *const currValue, FILE *outFileName)
 {
 	Node *LeftCopy = NodeCopy (node->Left, FinalTree);
 	LeftCopy->myTree = FinalTree;
@@ -628,8 +586,8 @@ Node *addDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 	Node *RightCopy = NodeCopy (node->Right, FinalTree);
 	RightCopy->myTree = FinalTree;
 
-	Node *dL = diffRec (LeftCopy, currValue, FinalTree);
-	Node *dR = diffRec (RightCopy, currValue, FinalTree);
+	Node *dL = diffRec (LeftCopy, currValue, FinalTree, outFileName);
+	Node *dR = diffRec (RightCopy, currValue, FinalTree, outFileName);
 
 	Node *mainNode = createNode (Add, *node->content, FinalTree);
 
@@ -640,7 +598,7 @@ Node *addDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 }
 
 
-Node *subDiff (const Node *const node, Tree *FinalTree, const char *const currValue)
+Node *subDiff (const Node *const node, Tree *FinalTree, const char *const currValue, FILE *outFileName)
 {
 
 	Node *LeftCopy = NodeCopy (node->Left, FinalTree);
@@ -649,8 +607,8 @@ Node *subDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 	Node *RightCopy = NodeCopy (node->Right, FinalTree);
 	RightCopy->myTree = FinalTree;
 
-	Node *dL = diffRec (LeftCopy, currValue, FinalTree);
-	Node *dR = diffRec (RightCopy, currValue, FinalTree);
+	Node *dL = diffRec (LeftCopy, currValue, FinalTree, outFileName);
+	Node *dR = diffRec (RightCopy, currValue, FinalTree, outFileName);
 
 	Node *mainNode = createNode (Sub, *node->content, FinalTree);
 
@@ -661,7 +619,7 @@ Node *subDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 }
 
 
-Node *mulDiff (const Node *const node, Tree *FinalTree, const char *const currValue)
+Node *mulDiff (const Node *const node, Tree *FinalTree, const char *const currValue, FILE *outFileName)
 {
 
 	Node *LeftCopy = NodeCopy (node->Left, FinalTree);
@@ -670,8 +628,8 @@ Node *mulDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 	Node *RightCopy = NodeCopy (node->Right, FinalTree);
 	RightCopy->myTree = FinalTree;
 
-	Node *dL = diffRec (LeftCopy, currValue, FinalTree);
-	Node *dR = diffRec (RightCopy, currValue, FinalTree);
+	Node *dL = diffRec (LeftCopy, currValue, FinalTree, outFileName);
+	Node *dR = diffRec (RightCopy, currValue, FinalTree, outFileName);
 
 	Node *mainNode = createNode (Add, '+', FinalTree);
 
@@ -692,7 +650,7 @@ Node *mulDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 }
 
 
-Node *divDiff (const Node *const node, Tree *FinalTree, const char *const currValue)
+Node *divDiff (const Node *const node, Tree *FinalTree, const char *const currValue, FILE *outFileName)
 {
 	Node *LeftCopy = NodeCopy (node->Left, FinalTree);
 	LeftCopy->myTree = FinalTree;
@@ -700,8 +658,8 @@ Node *divDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 	Node *RightCopy = NodeCopy (node->Right, FinalTree);
 	RightCopy->myTree = FinalTree;
 
-	Node *dL = diffRec (LeftCopy, currValue, FinalTree);
-	Node *dR = diffRec (RightCopy, currValue, FinalTree);
+	Node *dL = diffRec (LeftCopy, currValue, FinalTree, outFileName);
+	Node *dR = diffRec (RightCopy, currValue, FinalTree, outFileName);
 
 	Node *minusNode = createNode (Sub, '-', FinalTree);
 
@@ -739,7 +697,7 @@ Node *divDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 }
 
 
-Node *expoDiff (const Node *const node, Tree *FinalTree, const char *const currValue)
+Node *expoDiff (const Node *const node, Tree *FinalTree, const char *const currValue, FILE *outFileName)
 {
 	char ln[] = "ln";
 
@@ -770,7 +728,7 @@ Node *expoDiff (const Node *const node, Tree *FinalTree, const char *const currV
 
 	connectLeft (ProNode1, LN);
 	connectLeft (LN, base1);
-	connectRight (ProNode1, diffRec (index1, currValue, FinalTree));
+	connectRight (ProNode1, diffRec (index1, currValue, FinalTree, outFileName));
 	connectLeft (ProNode2, ProNode1);
 	connectRight (ProNode2, Cap1);
 	connectLeft (Cap1, base2);
@@ -783,11 +741,35 @@ Node *expoDiff (const Node *const node, Tree *FinalTree, const char *const currV
 	connectLeft (ProNode3, ProNode4);
 
 	connectLeft (ProNode4, index3);
-	connectRight (ProNode4, diffRec (base3, currValue, FinalTree));
+	connectRight (ProNode4, diffRec (base3, currValue, FinalTree, outFileName));
 	connectLeft (Cap2, base4);
 	connectRight (Cap2, mainMinus);
 
 	connectRight (mainMinus, createNode (number, 1, FinalTree));
 	connectLeft (mainMinus, index4);
 	return MainPlus;
+}
+
+char *getBufferFromFileGetSzOfBuf (const char *_inputFileName, size_t *sizeOfBuffer)
+{
+
+	assert (_inputFileName);
+
+	size_t sizeOfBuffer1 = 0;
+	FILE *file = fopen (_inputFileName, "r");
+
+	assert (file);
+
+	fseek (file, 0, SEEK_END);
+	sizeOfBuffer1 = (size_t) ftell (file);
+	fseek (file, 0, SEEK_SET);
+
+	char *helpBuffer = (char *) calloc (sizeOfBuffer1 + 2, sizeof (char));
+	fread (helpBuffer, 1, sizeOfBuffer1, file);
+	fclose (file);
+
+	if (sizeOfBuffer != NULL)
+		*sizeOfBuffer = sizeOfBuffer1;
+
+	return helpBuffer;
 }

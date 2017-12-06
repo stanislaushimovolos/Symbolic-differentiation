@@ -3,6 +3,6 @@
 \usepackage[russian]{babel}
 \begin{document}
 
-\[\frac{(1 + x^{x})\cdot 0 - 1\cdot (0 + \ln(x)\cdot 1\cdot x^{x} + x\cdot 1\cdot x^{x - 1})}{(1 + x^{x})\cdot (1 + x^{x})}\]
+\[\frac{(-1)\cdot (\ln(x)\cdot x^{x} + x\cdot x^{x - 1})}{(1 + x^{x})\cdot (1 + x^{x})}\]
 
 \end{document}

@@ -61,6 +61,42 @@ int nodeConstruct (Node **node)
 	RETURN_COND (*node)
 }
 
+int connector (Node *node, int evalue)
+{
+	if (node->value < evalue)
+	{
+		if (node->Right != NULL)
+		{
+			connector (node->Right, evalue);
+		}
+		else
+		{
+			Node *noder = {};
+			nodeConstruct (&noder);
+			connectRight (node, noder);
+			noder->value = evalue;
+		}
+
+
+	}
+	else if (node->value > evalue)
+	{
+
+		if (node->Left != NULL)
+		{
+			connector (node->Left, evalue);
+		}
+		else
+		{
+			Node *noder = {};
+			nodeConstruct (&noder);
+			connectLeft (node, noder);
+			noder->value = evalue;
+		}
+
+	}
+	return 0;
+}
 
 int nodeSetName (Node *node, char *content)
 {
@@ -139,6 +175,88 @@ void destructTreeRec (Node *node)
 		destructNode (node->Left);
 
 	destructNode (node);
+}
+
+Node *createNode (const char type, int value, Tree *FinalTree)
+{
+	switch (type)
+	{
+		case number:
+		{
+			Node *helpNode = {};
+			nodeConstruct (&helpNode);
+
+			helpNode->myTree = FinalTree;
+
+			helpNode->content = (char *) calloc (2, sizeof (char));
+			itoa (value, helpNode->content, 10);
+			helpNode->type = number;
+
+			return helpNode;
+		}
+
+		case charConst:
+		{
+			Node *helpNode = {};
+			nodeConstruct (&helpNode);
+
+			helpNode->myTree = FinalTree;
+
+			helpNode->content = (char *) calloc (2, sizeof (char));
+			itoa (value, helpNode->content, 10);
+			helpNode->type = number;
+
+			return helpNode;
+
+		}
+
+		case curVariable:
+		{
+			Node *helpNode = {};
+			nodeConstruct (&helpNode);
+
+			helpNode->myTree = FinalTree;
+
+			helpNode->content = (char *) calloc (2, sizeof (char));
+			itoa (value, helpNode->content, 10);
+			helpNode->type = number;
+
+			return helpNode;
+		}
+
+		default:
+			break;
+	}
+}
+
+
+Node *createNode (const char type, char operator__, Tree *FinalTree)
+{
+	Node *mainNode = {};
+	nodeConstruct (&mainNode);
+
+	mainNode->myTree = FinalTree;
+	mainNode->content = (char *) calloc (2, sizeof (char));
+
+	*mainNode->content = operator__;
+	mainNode->type = type;
+	return mainNode;
+}
+
+Node *createNode (const char type, const char *const func, Tree *FinalTree)
+{
+	assert (func);
+	assert (FinalTree);
+
+	Node *mainNode = {};
+	nodeConstruct (&mainNode);
+
+	mainNode->myTree = FinalTree;
+	mainNode->content = (char *) calloc (strlen (func) + 1, sizeof (char));
+
+	strcpy (mainNode->content, func);
+	mainNode->type = type;
+	return mainNode;
 }
 
 
@@ -485,7 +603,6 @@ int dumpTreePicture (const Tree *const tree, const char *outFileName)
 
 int printTree (const Tree *const tree, const char *outFileName)
 {
-	assert (tree->root->content);
 
 	FILE *outPictureFile = fopen (outFileName, "w");
 
