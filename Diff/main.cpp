@@ -4,22 +4,20 @@
 
 int main ()
 {
-
 	Tree begTree = {}, diffTree = {};
-	char *buffer = 0;
+	char buffer[] = "1/ln(x^2)^2 - 16 /sin(0)";
 
 	treeConstruct (&begTree);
 	treeConstruct (&diffTree);
 
-	readBase (&buffer, inputFilename);
-	createBase (buffer, begTree.root);
+	GetTree (&begTree, buffer);
 
 	diffMain (&begTree, &diffTree, MainVariable);
 
-	free (buffer);
-	destructTree (&begTree);
-	destructTree (&diffTree);
+	dumpTreePicture (&diffTree, outFilenameForDotDump);
 
+	destructTree (&diffTree);
+	destructTree (&begTree);
 
 	return 0;
 }

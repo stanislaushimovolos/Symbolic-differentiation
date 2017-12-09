@@ -3,32 +3,278 @@
 #include <cstring>
 #include <windows.h>
 #include <math.h>
-#include <ctime>
 
 #include "Diff.h"
+
+
+#define SPACE_SKIP                                  \
+	while (isspace (tree->GlobalStrPtr[tree->GPtr]))\
+		tree->GPtr++;                               \
+
+
+Node *GetTree (Tree *tree, char *content)
+{
+	treeConstruct (tree);
+	tree->GlobalStrPtr = content;
+
+	tree->root = GetAddSub (tree);
+}
+
+
+Node *GetAddSub (Tree *tree)
+{
+	SPACE_SKIP;
+
+	Node *LeftNode = {};
+	nodeConstruct (&LeftNode);
+
+	LeftNode = GetMulDiv (tree);
+	LeftNode->myTree = tree;
+	Node *NodeAddSub = 0;
+
+	int op = 0;
+
+	while (tree->GlobalStrPtr[tree->GPtr] == '+' || tree->GlobalStrPtr[tree->GPtr] == '-')
+	{
+		op = tree->GlobalStrPtr[tree->GPtr];
+
+		tree->GPtr++;
+
+		if (op == '+')
+		{
+			NodeAddSub = createNode (Add, '+', tree);
+			connectLeft (NodeAddSub, LeftNode);
+			connectRight (NodeAddSub, GetMulDiv (tree));
+			LeftNode = NodeAddSub;
+		}
+
+		else
+		{
+			NodeAddSub = createNode (Sub, '-', tree);
+			connectLeft (NodeAddSub, LeftNode);
+			connectRight (NodeAddSub, GetMulDiv (tree));
+			LeftNode = NodeAddSub;
+		}
+
+	}
+
+	SPACE_SKIP;
+	return LeftNode;
+}
+
+Node *GetMulDiv (Tree * tree)
+{
+	SPACE_SKIP;
+
+	Node *LeftNode = {};
+	nodeConstruct (&LeftNode);
+
+	LeftNode = GetExpo (tree);
+	LeftNode->myTree = tree;
+
+	Node *NodeMulDiv = 0;
+	int op = 0;
+
+	while (tree->GlobalStrPtr[tree->GPtr] == '*' || tree->GlobalStrPtr[tree->GPtr] == '/')
+	{
+		op = tree->GlobalStrPtr[tree->GPtr];
+		tree->GPtr++;
+
+		if (op == '*')
+		{
+			NodeMulDiv = createNode (Mul, '*', tree);
+			connectLeft (NodeMulDiv, LeftNode);
+			connectRight (NodeMulDiv, GetExpo (tree));
+			LeftNode = NodeMulDiv;
+		}
+
+		else
+		{
+			NodeMulDiv = createNode (Div, '/', tree);
+			connectLeft (NodeMulDiv, LeftNode);
+			connectRight (NodeMulDiv, GetExpo (tree));
+			LeftNode = NodeMulDiv;
+		}
+
+	}
+
+	SPACE_SKIP
+
+	return LeftNode;
+
+}
+
+Node *GetExpo (Tree * tree)
+{
+	SPACE_SKIP
+
+	Node *LeftNode = {};
+	nodeConstruct (&LeftNode);
+
+	LeftNode = GetBranches (tree);
+	LeftNode->myTree = tree;
+	Node *NodeExpo = 0;
+
+
+	while (tree->GlobalStrPtr[tree->GPtr] == '^')
+	{
+		tree->GPtr++;
+		NodeExpo = createNode (Expo, '^',tree);
+		connectLeft (NodeExpo, LeftNode);
+
+		connectRight (NodeExpo, GetBranches (tree));
+		LeftNode = NodeExpo;
+	}
+
+	SPACE_SKIP
+
+	return LeftNode;
+
+}
+
+Node *GetBranches (Tree * tree)
+{
+	SPACE_SKIP;
+
+	if (tree->GlobalStrPtr[tree->GPtr] == '(')
+	{
+		tree->GPtr++;
+		Node *node = GetAddSub (tree);
+
+		while (isspace (tree->GlobalStrPtr[tree->GPtr]))
+			tree->GPtr++;
+
+		assert (tree->GlobalStrPtr[tree->GPtr] == ')');
+
+		tree->GPtr++;
+		return node;
+	}
+
+	return GetFunc (tree);
+}
+
+
+Node *GetFunc (Tree * tree)
+{
+	SPACE_SKIP;
+
+	int Delta = 0;
+
+	while (*(tree->GlobalStrPtr + tree->GPtr + Delta) <= 'z' && *(tree->GlobalStrPtr + tree->GPtr + Delta) >= 'a' ||
+	       *(tree->GlobalStrPtr + tree->GPtr + Delta) <= 'Z' && *(tree->GlobalStrPtr + tree->GPtr + Delta) >= 'A')
+	{
+		Delta++;
+	}
+
+	if (Delta == 0)
+	{
+		return GetNumber (tree);
+	}
+
+	Node *Func = {};
+	nodeConstruct (&Func);
+
+	Func->myTree = tree;
+
+	char *funcName = (char *) calloc (sizeof (char), (size_t) Delta + 1);
+	sscanf (tree->GlobalStrPtr + tree->GPtr, "%[a-zA-Z]", funcName);
+
+	tree->GPtr += Delta;
+
+	Func->content = funcName;
+
+	contentAnalyze (Func, MainVariable);
+
+	if (Func->type != curVariable && Func->type != charConst)
+	{
+		Node *FuncArg = {};
+		nodeConstruct (&FuncArg);
+
+		FuncArg->myTree = tree;
+		FuncArg = GetBranches (tree);
+
+		connectLeft (Func, FuncArg);
+	}
+
+	SPACE_SKIP;
+
+	return Func;
+
+}
+
+
+Node *GetNumber (Tree * tree)
+{
+
+	SPACE_SKIP;
+
+	Node *Number = {};
+	nodeConstruct (&Number);
+	Number->myTree = tree;
+
+	int Delta = 0;
+	double val = 0;
+
+	sscanf (tree->GlobalStrPtr + tree->GPtr, "%lg%n", &val, &Delta);
+
+	if (Delta == 0)
+	{
+		return NULL;
+	}
+
+	tree->GPtr += Delta;
+	val *= 100;
+	val = round (val);
+	int numCounter = 0;
+
+	int helper = (int) val;
+	while (helper > 0)
+	{
+		helper /= 10;
+		numCounter++;
+	}
+	val /= 100;
+
+	Number->content = (char *) calloc ((size_t) (numCounter + 2), sizeof (char));
+	sprintf (Number->content, "%lg", val);
+	Number->type = number;
+
+	SPACE_SKIP;
+
+	return Number;
+}
 
 
 #define  DEF_CMD(operator_, number, code)                   \
     else if (strcmp (#operator_, node->content) == 0)       \
      {                                                      \
         node->type = number;                                \
+        return;                                             \
     }
 
 
-char contentAnalyze (Node *node, const char *const currValue)
+void contentAnalyze (Node *node, const char *const currValue)
 {
+	assert(node);
+	assert(currValue);
+
+	if (strcmp (currValue, node->content) == 0)
+	{
+		node->type = curVariable;
+		return;
+	}
+
+
+#include "MathFunc.h"
 
 	char *NumHelper = (node->content);
 	strtod (node->content, &NumHelper);
 
 	if (NumHelper != node->content)
+	{
 		node->type = number;
-
-	else if (strcmp (currValue, node->content) == 0)
-		node->type = curVariable;
-
-
-#include "MathFunc.h"
+		return;
+	}
 
 	else
 		node->type = charConst;
@@ -88,7 +334,7 @@ Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const cu
 			TreeChecker = 0;
 	}
 
-	fprintf (outTexFile, "\n\\begin{center}\nThe final expression\n");
+	fprintf (outTexFile, "\n\nThe final expression\n");
 
 	fprintf (outTexFile, " \\[ ");
 
@@ -96,7 +342,7 @@ Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const cu
 
 	fprintf (outTexFile, " \\]");
 
-	fprintf (outTexFile, "\n\n\\end{document}\n"
+	fprintf (outTexFile, "\n\n\\end{center}\\end{document}\n"
 			"\\end");
 
 	fclose (outTexFile);
@@ -313,7 +559,7 @@ Node *complicatedDiff (Node *mainNode, Tree *FinalTree, const char *const currVa
 
 
 #define STANDARD_SIMPLIFICATION_LEFT                    \
-do {      if (node->Parent)                                   \
+do {      if (node->Parent)                             \
     {                                                   \
         destructTreeRec(node->Left);                    \
         if (node == node->Parent->Right)                \
@@ -360,29 +606,28 @@ do {                                                    \
 } while (0)
 
 
-#define  CONST_FOLD(operator_) \
-do { \
+#define  CONST_FOLD(operator_)                                                                          \
+do {                                                                                                    \
     char **ptrEnd = NULL;                                                                               \
     double val = strtod (node->Left->content, ptrEnd) operator_ strtod (node->Right->content, ptrEnd);  \
-    double FrVal = 0;                                                                                   \
-    double WhVal = 0;                                                                                   \
                                                                                                         \
     destructNode (node->Left);                                                                          \
     destructNode (node->Right);                                                                         \
                                                                                                         \
-    FrVal = modf (val, &WhVal);                                                                         \
+    val *= 100;                                                                                         \
+    val = round(val);                                                                                   \
     int numCounter = 0;                                                                                 \
                                                                                                         \
-        int helper = (int) WhVal;                                                                       \
+        int helper = (int) val;                                                                         \
         while (helper > 0)                                                                              \
         {                                                                                               \
             helper /= 10;                                                                               \
             numCounter++;                                                                               \
         }                                                                                               \
+    val /= 100;                                                                                         \
                                                                                                         \
-                                                                                                        \
-    node->content = (char *) calloc ((size_t) (numCounter + 1), sizeof (char));                         \
-    sprintf (node->content, "%d", (int) WhVal);                                                         \
+    node->content = (char *) calloc ((size_t) (numCounter + 2), sizeof (char));                         \
+    sprintf (node->content, "%lg",  val);                                                                \
     node->type = number;                                                                                \
     node->Left = NULL;                                                                                  \
     node->Right = NULL;                                                                                 \
@@ -537,6 +782,28 @@ int simpleTree (Node *node)
 			TreeChecker++;
 		}
 		return 0;
+	}
+
+	if (strcmp (node->content, "/") == 0)
+	{
+		if (node->Right->type == number && node->Left->type == number)
+		{
+			CONST_FOLD(/);
+			TreeChecker++;
+			return 0;
+		}
+
+		if (strcmp (node->Left->content, "0") == 0)
+		{
+			destructTreeRec (node->Left);
+			destructTreeRec (node->Right);
+			*(node->content) = '0';
+			node->type = number;
+			node->Right = NULL;
+			node->Left = NULL;
+			TreeChecker++;
+			return 0;
+		}
 	}
 
 }

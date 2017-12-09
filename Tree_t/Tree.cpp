@@ -1,7 +1,7 @@
 #include <iostream>
 #include <assert.h>
 #include <cstring>
-
+#include <ctype.h>
 #include "../Diff/Diff.h"
 
 void connectRight (Node *mainNode, Node *rightNode)
@@ -50,53 +50,11 @@ int nodeConstruct (Node **node)
 {
 	Node *elem = (Node *) calloc (1, sizeof (Node));
 
-	elem->Left = NULL;
-	elem->Right = NULL;
-	elem->myTree = NULL;
-	elem->Parent = NULL;
-	elem->content = NULL;
-	elem->type = 0;
 	*node = elem;
 
 	RETURN_COND (*node)
 }
 
-int connector (Node *node, int evalue)
-{
-	if (node->value < evalue)
-	{
-		if (node->Right != NULL)
-		{
-			connector (node->Right, evalue);
-		}
-		else
-		{
-			Node *noder = {};
-			nodeConstruct (&noder);
-			connectRight (node, noder);
-			noder->value = evalue;
-		}
-
-
-	}
-	else if (node->value > evalue)
-	{
-
-		if (node->Left != NULL)
-		{
-			connector (node->Left, evalue);
-		}
-		else
-		{
-			Node *noder = {};
-			nodeConstruct (&noder);
-			connectLeft (node, noder);
-			noder->value = evalue;
-		}
-
-	}
-	return 0;
-}
 
 int nodeSetName (Node *node, char *content)
 {
@@ -143,6 +101,8 @@ int treeConstruct (Tree *tree)
 	tree->root->myTree = tree;
 	tree->nodeAmount = 1;
 	tree->root->Parent = NULL;
+	tree->GlobalStrPtr = NULL;
+	tree->GPtr = 0;
 
 	RETURN_COND (tree->root)
 }

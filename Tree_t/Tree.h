@@ -13,6 +13,8 @@ struct Tree
 {
 	Node *root;
 	int nodeAmount;
+	char *GlobalStrPtr;
+	int GPtr = 0;
 };
 
 struct Node

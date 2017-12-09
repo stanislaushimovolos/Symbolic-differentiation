@@ -8,7 +8,7 @@
 
 enum
 {
-	number, curVariable, charConst, Add, Sub, Mul, Div, Ln, Sin, Cos, Expo
+	number, curVariable, charConst, Add, Sub, Mul, Div, Expo, Ln, Sin, Cos
 
 };
 
@@ -33,6 +33,8 @@ void TexExp (const Node *const node, FILE *outBaseFile);
 
 void TexStr (FILE *outBaseFile);
 
+void contentAnalyze (Node *node, const char *const currValue);
+
 int printResultRec (const Node *const Node, int prior, FILE *outBaseFile1);
 
 int printResultFile (const Tree *const tree, const char *outFileName);
@@ -40,8 +42,6 @@ int printResultFile (const Tree *const tree, const char *outFileName);
 int simpleTree (Node *node);
 
 char *getBufferFromFileGetSzOfBuf (const char *_inputFileName, size_t *sizeOfBuffer = NULL);
-
-char contentAnalyze (Node *node, const char *const currValue);
 
 Node *diffRec (const Node *const node, const char *const currValue, Tree *FinalTree, FILE *outFileName);
 
@@ -66,4 +66,19 @@ Node *mulDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 Node *divDiff (const Node *const node, Tree *FinalTree, const char *const currValue, FILE *outFileName);
 
 Node *expoDiff (const Node *const node, Tree *FinalTree, const char *const currValue, FILE *outFileName);
+
+
+Node *GetTree (Tree *tree, char *content);
+
+Node *GetAddSub (Tree * tree);
+
+Node *GetMulDiv (Tree * tree);
+
+Node *GetExpo (Tree * tree);
+
+Node *GetBranches (Tree * tree);
+
+Node *GetFunc (Tree * tree);
+
+Node *GetNumber (Tree * tree);
 

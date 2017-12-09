@@ -1,0 +1,10 @@
+digraph dump
+{
+Node01071290 [shape = record,  color = red, label = "{ { +| '01071290' } | { Parent| '00000000' }  | { type | '3' } | { Tree| '0040D03C' }| { Left = 01071258 | Right = 010712C8 } }"]
+Node01071258 [shape = record,  color = red, label = "{ { 3| '01071258' } | { Parent| '01071290' }  | { type | '0' } | { Tree| '0040D03C' }| { Left = 00000000 | Right = 00000000 } }"]
+
+Node01071290 -> Node01071258
+Node010712C8 [shape = record,  color = red, label = "{ { 2| '010712C8' } | { Parent| '01071290' }  | { type | '0' } | { Tree| '0040D03C' }| { Left = 00000000 | Right = 00000000 } }"]
+
+Node01071290 -> Node010712C8
+}
