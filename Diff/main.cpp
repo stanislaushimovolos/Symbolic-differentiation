@@ -5,16 +5,16 @@
 int main ()
 {
 	Tree begTree = {}, diffTree = {};
-	char buffer[] = "1/ln(x^2)^2 - 16 /sin(0)";
+	char *curVar = NULL;
+	char* buffer = getBuff (inputFilename, &curVar);
 
 	treeConstruct (&begTree);
 	treeConstruct (&diffTree);
 
-	GetTree (&begTree, buffer);
+	GetTree (&begTree, buffer, curVar);
 
-	diffMain (&begTree, &diffTree, MainVariable);
+	diffMain (&begTree, &diffTree, curVar);
 
-	dumpTreePicture (&diffTree, outFilenameForDotDump);
 
 	destructTree (&diffTree);
 	destructTree (&begTree);

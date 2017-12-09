@@ -8,27 +8,27 @@
 
 
 #define SPACE_SKIP                                  \
-	while (isspace (tree->GlobalStrPtr[tree->GPtr]))\
-		tree->GPtr++;                               \
+    while (isspace (tree->GlobalStrPtr[tree->GPtr]))\
+        tree->GPtr++;                               \
 
 
-Node *GetTree (Tree *tree, char *content)
+Node *GetTree (Tree *tree, char *content, const char *const currValue)
 {
 	treeConstruct (tree);
 	tree->GlobalStrPtr = content;
 
-	tree->root = GetAddSub (tree);
+	tree->root = GetAddSub (tree, currValue);
 }
 
 
-Node *GetAddSub (Tree *tree)
+Node *GetAddSub (Tree *tree, const char *const currValue)
 {
 	SPACE_SKIP;
 
 	Node *LeftNode = {};
 	nodeConstruct (&LeftNode);
 
-	LeftNode = GetMulDiv (tree);
+	LeftNode = GetMulDiv (tree, currValue);
 	LeftNode->myTree = tree;
 	Node *NodeAddSub = 0;
 
@@ -44,7 +44,7 @@ Node *GetAddSub (Tree *tree)
 		{
 			NodeAddSub = createNode (Add, '+', tree);
 			connectLeft (NodeAddSub, LeftNode);
-			connectRight (NodeAddSub, GetMulDiv (tree));
+			connectRight (NodeAddSub, GetMulDiv (tree, currValue));
 			LeftNode = NodeAddSub;
 		}
 
@@ -52,7 +52,7 @@ Node *GetAddSub (Tree *tree)
 		{
 			NodeAddSub = createNode (Sub, '-', tree);
 			connectLeft (NodeAddSub, LeftNode);
-			connectRight (NodeAddSub, GetMulDiv (tree));
+			connectRight (NodeAddSub, GetMulDiv (tree, currValue));
 			LeftNode = NodeAddSub;
 		}
 
@@ -62,14 +62,15 @@ Node *GetAddSub (Tree *tree)
 	return LeftNode;
 }
 
-Node *GetMulDiv (Tree * tree)
+
+Node *GetMulDiv (Tree *tree, const char *const currValue)
 {
 	SPACE_SKIP;
 
 	Node *LeftNode = {};
 	nodeConstruct (&LeftNode);
 
-	LeftNode = GetExpo (tree);
+	LeftNode = GetExpo (tree, currValue);
 	LeftNode->myTree = tree;
 
 	Node *NodeMulDiv = 0;
@@ -84,7 +85,7 @@ Node *GetMulDiv (Tree * tree)
 		{
 			NodeMulDiv = createNode (Mul, '*', tree);
 			connectLeft (NodeMulDiv, LeftNode);
-			connectRight (NodeMulDiv, GetExpo (tree));
+			connectRight (NodeMulDiv, GetExpo (tree, currValue));
 			LeftNode = NodeMulDiv;
 		}
 
@@ -92,7 +93,7 @@ Node *GetMulDiv (Tree * tree)
 		{
 			NodeMulDiv = createNode (Div, '/', tree);
 			connectLeft (NodeMulDiv, LeftNode);
-			connectRight (NodeMulDiv, GetExpo (tree));
+			connectRight (NodeMulDiv, GetExpo (tree, currValue));
 			LeftNode = NodeMulDiv;
 		}
 
@@ -104,14 +105,15 @@ Node *GetMulDiv (Tree * tree)
 
 }
 
-Node *GetExpo (Tree * tree)
+
+Node *GetExpo (Tree *tree, const char *const currValue)
 {
 	SPACE_SKIP
 
 	Node *LeftNode = {};
 	nodeConstruct (&LeftNode);
 
-	LeftNode = GetBranches (tree);
+	LeftNode = GetBranches (tree, currValue);
 	LeftNode->myTree = tree;
 	Node *NodeExpo = 0;
 
@@ -119,10 +121,10 @@ Node *GetExpo (Tree * tree)
 	while (tree->GlobalStrPtr[tree->GPtr] == '^')
 	{
 		tree->GPtr++;
-		NodeExpo = createNode (Expo, '^',tree);
+		NodeExpo = createNode (Expo, '^', tree);
 		connectLeft (NodeExpo, LeftNode);
 
-		connectRight (NodeExpo, GetBranches (tree));
+		connectRight (NodeExpo, GetBranches (tree, currValue));
 		LeftNode = NodeExpo;
 	}
 
@@ -132,14 +134,15 @@ Node *GetExpo (Tree * tree)
 
 }
 
-Node *GetBranches (Tree * tree)
+
+Node *GetBranches (Tree *tree, const char *const currValue)
 {
 	SPACE_SKIP;
 
 	if (tree->GlobalStrPtr[tree->GPtr] == '(')
 	{
 		tree->GPtr++;
-		Node *node = GetAddSub (tree);
+		Node *node = GetAddSub (tree, currValue);
 
 		while (isspace (tree->GlobalStrPtr[tree->GPtr]))
 			tree->GPtr++;
@@ -150,11 +153,11 @@ Node *GetBranches (Tree * tree)
 		return node;
 	}
 
-	return GetFunc (tree);
+	return GetFunc (tree, currValue);
 }
 
 
-Node *GetFunc (Tree * tree)
+Node *GetFunc (Tree *tree, const char *const currValue)
 {
 	SPACE_SKIP;
 
@@ -168,7 +171,7 @@ Node *GetFunc (Tree * tree)
 
 	if (Delta == 0)
 	{
-		return GetNumber (tree);
+		return GetNumber (tree, currValue);
 	}
 
 	Node *Func = {};
@@ -183,7 +186,7 @@ Node *GetFunc (Tree * tree)
 
 	Func->content = funcName;
 
-	contentAnalyze (Func, MainVariable);
+	contentAnalyze (Func , currValue);
 
 	if (Func->type != curVariable && Func->type != charConst)
 	{
@@ -191,7 +194,7 @@ Node *GetFunc (Tree * tree)
 		nodeConstruct (&FuncArg);
 
 		FuncArg->myTree = tree;
-		FuncArg = GetBranches (tree);
+		FuncArg = GetBranches (tree, currValue);
 
 		connectLeft (Func, FuncArg);
 	}
@@ -203,7 +206,7 @@ Node *GetFunc (Tree * tree)
 }
 
 
-Node *GetNumber (Tree * tree)
+Node *GetNumber (Tree *tree, const char *const currValue)
 {
 
 	SPACE_SKIP;
@@ -244,6 +247,7 @@ Node *GetNumber (Tree * tree)
 	return Number;
 }
 
+#undef SPACE_SKIP
 
 #define  DEF_CMD(operator_, number, code)                   \
     else if (strcmp (#operator_, node->content) == 0)       \
@@ -1039,4 +1043,42 @@ char *getBufferFromFileGetSzOfBuf (const char *_inputFileName, size_t *sizeOfBuf
 		*sizeOfBuffer = sizeOfBuffer1;
 
 	return helpBuffer;
+}
+
+
+char *getBuff (const char *_inputFileName, char **curVar)
+{
+	char *buffPtr = getBufferFromFileGetSzOfBuf (inputFilename);
+	int strCounter = 0;
+
+	while (buffPtr[strCounter] != 0)
+	{
+		if (buffPtr[strCounter] == variableFlag)
+		{
+			buffPtr[strCounter] = 0;
+
+			strCounter++;
+
+			int VarBegin = strCounter;
+
+			*curVar = (char *) calloc (sizeof (char), strlen (buffPtr + strCounter) + 1);
+
+			while (buffPtr[strCounter] <= 'z' && buffPtr[strCounter] >= 'a')
+			{
+				(*curVar)[strCounter - VarBegin] = buffPtr[strCounter];
+				strCounter++;
+			}
+
+			return buffPtr;
+		}
+
+		strCounter++;
+	}
+
+	*curVar = (char *) calloc (sizeof (char), strlen (MainVariable) + 1);
+
+	strcpy (*curVar, MainVariable);
+
+	return buffPtr;
+
 }

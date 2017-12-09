@@ -17,6 +17,8 @@ enum
 
 const char MainVariable[] = "x";
 
+const char variableFlag = '$';
+
 const char inputFilename[] = "../base/base.txt";
 const char outFilename[] = "../Tex/tex.txt";
 const char outFilenameForDotDump[] = "../picture/dotDump.txt";
@@ -40,6 +42,8 @@ int printResultRec (const Node *const Node, int prior, FILE *outBaseFile1);
 int printResultFile (const Tree *const tree, const char *outFileName);
 
 int simpleTree (Node *node);
+
+char *getBuff (const char *_inputFileName, char **curVar);
 
 char *getBufferFromFileGetSzOfBuf (const char *_inputFileName, size_t *sizeOfBuffer = NULL);
 
@@ -68,17 +72,17 @@ Node *divDiff (const Node *const node, Tree *FinalTree, const char *const currVa
 Node *expoDiff (const Node *const node, Tree *FinalTree, const char *const currValue, FILE *outFileName);
 
 
-Node *GetTree (Tree *tree, char *content);
+Node *GetTree (Tree *tree, char *content, const char *const currValue);
 
-Node *GetAddSub (Tree * tree);
+Node *GetAddSub (Tree *tree, const char *const currValue);
 
-Node *GetMulDiv (Tree * tree);
+Node *GetMulDiv (Tree *tree, const char *const currValue);
 
-Node *GetExpo (Tree * tree);
+Node *GetExpo (Tree *tree, const char *const currValue);
 
-Node *GetBranches (Tree * tree);
+Node *GetBranches (Tree *tree, const char *const currValue);
 
-Node *GetFunc (Tree * tree);
+Node *GetFunc (Tree *tree, const char *const currValue);
 
-Node *GetNumber (Tree * tree);
+Node *GetNumber (Tree *tree, const char *const currValue);
 

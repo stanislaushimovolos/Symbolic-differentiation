@@ -137,6 +137,7 @@ void destructTreeRec (Node *node)
 	destructNode (node);
 }
 
+
 Node *createNode (const char type, int value, Tree *FinalTree)
 {
 	switch (type)
