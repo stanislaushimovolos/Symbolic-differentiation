@@ -251,6 +251,7 @@ Node *GetNumber (Tree *tree, const char *const currValue)
 
 #undef SPACE_SKIP
 
+
 #define  DEF_CMD(operator_, number, code)                   \
     else if (strcmp (#operator_, node->content) == 0)       \
      {                                                      \
@@ -1071,10 +1072,16 @@ char *getBuff (const char *_inputFileName, char **curVar)
 
 			*curVar = (char *) calloc (sizeof (char), strlen (buffPtr + strCounter) + 1);
 
+			while (isspace (buffPtr[strCounter]))
+				strCounter++;
+
+			int mob = 0;
+
 			while (buffPtr[strCounter] <= 'z' && buffPtr[strCounter] >= 'a')
 			{
-				(*curVar)[strCounter - VarBegin] = buffPtr[strCounter];
+				(*curVar)[mob] = buffPtr[strCounter];
 				strCounter++;
+				mob++;
 			}
 
 			return buffPtr;
