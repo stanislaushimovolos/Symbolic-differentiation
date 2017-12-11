@@ -13,7 +13,7 @@ enum
 };
 
 #define MAX_JOKE_SIZE 100
-#define JOKE_AMOUNT 6
+#define JOKE_AMOUNT 7
 
 const char MainVariable[] = "x";
 
@@ -28,6 +28,7 @@ const char Comments[JOKE_AMOUNT + 1][MAX_JOKE_SIZE] = {{"After a simple calculat
                                                        {"It is well known that: "},
                                                        {"Using  WolframAlpha we have: "},
                                                        {"Every child knows that: "},
+                                                       {"For a detailed explanation you should to purchase the paid version  "},
                                                        {"By simple mathematical calculations"},
                                                        {"It's not a secret that"}};
 

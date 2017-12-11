@@ -13,11 +13,11 @@ int main ()
 
 	GetTree (&begTree, buffer, curVar);
 
+	printTree (&begTree, outFilenameForDotPrint);
 	diffMain (&begTree, &diffTree, curVar);
-
 
 	destructTree (&diffTree);
 	destructTree (&begTree);
-
+	free (buffer);
 	return 0;
 }

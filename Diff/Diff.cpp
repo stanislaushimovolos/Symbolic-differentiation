@@ -14,6 +14,7 @@
 
 Node *GetTree (Tree *tree, char *content, const char *const currValue)
 {
+	assert (*content);
 	treeConstruct (tree);
 	tree->GlobalStrPtr = content;
 
@@ -186,7 +187,7 @@ Node *GetFunc (Tree *tree, const char *const currValue)
 
 	Func->content = funcName;
 
-	contentAnalyze (Func , currValue);
+	contentAnalyze (Func, currValue);
 
 	if (Func->type != curVariable && Func->type != charConst)
 	{
@@ -246,6 +247,7 @@ Node *GetNumber (Tree *tree, const char *const currValue)
 
 	return Number;
 }
+
 
 #undef SPACE_SKIP
 
@@ -308,9 +310,7 @@ Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const cu
 			"\n"
 			"    \\usepackage{geometry}\n"
 			"\n"
-			"\\begin{document} \\begin{center} The original expression \n");
-
-	fprintf (outTexFile, " \\[ ");
+			"\\begin{document} \\begin{center} The original expression \n \\[");
 
 	TexExp (BegTree->root, outTexFile);
 
@@ -338,15 +338,11 @@ Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const cu
 			TreeChecker = 0;
 	}
 
-	fprintf (outTexFile, "\n\nThe final expression\n");
-
-	fprintf (outTexFile, " \\[ ");
+	fprintf (outTexFile, "\n\nThe final expression\n \\[");
 
 	TexExp (FinalTree->root, outTexFile);
 
-	fprintf (outTexFile, " \\]");
-
-	fprintf (outTexFile, "\n\n\\end{center}\\end{document}\n"
+	fprintf (outTexFile, " \\]\n\n\\end{center}\\end{document}\n"
 			"\\end");
 
 	fclose (outTexFile);
@@ -357,8 +353,6 @@ Node *diffMain (const Tree *const BegTree, Tree *FinalTree, const char *const cu
 	FinalTree->nodeAmount = 0;
 
 	treeVisitorInf (FinalTree->root, nodeCount);
-
-	outTexFile = NULL;
 }
 
 
@@ -536,10 +530,23 @@ int printResultRec (const Node *const Node, int prior, FILE *outBaseFile1)
 
 		case Expo :
 		{
-			printResultRec (Node->Left, 0, outBaseFile1);
-			fprintf (outBaseFile1, "^{");
-			printResultRec (Node->Right, 0, outBaseFile1);
-			fprintf (outBaseFile1, "}");
+			if (Node->Left->type == charConst || Node->Left->type == number || Node->Left->type == curVariable)
+			{
+				printResultRec (Node->Left, 0, outBaseFile1);
+				fprintf (outBaseFile1, "^{");
+				printResultRec (Node->Right, 0, outBaseFile1);
+				fprintf (outBaseFile1, "}");
+			}
+
+			else
+			{
+				fprintf (outBaseFile1, "(");
+				printResultRec (Node->Left, 0, outBaseFile1);
+				fprintf (outBaseFile1, ")");
+				fprintf (outBaseFile1, "^{");
+				printResultRec (Node->Right, 0, outBaseFile1);
+				fprintf (outBaseFile1, "}");
+			}
 
 			break;
 		}
@@ -631,7 +638,7 @@ do {                                                                            
     val /= 100;                                                                                         \
                                                                                                         \
     node->content = (char *) calloc ((size_t) (numCounter + 2), sizeof (char));                         \
-    sprintf (node->content, "%lg",  val);                                                                \
+    sprintf (node->content, "%lg",  val);                                                               \
     node->type = number;                                                                                \
     node->Left = NULL;                                                                                  \
     node->Right = NULL;                                                                                 \
@@ -1021,6 +1028,7 @@ Node *expoDiff (const Node *const node, Tree *FinalTree, const char *const currV
 	return MainPlus;
 }
 
+
 char *getBufferFromFileGetSzOfBuf (const char *_inputFileName, size_t *sizeOfBuffer)
 {
 
@@ -1080,5 +1088,4 @@ char *getBuff (const char *_inputFileName, char **curVar)
 	strcpy (*curVar, MainVariable);
 
 	return buffPtr;
-
 }

@@ -5,8 +5,6 @@
 
 #define SEPARATOR '\"'
 
-const int maxWayLength = 700;
-
 struct Node;
 
 struct Tree
@@ -25,7 +23,6 @@ struct Node
 	Node *Parent;
 	char type;
 	char *content;
-	int value;
 };
 
 struct NodeWay
