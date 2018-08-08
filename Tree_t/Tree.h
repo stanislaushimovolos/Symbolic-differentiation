@@ -5,83 +5,82 @@
 
 #define SEPARATOR '\"'
 
+#include <iostream>
+
 struct Node;
 
 struct Tree
 {
-	Node *root;
-	int nodeAmount;
-	char *GlobalStrPtr;
-	int GPtr;
-};
+    Node *root;
+    int nodeAmount;
+} ;
 
 struct Node
 {
-	Tree *myTree;
-	Node *Left;
-	Node *Right;
-	Node *Parent;
-	char type;
-	char *content;
-};
+    Tree *myTree;
+    Node *Left;
+    Node *Right;
+    Node *Parent;
+    int type;
+    char *content;
+} ;
 
-struct NodeWay
+enum
 {
-	Node *node;
-	bool state;
+    number,
+    curVariable,
+    charConst,
+    Add,
+    Sub,
+    Mul,
+    Div,
+    Expo,
+    Ln,
+    Sin,
+    Cos
 };
 
 
-int connector (Node *node, int evalue);
+int nodeConstruct(Node * *node);
 
-int nodeConstruct (Node **node);
+int nodeSetName(Node * node, char * content);
 
-int nodeSetName (Node *node, char *content);
+int treeConstruct(Tree * tree);
 
-int treeConstruct (Tree *tree);
+int printTreeFileRec(const Node *const Node, const int *const NodeAmount, int *NodeCounterRec, FILE *outBaseFile1);
 
-int printTreeFileRec (const Node *const Node, const int *const NodeAmount, int *NodeCounterRec, FILE *outBaseFile1);
+int printTreeFile(const Tree *const tree, const char *outFileName);
 
-int printTreeFile (const Tree *const tree, const char *outFileName);
+int dumpRecNode(const Node *const n, int *nodeCounter, FILE *outPictureFile);
 
-int dumpRecNode (const Node *const n, int *nodeCounter, FILE *outPictureFile);
+int printRecNode(const Node *const n, int *NodeCounter, FILE *outPictureFile);
 
-int printRecNode (const Node *const n, int *NodeCounter, FILE *outPictureFile);
+void connectRight(Node * mainNode, Node * rightNode);
 
-int readBase (char **buffer, const char *_inputFilename);
+void connectLeft(Node * mainNode, Node * leftNode);
 
-void connectRight (Node *mainNode, Node *rightNode);
+int dumpTreePicture(const Tree *const tree, const char *outFileName);
 
-void connectLeft (Node *mainNode, Node *leftNode);
+int printTree(const Tree *const tree, const char *outFileName);
 
-int dumpTreePicture (const Tree *const tree, const char *outFileName);
+void destructNode(Node * node);
 
-int printTree (const Tree *const tree, const char *outFileName);
+void destructTree(Tree * tree);
 
-int createBase (char *base, Node *node);
+void destructTreeRec(Node * node);
 
-int createBaseRec (Node *node, char **base);
+int nodeCount(Node * node);
 
-void destructNode (Node *node);
+void treeVisitorInf(Node * node, int
+nodeFunc(Node
+*Node));
 
-void destructTree (Tree *tree);
+Node *NodeCopy(const Node *node, Tree *newTree);
 
-void destructTreeRec (Node *node);
+Node *TreeSearcherRec(Node * node, char * *target);
 
-int nodeCount (Node *node);
+Node *createNode(const char type, int value, Tree *FinalTree);
 
-void treeVisitorInf (Node *node, int nodeFunc (Node *Node));
+Node *createNode(const char type, char operator__, Tree *FinalTree);
 
-Node *NodeCopy (const Node *node, Tree *newTree);
-
-Node *TreeSearcher (const Tree *const tree, char *const target);
-
-Node *TreeSearcherRec (Node *node, char **target);
-
-Node *createNode (const char type, int value, Tree *FinalTree);
-
-Node *createNode (const char type, char operator__, Tree *FinalTree);
-
-Node *createNode (const char type, const char *const func, Tree *FinalTree);
-
-NodeWay *createArrOfParents (const Tree *const tree, Node *CurrentNode, int *NodeCounter);
+Node *createNode(const char type, const char *const func, Tree *FinalTree);

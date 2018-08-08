@@ -1,37 +1,23 @@
 digraph dump
 {
-Node001EB140 [shape = record,  color = blue, label = " { + }"] Node001E7F70 [shape = record,  color = blue, label = " { sin }"] Node001E0F70 [shape = record,  color = blue, label = " { / }"] Node001E0F40 [shape = record,  color = blue, label = " { x }"] 
-Node001E0F70 -> Node001E0F40
-Node001EB1E0 [shape = record,  color = blue, label = " { ^ }"] Node001E04A0 [shape = record,  color = blue, label = " { abc }"] 
-Node001EB1E0 -> Node001E04A0
-Node001EB020 [shape = record,  color = blue, label = " { 3 }"] 
-Node001EB1E0 -> Node001EB020
+Node0x56071120bd50 [shape = record,  color = blue, label = " { + }"] Node0x56071120bb10 [shape = record,  color = blue, label = " { + }"] Node0x56071120ba50 [shape = record,  color = blue, label = " { + }"] Node0x56071120b990 [shape = record,  color = blue, label = " { 1 }"] 
+Node0x56071120ba50 -> Node0x56071120b990
+Node0x56071120b9f0 [shape = record,  color = blue, label = " { 0 }"] 
+Node0x56071120ba50 -> Node0x56071120b9f0
 
-Node001E0F70 -> Node001EB1E0
+Node0x56071120bb10 -> Node0x56071120ba50
+Node0x56071120bab0 [shape = record,  color = blue, label = " { 0 }"] 
+Node0x56071120bb10 -> Node0x56071120bab0
 
-Node001E7F70 -> Node001E0F70
+Node0x56071120bd50 -> Node0x56071120bb10
+Node0x56071120bbd0 [shape = record,  color = blue, label = " { * }"] Node0x56071120bc30 [shape = record,  color = blue, label = " { / }"] Node0x56071120bc90 [shape = record,  color = blue, label = " { 1 }"] 
+Node0x56071120bc30 -> Node0x56071120bc90
+Node0x56071120bb70 [shape = record,  color = blue, label = " { 4 }"] 
+Node0x56071120bc30 -> Node0x56071120bb70
 
-Node001EB140 -> Node001E7F70
-Node001EB200 [shape = record,  color = blue, label = " { ^ }"] Node001EB180 [shape = record,  color = blue, label = " { x }"] 
-Node001EB200 -> Node001EB180
-Node001EAF80 [shape = record,  color = blue, label = " { ln }"] Node001EB280 [shape = record,  color = blue, label = " { sin }"] Node001EB2E0 [shape = record,  color = blue, label = " { / }"] Node001EB2C0 [shape = record,  color = blue, label = " { 1 }"] 
-Node001EB2E0 -> Node001EB2C0
-Node001EAFE0 [shape = record,  color = blue, label = " { * }"] Node001EAF60 [shape = record,  color = blue, label = " { 5 }"] 
-Node001EAFE0 -> Node001EAF60
-Node001EB080 [shape = record,  color = blue, label = " { ^ }"] Node001EB060 [shape = record,  color = blue, label = " { x }"] 
-Node001EB080 -> Node001EB060
-Node001EBBB8 [shape = record,  color = blue, label = " { 2 }"] 
-Node001EB080 -> Node001EBBB8
+Node0x56071120bbd0 -> Node0x56071120bc30
+Node0x56071120bcf0 [shape = record,  color = blue, label = " { 0 }"] 
+Node0x56071120bbd0 -> Node0x56071120bcf0
 
-Node001EAFE0 -> Node001EB080
-
-Node001EB2E0 -> Node001EAFE0
-
-Node001EB280 -> Node001EB2E0
-
-Node001EAF80 -> Node001EB280
-
-Node001EB200 -> Node001EAF80
-
-Node001EB140 -> Node001EB200
+Node0x56071120bd50 -> Node0x56071120bbd0
 }

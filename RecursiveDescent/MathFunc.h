@@ -3,9 +3,10 @@
 //
 
 
+//currValue = MainValue
 #define  DEF_CMD_UNARY(operator_, number, func)                                                 \
     DEF_CMD(operator_, number, {Node *LeftCopy = NodeCopy (node->Left, FinalTree);              \
-        Node *nodeDif = complicatedDiff (LeftCopy, FinalTree, MainVariable, func, outFileName); \
+        Node *nodeDif = complicatedDiff (LeftCopy, FinalTree, currValue, func, outFileName); \
         fprintf(outFileName, " \\[ ");                                                          \
         TexStr (outFileName);                                                                   \
         TexExp (node, outFileName);                                                             \
