@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Differentiator .h"
+#include "Differentiator.h"
 #include "../RecursiveDescent/Descent.h"
 
 int main()
@@ -8,11 +8,11 @@ int main()
     parser pars = {};
 
     auto status = constructParser(&pars, inputFilename) &
-                  constructCalculator(&calc, outFilename);
+                  constructCalculator(&calc, outFileTex);
     if (status)
         return status;
     GetTree(&pars);
-    diffMain(&pars, &calc);
+    findDerivative(&pars, &calc);
 
     destructParser(&pars);
     destructCalculator(&calc);

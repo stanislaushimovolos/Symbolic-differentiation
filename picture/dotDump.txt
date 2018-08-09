@@ -1,25 +1,25 @@
 digraph dump
 {
-Node0x56071120ae20 [shape = record,  color = red, label = "{ { +| '0x56071120ae20' } | { Parent| '(nil)' }  | { type | '3' } | { Tree| '0x7ffd9cad40b0' }| { Left = 0x56071120ad60 | Right = 0x56071120ae80 } }"]
-Node0x56071120ad60 [shape = record,  color = red, label = "{ { +| '0x56071120ad60' } | { Parent| '0x56071120ae20' }  | { type | '3' } | { Tree| '0x7ffd9cad40b0' }| { Left = 0x56071120aca0 | Right = 0x56071120adc0 } }"]
-Node0x56071120aca0 [shape = record,  color = red, label = "{ { +| '0x56071120aca0' } | { Parent| '0x56071120ad60' }  | { type | '3' } | { Tree| '0x7ffd9cad40b0' }| { Left = 0x56071120ac40 | Right = 0x56071120ad00 } }"]
-Node0x56071120ac40 [shape = record,  color = red, label = "{ { x| '0x56071120ac40' } | { Parent| '0x56071120aca0' }  | { type | '1' } | { Tree| '0x7ffd9cad40b0' }| { Left = (nil) | Right = (nil) } }"]
+Node0x556441daae20 [shape = record,  color = red, label = "{ { +| '0x556441daae20' } | { parent| '(nil)' }  | { type | '3' } | { Tree| '0x7ffc81b4b440' }| { left = 0x556441daad60 | right = 0x556441daae80 } }"]
+Node0x556441daad60 [shape = record,  color = red, label = "{ { +| '0x556441daad60' } | { parent| '0x556441daae20' }  | { type | '3' } | { Tree| '0x7ffc81b4b440' }| { left = 0x556441daaca0 | right = 0x556441daadc0 } }"]
+Node0x556441daaca0 [shape = record,  color = red, label = "{ { +| '0x556441daaca0' } | { parent| '0x556441daad60' }  | { type | '3' } | { Tree| '0x7ffc81b4b440' }| { left = 0x556441daac40 | right = 0x556441daad00 } }"]
+Node0x556441daac40 [shape = record,  color = red, label = "{ { x| '0x556441daac40' } | { parent| '0x556441daaca0' }  | { type | '1' } | { Tree| '0x7ffc81b4b440' }| { left = (nil) | right = (nil) } }"]
 
-Node0x56071120aca0 -> Node0x56071120ac40
-Node0x56071120ad00 [shape = record,  color = red, label = "{ { 5| '0x56071120ad00' } | { Parent| '0x56071120aca0' }  | { type | '0' } | { Tree| '0x7ffd9cad40b0' }| { Left = (nil) | Right = (nil) } }"]
+Node0x556441daaca0 -> Node0x556441daac40
+Node0x556441daad00 [shape = record,  color = red, label = "{ { 5| '0x556441daad00' } | { parent| '0x556441daaca0' }  | { type | '0' } | { Tree| '0x7ffc81b4b440' }| { left = (nil) | right = (nil) } }"]
 
-Node0x56071120aca0 -> Node0x56071120ad00
+Node0x556441daaca0 -> Node0x556441daad00
 
-Node0x56071120ad60 -> Node0x56071120aca0
-Node0x56071120adc0 [shape = record,  color = red, label = "{ { 5| '0x56071120adc0' } | { Parent| '0x56071120ad60' }  | { type | '0' } | { Tree| '0x7ffd9cad40b0' }| { Left = (nil) | Right = (nil) } }"]
+Node0x556441daad60 -> Node0x556441daaca0
+Node0x556441daadc0 [shape = record,  color = red, label = "{ { 5| '0x556441daadc0' } | { parent| '0x556441daad60' }  | { type | '0' } | { Tree| '0x7ffc81b4b440' }| { left = (nil) | right = (nil) } }"]
 
-Node0x56071120ad60 -> Node0x56071120adc0
+Node0x556441daad60 -> Node0x556441daadc0
 
-Node0x56071120ae20 -> Node0x56071120ad60
-Node0x56071120ae80 [shape = record,  color = red, label = "{ { ln| '0x56071120ae80' } | { Parent| '0x56071120ae20' }  | { type | '8' } | { Tree| '0x7ffd9cad40b0' }| { Left = 0x56071120aee0 | Right = (nil) } }"]
-Node0x56071120aee0 [shape = record,  color = red, label = "{ { 4| '0x56071120aee0' } | { Parent| '0x56071120ae80' }  | { type | '0' } | { Tree| '0x7ffd9cad40b0' }| { Left = (nil) | Right = (nil) } }"]
+Node0x556441daae20 -> Node0x556441daad60
+Node0x556441daae80 [shape = record,  color = red, label = "{ { ln| '0x556441daae80' } | { parent| '0x556441daae20' }  | { type | '8' } | { Tree| '0x7ffc81b4b440' }| { left = 0x556441daaee0 | right = (nil) } }"]
+Node0x556441daaee0 [shape = record,  color = red, label = "{ { 4| '0x556441daaee0' } | { parent| '0x556441daae80' }  | { type | '0' } | { Tree| '0x7ffc81b4b440' }| { left = (nil) | right = (nil) } }"]
 
-Node0x56071120ae80 -> Node0x56071120aee0
+Node0x556441daae80 -> Node0x556441daaee0
 
-Node0x56071120ae20 -> Node0x56071120ae80
+Node0x556441daae20 -> Node0x556441daae80
 }

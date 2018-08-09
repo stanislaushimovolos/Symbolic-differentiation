@@ -1,1 +1,1 @@
-d/dx x  + x - 16 + 5/x^4 + cos(sin(ln(1/x)))
+d/dx ln (x)

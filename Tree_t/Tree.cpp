@@ -3,16 +3,16 @@
 #include <cstring>
 #include <string.h>
 
-#include "../Differentiator/Differentiator .h"
+#include "../Differentiator/Differentiator.h"
 
 void connectRight(Node *mainNode, Node *rightNode)
 {
     assert (rightNode);
     assert (mainNode);
 
-    mainNode->Right = rightNode;
+    mainNode->right = rightNode;
     rightNode->myTree = mainNode->myTree;
-    rightNode->Parent = mainNode;
+    rightNode->parent = mainNode;
     mainNode->myTree->nodeAmount++;
 }
 
@@ -22,18 +22,18 @@ void connectLeft(Node *mainNode, Node *leftNode)
     assert (leftNode);
     assert (mainNode);
 
-    mainNode->Left = leftNode;
+    mainNode->left = leftNode;
     leftNode->myTree = mainNode->myTree;
-    leftNode->Parent = mainNode;
+    leftNode->parent = mainNode;
     mainNode->myTree->nodeAmount++;
 }
 
 void treeVisitorInf(Node *node, int nodeFunc(Node *node))
 {
-    if (node->Left)
-        treeVisitorInf(node->Left, nodeFunc);
-    if (node->Right)
-        treeVisitorInf(node->Right, nodeFunc);
+    if (node->left)
+        treeVisitorInf(node->left, nodeFunc);
+    if (node->right)
+        treeVisitorInf(node->right, nodeFunc);
     nodeFunc(node);
 }
 
@@ -64,7 +64,7 @@ int nodeSetName(Node *node, char *content)
 }
 
 
-Node *TreeCopy(const Node *node, Tree *newTree)
+Node *copyTree(const Node *node, Tree *newTree)
 {
     assert (node);
     Node *retNode;
@@ -75,18 +75,18 @@ Node *TreeCopy(const Node *node, Tree *newTree)
     strcpy(retNode->content, node->content);
     retNode->myTree = node->myTree;
 
-    if (node->Left)
+    if (node->left)
     {
-        retNode->Left = TreeCopy(node->Left, newTree);
-        retNode->Left->Parent = retNode;
-        retNode->Left->myTree = newTree;
+        retNode->left = copyTree(node->left, newTree);
+        retNode->left->parent = retNode;
+        retNode->left->myTree = newTree;
     }
 
-    if (node->Right)
+    if (node->right)
     {
-        retNode->Right = TreeCopy(node->Right, newTree);
-        retNode->Right->Parent = retNode;
-        retNode->Right->myTree = newTree;
+        retNode->right = copyTree(node->right, newTree);
+        retNode->right->parent = retNode;
+        retNode->right->myTree = newTree;
     }
 
     return retNode;
@@ -121,11 +121,11 @@ void destructTree(Tree *tree)
 void destructNodeRec(Node *node)
 {
 
-    if (node->Left)
-        destructNodeRec(node->Left);
+    if (node->left)
+        destructNodeRec(node->left);
 
-    if (node->Right)
-        destructNodeRec(node->Right);
+    if (node->right)
+        destructNodeRec(node->right);
 
     destructNode(node);
 }
@@ -171,12 +171,12 @@ Node *createNode(const char type, const char *content, Tree *FinalTree)
 #undef NODE_ADDING
 
 #define PRINTOUT_REC(function)                                                         \
-    if (n->Left != NULL)                                                               \
-        function (n->Left, NodeCounter, outPictureFile1);                              \
-    if (n->Right != NULL)                                                              \
-       function (n->Right, NodeCounter, outPictureFile1);                              \
-    if (n->Parent != NULL)                                                             \
-        fprintf (outPictureFile1, "\nNode%p -> Node%p\n", n->Parent, n);
+    if (n->left != NULL)                                                               \
+        function (n->left, NodeCounter, outPictureFile1);                              \
+    if (n->right != NULL)                                                              \
+       function (n->right, NodeCounter, outPictureFile1);                              \
+    if (n->parent != NULL)                                                             \
+        fprintf (outPictureFile1, "\nNode%p -> Node%p\n", n->parent, n);
 
 
 #define CYCLE_CHEACK                                                            \
@@ -191,11 +191,11 @@ Node *createNode(const char type, const char *content, Tree *FinalTree)
 int dumpRecNode(const Node *const n, int *NodeCounter, FILE *outPictureFile1)
 {
     fprintf(outPictureFile1,
-            "Node%p [shape = record,  color = red, label = \"{ { %s| '%p' } | { Parent| '%p' }  | { type | '%d' } | { Tree| '%p' }| ",
-            n, (char *) n->content, n, n->Parent, n->type, n->myTree);
+            "Node%p [shape = record,  color = red, label = \"{ { %s| '%p' } | { parent| '%p' }  | { type | '%d' } | { Tree| '%p' }| ",
+            n, (char *) n->content, n, n->parent, n->type, n->myTree);
 
-    fprintf(outPictureFile1, "{ Left = %p ", n->Left);
-    fprintf(outPictureFile1, "| Right = %p } }\"]\n", n->Right);
+    fprintf(outPictureFile1, "{ left = %p ", n->left);
+    fprintf(outPictureFile1, "| right = %p } }\"]\n", n->right);
 
     (*NodeCounter)++;
 
@@ -255,8 +255,8 @@ int printTreeFileRec(const Node *const Node, const int *const NodeAmount, int *N
             fprintf(outBaseFile1, "\t");
 
         fprintf(outBaseFile1, "(%c%s%c\n", SEPARATOR, Node->content, SEPARATOR);
-        printTreeFileRec(Node->Left, NodeAmount, NodeCounterRec, outBaseFile1);
-        printTreeFileRec(Node->Right, NodeAmount, NodeCounterRec, outBaseFile1);
+        printTreeFileRec(Node->left, NodeAmount, NodeCounterRec, outBaseFile1);
+        printTreeFileRec(Node->right, NodeAmount, NodeCounterRec, outBaseFile1);
 
         for (int i = 0; i < tabsAmount; i++)
             fprintf(outBaseFile1, "\t");

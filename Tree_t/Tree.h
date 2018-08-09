@@ -17,11 +17,11 @@ struct Tree
 
 struct Node
 {
-    Tree *myTree;
-    Node *Left;
-    Node *Right;
-    Node *Parent;
     int type;
+    Node *left;
+    Node *right;
+    Node *parent;
+    Tree *myTree;
     char *content;
 };
 
@@ -60,6 +60,6 @@ void treeVisitorInf(Node *node, int
 nodeFunc(Node
          *Node));
 
-Node *TreeCopy(const Node *node, Tree *newTree);
+Node *copyTree(const Node *node, Tree *newTree);
 
 Node *createNode(const char type, const char *content, Tree *FinalTree);
