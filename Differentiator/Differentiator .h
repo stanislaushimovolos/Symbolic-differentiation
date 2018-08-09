@@ -5,6 +5,7 @@
 #pragma  once
 
 #include "../Tree_t/Tree.h"
+#include "../Commands/Commands.h"
 
 #define MAX_JOKE_SIZE 100
 #define JOKE_AMOUNT 7
@@ -25,33 +26,35 @@ void TexExp(const Node *const node, FILE *outBaseFile);
 
 void TexStr(FILE *outBaseFile);
 
+int constructCalculator(calculator *calc, const char *inputFileName);
+
 int printResultRec(const Node *const Node, int prior, FILE *outBaseFile1);
 
 int printResultFile(const Tree *const tree, const char *outFileName);
 
+int destructCalculator(calculator *calc);
+
 int simpleTree(Node *node);
 
-Node *diffRec(const Node *const node, const char *const currValue, Tree *FinalTree, FILE *outFileName);
+Node *diffRec(Node *node, calculator *calc);
 
-Node *diffMain(const Tree *const BegTree, Tree *FinalTree, const char *const currValue);
+Node *diffMain(parser *pars, calculator *calc);
 
-Node *complicatedDiff(Node *mainNode, Tree *FinalTree, const char *const currValue,
-                      Node *(diff)(Node *node, Tree *FilTree, const char *const curValue, FILE *OutFileName),
-                      FILE *outFileName);
+Node *complicatedDiff(Node *mainNode, calculator *calc, Node *(diff)(Node *node, calculator *calc));
 
-Node *lnDiff(Node *node, Tree *FinalTree, const char *const currValue, FILE *outFileName);
+Node *lnDiff(Node *node, calculator *calc);
 
-Node *sinDiff(Node *node, Tree *FinalTree, const char *const currValue, FILE *outFileName);
+Node *sinDiff(Node *node, calculator *calc);
 
-Node *cosDiff(Node *node, Tree *FinalTree, const char *const currValue, FILE *outFileName);
+Node *cosDiff(Node *node, calculator *calc);
 
-Node *addDiff(const Node *const node, Tree *FinalTree, const char *const currValue, FILE *outFileName);
+Node *addDiff(Node *node, calculator *calc);
 
-Node *subDiff(const Node *const node, Tree *FinalTree, const char *const currValue, FILE *outFileName);
+Node *subDiff(Node *node, calculator *calc);
 
-Node *mulDiff(const Node *const node, Tree *FinalTree, const char *const currValue, FILE *outFileName);
+Node *mulDiff(Node *node, calculator *calc);
 
-Node *divDiff(const Node *const node, Tree *FinalTree, const char *const currValue, FILE *outFileName);
+Node *divDiff(Node *node, calculator *calc);
 
-Node *expoDiff(const Node *const node, Tree *FinalTree, const char *const currValue, FILE *outFileName);
+Node *expoDiff(Node *node, calculator *calc);
 

@@ -7,20 +7,10 @@
 
 
 #include "../Tree_t/Tree.h"
+#include "../Commands/Commands.h"
 
 const char inputFilename[] = "base/base.txt";
 const char difVariableFlag[] = "d/d";
-
-struct parser
-{
-    Tree tree;
-    size_t sizeOfCode;
-    int curCodePos;
-    char *curVar;
-    char *code;
-
-};
-
 
 enum
 {

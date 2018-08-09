@@ -64,28 +64,27 @@ int nodeSetName(Node *node, char *content)
 }
 
 
-Node *NodeCopy(const Node *node, Tree *newTree)
+Node *TreeCopy(const Node *node, Tree *newTree)
 {
     assert (node);
     Node *retNode;
     nodeConstruct(&retNode);
 
     retNode->type = node->type;
-
     retNode->content = (char *) calloc(strlen(node->content) + 1, sizeof(char));
     strcpy(retNode->content, node->content);
     retNode->myTree = node->myTree;
 
     if (node->Left)
     {
-        retNode->Left = NodeCopy(node->Left, newTree);
+        retNode->Left = TreeCopy(node->Left, newTree);
         retNode->Left->Parent = retNode;
         retNode->Left->myTree = newTree;
     }
 
     if (node->Right)
     {
-        retNode->Right = NodeCopy(node->Right, newTree);
+        retNode->Right = TreeCopy(node->Right, newTree);
         retNode->Right->Parent = retNode;
         retNode->Right->myTree = newTree;
     }
@@ -113,121 +112,39 @@ void destructTree(Tree *tree)
 {
     if (tree->root)
     {
-        destructTreeRec(tree->root);
+        destructNodeRec(tree->root);
         (tree->root) = NULL;
     }
 }
 
 
-void destructTreeRec(Node *node)
+void destructNodeRec(Node *node)
 {
 
     if (node->Left)
-        destructTreeRec(node->Left);
+        destructNodeRec(node->Left);
 
     if (node->Right)
-        destructTreeRec(node->Right);
+        destructNodeRec(node->Right);
 
     destructNode(node);
 }
 
 
-Node *createNode(const char type, int value, Tree *FinalTree)
+Node *createNode(const char type, const char *content, Tree *FinalTree)
 {
-    switch (type)
-    {
-        case number:
-        {
-            Node *helpNode = {};
-            nodeConstruct(&helpNode);
-
-            helpNode->myTree = FinalTree;
-
-            helpNode->content = (char *) calloc(5, sizeof(char));
-            strcpy(helpNode->content, std::to_string(value).c_str());
-
-            helpNode->type = number;
-
-            return helpNode;
-        }
-
-        case charConst:
-        {
-            Node *helpNode = {};
-            nodeConstruct(&helpNode);
-
-            helpNode->myTree = FinalTree;
-
-            helpNode->content = (char *) calloc(5, sizeof(char));
-            strcpy(helpNode->content, std::to_string(value).c_str());
-            helpNode->type = number;
-
-            return helpNode;
-
-        }
-
-        case curVariable:
-        {
-            Node *helpNode = {};
-            nodeConstruct(&helpNode);
-
-            helpNode->myTree = FinalTree;
-
-            helpNode->content = (char *) calloc(2, sizeof(char));
-            strcpy(helpNode->content, std::to_string(value).c_str());
-            helpNode->type = number;
-
-            return helpNode;
-        }
-
-        default:
-            break;
-    }
-}
-
-
-Node *createNode(const char type, char operator__, Tree *FinalTree)
-{
-    Node *mainNode = {};
-    nodeConstruct(&mainNode);
-
-    mainNode->myTree = FinalTree;
-    mainNode->content = (char *) calloc(2, sizeof(char));
-
-    *mainNode->content = operator__;
-    mainNode->type = type;
-    return mainNode;
-}
-
-Node *createNode(const char type, const char *const func, Tree *FinalTree)
-{
-    assert (func);
+    assert (content);
     assert (FinalTree);
 
     Node *mainNode = {};
     nodeConstruct(&mainNode);
 
     mainNode->myTree = FinalTree;
-    mainNode->content = (char *) calloc(strlen(func) + 1, sizeof(char));
+    mainNode->content = (char *) calloc(strlen(content) + 1, sizeof(char));
 
-    strcpy(mainNode->content, func);
+    strcpy(mainNode->content, content);
     mainNode->type = type;
     return mainNode;
-}
-
-
-bool TargetFlag = 0;
-
-#undef RETURN_COND
-
-
-#define RETURN_CONDITION    \
-    if ((*base)[0] == ')') {\
-    (*base) += 1;           \
-                            \
-    if ((*base)[0] == '(')  \
-        return 1;           \
-    return 0;               \
 }
 
 
@@ -299,7 +216,6 @@ int printRecNode(const Node *const n, int *NodeCounter, FILE *outPictureFile1)
     (*NodeCounter)++;
 
     CYCLE_CHEACK
-
     PRINTOUT_REC(printRecNode);
 
     return CycleChecker;

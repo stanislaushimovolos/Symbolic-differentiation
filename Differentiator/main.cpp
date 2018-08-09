@@ -4,22 +4,17 @@
 
 int main()
 {
-    Tree diffTree = {};
-    treeConstruct(&diffTree);
-
+    calculator calc = {};
     parser pars = {};
 
-    auto status = constructParser(&pars, inputFilename);
+    auto status = constructParser(&pars, inputFilename) &
+                  constructCalculator(&calc, outFilename);
     if (status)
         return status;
-
     GetTree(&pars);
+    diffMain(&pars, &calc);
 
-    dumpTreePicture(&pars.tree, outFilenameForDotDump);
-    diffMain(&pars.tree, &diffTree, pars.curVar);
-
-    destructTree(&diffTree);
     destructParser(&pars);
-
+    destructCalculator(&calc);
     return 0;
 }

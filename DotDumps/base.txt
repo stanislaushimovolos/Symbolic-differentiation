@@ -1,8 +1,0 @@
-\documentclass[12pt]{article}
-\usepackage[cp1251]{inputenc}
-\usepackage[russian]{babel}
-\begin{document}
-
-\[\frac{(-1)\cdot (\ln(x)\cdot x^{x} + x\cdot x^{x - 1})}{(1 + x^{x})\cdot (1 + x^{x})}\]
-
-\end{document}
