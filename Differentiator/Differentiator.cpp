@@ -6,33 +6,6 @@
 #include "Differentiator.h"
 
 
-int constructCalculator(calculator *calc, const char *outputFileName)
-{
-    assert(calc);
-    assert(outputFileName);
-
-    FILE *output = fopen(outputFileName, "w");
-    if (!output)
-        return 1;
-
-    calc->texFile = output;
-    treeConstruct(&calc->tree);
-    return 0;
-}
-
-
-int destructCalculator(calculator *calc)
-{
-    assert(calc);
-    if (calc->texFile)
-        fclose(calc->texFile);
-
-    destructTree(&calc->tree);
-    return 0;
-}
-
-int TreeChecker = 0;
-
 int findDerivative(const parser *pars, calculator *calc)
 {
     assert (pars);
@@ -41,23 +14,14 @@ int findDerivative(const parser *pars, calculator *calc)
     fprintf(calc->texFile, "\\documentclass{article}\n"
                            "\\begin{document} \\begin{center} "
                            "The original expression \n \\[");
-    printExpressionTex(pars->tree.root, 0, calc->texFile);
+    printExpressionTex(pars->tree.root, calc->texFile);
     fprintf(calc->texFile, "\\]");
 
     calc->tree.root = makeDerivativeStep(pars->tree.root, calc);
-
-    /*while (TreeChecker == 0)
-    {
-        treeVisitorInf(calc->tree.root, simplifyTree);
-
-        if (TreeChecker == 0)
-            TreeChecker = 1;
-        else
-            TreeChecker = 0;
-    }*/
+    simplifyExpression(calc);
 
     fprintf(calc->texFile, "\n\nThe final expression\n \\[");
-    printExpressionTex(calc->tree.root, 0, calc->texFile);
+    printExpressionTex(calc->tree.root, calc->texFile);
     fprintf(calc->texFile, " \\]\n\n\\end{center}\\end{document}\n"
                            "\\end");
     fclose(calc->texFile);
@@ -67,7 +31,7 @@ int findDerivative(const parser *pars, calculator *calc)
     system("sensible-browser Tex/Diff_Super_Test.pdf &");
 
     calc->tree.nodeAmount = 0;
-    treeVisitorInf(calc->tree.root, nodeCount);
+    visitTree(calc->tree.root, countNodes);
 
     return 0;
 }
@@ -78,74 +42,47 @@ Node *makeDerivativeStep(const Node *node, calculator *calc)
     Node *result = NULL;
     switch (node->type)
     {
-        case number:
+        case Number:
         {
-            result = createNode(number, "0", &calc->tree);
-            break;
-        }
-        case curVariable:
-        {
-            result = createNode(number, "1", &calc->tree);
-            break;
-        }
-        case charConst:
-        {
-            result = createNode(number, "0", &calc->tree);
-            break;
-        }
-        case Add:
-        {
-            result = addDerivative(node, calc);
-            texDerivativeStep(node, result, calc->texFile);
+            result = createNode(Number, "0", &calc->tree);
             return result;
         }
-        case Sub:
+        case CurVariable:
         {
-            result = subDerivative(node, calc);
-            texDerivativeStep(node, result, calc->texFile);
+            result = createNode(Number, "1", &calc->tree);
             return result;
         }
-        case Mul:
+        case CharConst:
         {
-            result = mulDerivative(node, calc);
-            texDerivativeStep(node, result, calc->texFile);
-            break;
+            result = createNode(Number, "0", &calc->tree);
+            return result;
         }
-        case Div:
-        {
-            result = divDerivative(node, calc);
-            texDerivativeStep(node, result, calc->texFile);
-            break;
-        }
-        case Expo:
-        {
-            result = expDerivative(node, calc);
-            texDerivativeStep(node, result, calc->texFile);
-            break;
-        }
-        case Ln:
-        {
-            result = findComplexDerivative(node->left, calc, logDerivative);
-            texDerivativeStep(node, result, calc->texFile);
-            break;
-        }
-        case Sin:
-        {
-            result = findComplexDerivative(node->left, calc, sinDerivative);
-            texDerivativeStep(node, result, calc->texFile);
-            break;
-        }
-        case Cos:
-        {
-            result = findComplexDerivative(node->left, calc, cosDerivative);
-            texDerivativeStep(node, result, calc->texFile);
-            break;
-        }
+
+#define DEF_CMD_UNARY(command, number, function)                        \
+case number:{                                                           \
+            result = findComplexDerivative(node->left, calc, function); \
+            texDerivativeStep(node, result, calc->texFile);             \
+            return result;                                              \
+            }                                                           \
+
+#define DEF_CMD(command, number, function)                              \
+case number:{                                                           \
+            result = function(node, calc);                              \
+            texDerivativeStep(node, result, calc->texFile);             \
+            return result;                                              \
+            }                                                           \
+
+
+#include "../Commands/MathFunc.h"
+
         default:
             break;
     }
     return result;
 }
+
+#undef DEF_CMD_UNARY
+#undef DEF_CMD
 
 
 int texDerivativeStep(const Node *original, const Node *result, FILE *outFileName)
@@ -158,380 +95,381 @@ int texDerivativeStep(const Node *original, const Node *result, FILE *outFileNam
     commentNumber = commentNumber % NUMBER_OF_COMMENTS;
     fprintf(outFileName, "\\[$$%s\n$$", comments[commentNumber++]);
 
-    printExpressionTex(original, 0, outFileName);
-    fprintf(outFileName, "=");
-    printExpressionTex(result, 0, outFileName);
+    fprintf(outFileName, "(");
+    printExpressionTex(original, outFileName);
+    fprintf(outFileName, ")' = ");
+    printExpressionTex(result, outFileName);
     fprintf(outFileName, "\\]\n");
 
     return 0;
 }
 
 
-int printExpressionTex(const Node *const node, int priority, FILE *outFileName)
+int printExpressionTex(const Node *node, FILE *outFileName)
 {
     switch (node->type)
     {
         case Add :
         {
-            if (!priority)
+            if (node->parent && node->parent->type == Mul)
             {
-                printExpressionTex(node->left, 0, outFileName);
+                fprintf(outFileName, "(");
+                printExpressionTex(node->left, outFileName);
                 fprintf(outFileName, " + ");
-                printExpressionTex(node->right, 0, outFileName);
+                printExpressionTex(node->right, outFileName);
+                fprintf(outFileName, ")");
             }
             else
             {
-                fprintf(outFileName, "(");
-                printExpressionTex(node->left, 0, outFileName);
+                printExpressionTex(node->left, outFileName);
                 fprintf(outFileName, " + ");
-                printExpressionTex(node->right, 0, outFileName);
+                printExpressionTex(node->right, outFileName);
+            }
+            return 0;
+        }
+        case Sub :
+        {
+            if (node->parent && node->parent->type == Mul)
+            {
+                fprintf(outFileName, "(");
+                printExpressionTex(node->left, outFileName);
+                fprintf(outFileName, " - ");
+                printExpressionTex(node->right, outFileName);
                 fprintf(outFileName, ")");
             }
-            break;
+            else
+            {
+                printExpressionTex(node->left, outFileName);
+                fprintf(outFileName, " - ");
+                printExpressionTex(node->right, outFileName);
+            }
+            return 0;
         }
-        case Ln :
+        case Log :
         {
-            fprintf(outFileName, "\\ln(");
-            printExpressionTex(node->left, 0, outFileName);
+            fprintf(outFileName, "\\log(");
+            printExpressionTex(node->left, outFileName);
             fprintf(outFileName, ")");
-            break;
+            return 0;
         }
         case Cos :
         {
             fprintf(outFileName, "\\cos(");
-            printExpressionTex(node->left, 0, outFileName);
+            printExpressionTex(node->left, outFileName);
             fprintf(outFileName, ")");
-            break;
+            return 0;
         }
         case Sin :
         {
             fprintf(outFileName, "\\sin(");
-            printExpressionTex(node->left, 0, outFileName);
+            printExpressionTex(node->left, outFileName);
             fprintf(outFileName, ")");
-            break;
+            return 0;
         }
-        case Sub :
-        {
-            if (!priority)
-            {
-                printExpressionTex(node->left, 0, outFileName);
-                fprintf(outFileName, " - ");
-                printExpressionTex(node->right, 0, outFileName);
-            }
-            else
-            {
-                fprintf(outFileName, "(");
-                printExpressionTex(node->left, 0, outFileName);
-                fprintf(outFileName, " - ");
-                printExpressionTex(node->right, 0, outFileName);
-                fprintf(outFileName, ")");
-            }
-            break;
-        }
-        case number:
+        case Number:
         {
             if (*(node->content) == '-')
                 fprintf(outFileName, "(%s)", node->content);
             else
                 fprintf(outFileName, "%s", node->content);
-            break;
+            return 0;
         }
-        case charConst:
+        case CharConst:
         {
             fprintf(outFileName, "%s", node->content);
-            break;
+            return 0;
         }
-        case curVariable:
+        case CurVariable:
         {
             fprintf(outFileName, "%s", node->content);
-            break;
+            return 0;
         }
         case Mul :
         {
-            printExpressionTex(node->left, 1, outFileName);
+            printExpressionTex(node->left, outFileName);
             fprintf(outFileName, "\\cdot ");
-            printExpressionTex(node->right, 1, outFileName);
-            break;
+            printExpressionTex(node->right, outFileName);
+            return 0;
         }
         case Div :
         {
             fprintf(outFileName, "\\frac{");
-            printExpressionTex(node->left, 0, outFileName);
+            printExpressionTex(node->left, outFileName);
             fprintf(outFileName, "}{");
-            printExpressionTex(node->right, 0, outFileName);
+            printExpressionTex(node->right, outFileName);
             fprintf(outFileName, "}");
-            break;
+            return 0;
         }
         case Expo :
         {
-            if (node->left->type == number ||
-                node->left->type == charConst ||
-                node->left->type == curVariable)
+            if (node->left->type == Number ||
+                node->left->type == CharConst ||
+                node->left->type == CurVariable)
             {
-                printExpressionTex(node->left, 0, outFileName);
+                printExpressionTex(node->left, outFileName);
                 fprintf(outFileName, "^{");
-                printExpressionTex(node->right, 0, outFileName);
+                printExpressionTex(node->right, outFileName);
                 fprintf(outFileName, "}");
             }
             else
             {
                 fprintf(outFileName, "(");
-                printExpressionTex(node->left, 0, outFileName);
+                printExpressionTex(node->left, outFileName);
                 fprintf(outFileName, ")^{");
-                printExpressionTex(node->right, 0, outFileName);
+                printExpressionTex(node->right, outFileName);
                 fprintf(outFileName, "}");
             }
-            break;
+            return 0;
         }
         default:
             return 1;
     }
-    return 0;
 }
 
 
-#define STANDARD_SIMPLIFICATION_LEFT                    \
-do {      if (node->parent)                             \
+#define SIMPLIFY_LEFT_SIDE                              \
+do {                                                    \
+    destructNode(node->left);                           \
+if (node->parent)                                       \
     {                                                   \
-        destructNodeRec(node->left);                    \
         if (node == node->parent->right)                \
             connectRight (node->parent, node->right);   \
-                                                        \
-        if (node == node->parent->left)                 \
+        else                                            \
             connectLeft (node->parent, node->right);    \
-                                                        \
-        destructNode (node);                            \
     }                                                   \
     else                                                \
     {                                                   \
         node->myTree->root = node->right;               \
         node->right->parent = NULL;                     \
-        destructNode (node->left);                      \
-        destructNode (node);                            \
     }                                                   \
+    destructNode (node);                                \
+                                                        \
 } while (0)
 
 
-#define STANDARD_SIMPLIFICATION_RIGHT                   \
+#define SIMPLIFY_RIGHT_SIDE                             \
 do {                                                    \
-                                                        \
+    destructNode(node->right);                          \
     if (node->parent)                                   \
     {                                                   \
-        destructNodeRec(node->right);                   \
         if (node == node->parent->right)                \
             connectRight (node->parent, node->left);    \
-                                                        \
-        if (node == node->parent->left)                 \
+        else                                            \
             connectLeft (node->parent, node->left);     \
-                                                        \
-        destructNode (node);                            \
-                                                        \
     }                                                   \
     else                                                \
     {                                                   \
         node->myTree->root = node->left;                \
         node->left->parent = NULL;                      \
-        destructNode (node->right);                     \
-        destructNode (node);                            \
-                                                        \
     }                                                   \
+    destructNode (node);                                \
 } while (0)
 
 
-#define  CONST_FOLD(operator_)                                                                          \
-do {                                                                                                    \
-    char **ptrEnd = NULL;                                                                               \
-    double val = strtod (node->left->content, ptrEnd) operator_ strtod (node->right->content, ptrEnd);  \
-                                                                                                        \
-    destructNode (node->left);                                                                          \
-    destructNode (node->right);                                                                         \
-                                                                                                        \
-    val *= 100;                                                                                         \
-    val = round(val);                                                                                   \
-    int numCounter = 0;                                                                                 \
-                                                                                                        \
-        int helper = (int) val;                                                                         \
-        while (helper > 0)                                                                              \
-        {                                                                                               \
-            helper /= 10;                                                                               \
-            numCounter++;                                                                               \
-        }                                                                                               \
-    val /= 100;                                                                                         \
-                                                                                                        \
-    node->content = (char *) calloc ((size_t) (numCounter + 2), sizeof (char));                         \
-    sprintf (node->content, "%lg",  val);                                                               \
-    node->type = number;                                                                                \
-    node->left = NULL;                                                                                  \
-    node->right = NULL;                                                                                 \
-} while(0)
-
-
-int simplifyTree(Node *node)
+int simplifyExpression(calculator *calc)
 {
-    if (strcmp(node->content, "*") == 0)
-    {
-        if (strcmp(node->left->content, "0") == 0 || strcmp(node->right->content, "0") == 0)
-        {
-            destructNodeRec(node->left);
-            destructNodeRec(node->right);
-            *(node->content) = '0';
-            node->type = number;
-            node->right = NULL;
-            node->left = NULL;
-            TreeChecker++;
-            return 0;
-        }
-        if (strcmp(node->right->content, "1") == 0)
-        {
-            STANDARD_SIMPLIFICATION_RIGHT;
-            TreeChecker++;
-            return 0;
+    assert(calc);
+    assert(calc->tree.root);
 
-        }
-        if (strcmp(node->left->content, "1") == 0)
-        {
-            STANDARD_SIMPLIFICATION_LEFT;
-            TreeChecker++;
-            return 0;
-        }
+    Tree *tree = &calc->tree;
+    tree->eventFlag = 1;
 
-        if (node->right->type == number && node->left->type == number)
-        {
-            CONST_FOLD(*);
-            TreeChecker++;
-            return 0;
-        }
-        return 0;
-    }
-    if (strcmp(node->content, "+") == 0)
+    while (tree->eventFlag)
     {
-        if (strcmp(node->left->content, "0") == 0)
-        {
-            STANDARD_SIMPLIFICATION_LEFT;
-            TreeChecker++;
-            return 0;
-        }
-        if (strcmp(node->right->content, "0") == 0)
-        {
-            STANDARD_SIMPLIFICATION_RIGHT;
-            TreeChecker++;
-            return 0;
-        }
-        if (node->right->type == number && node->left->type == number)
-        {
-            CONST_FOLD(+);
-            TreeChecker++;
-            return 0;
-        }
-        return 0;
+        tree->eventFlag = 0;
+        visitTree(tree->root, simplifyTreeRec);
     }
-    if (strcmp(node->content, "-") == 0)
+    return 0;
+}
+
+
+int simplifyTreeRec(Node *node)
+{
+    switch (node->type)
     {
-        if (strcmp(node->right->content, "0") == 0)
+        case Mul:
         {
-            STANDARD_SIMPLIFICATION_RIGHT;
-            TreeChecker++;
+            if (strcmp(node->left->content, "0") == 0 || strcmp(node->right->content, "0") == 0)
+            {
+                node->myTree->eventFlag = 1;
+
+                destructNodeRec(node->left);
+                destructNodeRec(node->right);
+
+                *(node->content) = '0';
+                node->type = Number;
+                node->right = NULL;
+                node->left = NULL;
+                return 1;
+            }
+            if (strcmp(node->right->content, "1") == 0)
+            {
+                node->myTree->eventFlag = 1;
+                SIMPLIFY_RIGHT_SIDE;
+                return 1;
+            }
+            if (strcmp(node->left->content, "1") == 0)
+            {
+                node->myTree->eventFlag = 1;
+                SIMPLIFY_LEFT_SIDE;
+                return 1;
+            }
+            if (node->right->type == Number && node->left->type == Number)
+            {
+                node->myTree->eventFlag = 1;
+                foldConstants(node, Mul);
+                return 1;
+            }
             return 0;
         }
-        if (strcmp(node->left->content, "0") == 0)
+        case Add:
         {
-            char str1[] = "-1";
-            char str2[] = "*";
-            nodeSetName(node->left, str1);
-            node->left->type = number;
-            nodeSetName(node, str2);
-            node->type = Mul;
-            TreeChecker++;
+            if (strcmp(node->left->content, "0") == 0)
+            {
+                node->myTree->eventFlag = 1;
+                SIMPLIFY_LEFT_SIDE;
+                return 1;
+            }
+            if (strcmp(node->right->content, "0") == 0)
+            {
+                node->myTree->eventFlag = 1;
+                SIMPLIFY_RIGHT_SIDE;
+                return 1;
+            }
+            if (node->right->type == Number && node->left->type == Number)
+            {
+                node->myTree->eventFlag = 1;
+                foldConstants(node, Add);
+                return 1;
+            }
             return 0;
         }
-        if (node->right->type == number && node->left->type == number)
+        case Sub:
         {
-            CONST_FOLD(-);
-            TreeChecker++;
+            if (strcmp(node->right->content, "0") == 0)
+            {
+                node->myTree->eventFlag = 1;
+                SIMPLIFY_RIGHT_SIDE;
+                return 1;
+            }
+            if (strcmp(node->left->content, "0") == 0)
+            {
+                node->myTree->eventFlag = 1;
+
+                nodeSetName(node->left, "-1");
+                node->left->type = Number;
+                nodeSetName(node, "*");
+                node->type = Mul;
+                return 1;
+            }
+            if (node->right->type == Number && node->left->type == Number)
+            {
+                node->myTree->eventFlag = 1;
+                foldConstants(node, Sub);
+                return 1;
+            }
             return 0;
         }
-        return 0;
-    }
-    if (strcmp(node->content, "^") == 0)
-    {
-        if (strcmp(node->left->content, "0") == 0)
+        case Expo:
         {
-            destructNodeRec(node->left);
-            destructNodeRec(node->right);
-            *(node->content) = '0';
-            node->type = number;
-            node->right = NULL;
-            node->left = NULL;
-            TreeChecker++;
+            if (strcmp(node->left->content, "0") == 0)
+            {
+                destructNodeRec(node->left);
+                destructNodeRec(node->right);
+
+                *(node->content) = '0';
+                node->type = Number;
+                node->right = NULL;
+                node->left = NULL;
+
+                node->myTree->eventFlag = 1;
+                return 1;
+            }
+            if (strcmp(node->left->content, "1") == 0)
+            {
+                destructNodeRec(node->left);
+                destructNodeRec(node->right);
+
+                *(node->content) = '1';
+                node->type = Number;
+                node->right = NULL;
+                node->left = NULL;
+
+                node->myTree->eventFlag = 1;
+                return 1;
+            }
+            if (strcmp(node->right->content, "0") == 0)
+            {
+                destructNodeRec(node->left);
+                destructNodeRec(node->right);
+
+                *(node->content) = '1';
+                node->type = Number;
+                node->right = NULL;
+                node->left = NULL;
+
+                node->myTree->eventFlag = 1;
+                return 1;
+            }
+            if (strcmp(node->right->content, "1") == 0)
+            {
+                node->myTree->eventFlag = 1;
+                SIMPLIFY_RIGHT_SIDE;
+                return 1;
+            }
             return 0;
         }
-        if (strcmp(node->left->content, "1") == 0)
+        case Div:
         {
-            destructNodeRec(node->left);
-            destructNodeRec(node->right);
-            *(node->content) = '1';
-            node->type = number;
-            node->right = NULL;
-            node->left = NULL;
-            TreeChecker++;
+            if (node->right->type == Number && node->left->type == Number)
+            {
+                foldConstants(node, Div);
+
+                node->myTree->eventFlag = 1;
+                return 1;
+            }
+            if (strcmp(node->left->content, "0") == 0)
+            {
+                destructNodeRec(node->left);
+                destructNodeRec(node->right);
+
+                *(node->content) = '0';
+                node->type = Number;
+                node->right = NULL;
+                node->left = NULL;
+
+                node->myTree->eventFlag = 1;
+                return 1;
+            }
             return 0;
         }
-        if (strcmp(node->right->content, "0") == 0)
-        {
-            destructNodeRec(node->left);
-            destructNodeRec(node->right);
-            *(node->content) = '1';
-            node->type = number;
-            node->right = NULL;
-            node->left = NULL;
-            TreeChecker++;
+        default:
             return 0;
-        }
-        if (strcmp(node->right->content, "1") == 0)
-        {
-            STANDARD_SIMPLIFICATION_RIGHT;
-            TreeChecker++;
-        }
-        return 0;
-    }
-    if (strcmp(node->content, "/") == 0)
-    {
-        if (node->right->type == number && node->left->type == number)
-        {
-            CONST_FOLD(/);
-            TreeChecker++;
-            return 0;
-        }
-        if (strcmp(node->left->content, "0") == 0)
-        {
-            destructNodeRec(node->left);
-            destructNodeRec(node->right);
-            *(node->content) = '0';
-            node->type = number;
-            node->right = NULL;
-            node->left = NULL;
-            TreeChecker++;
-            return 0;
-        }
     }
 }
 
 
-Node *findComplexDerivative(const Node *mainNode, calculator *calc,
+Node *findComplexDerivative(const Node *node, calculator *calc,
                             Node *(func)(const Node *node, calculator *calc))
 {
+    assert(func);
+    assert(node);
+
     Node *mul = createNode(Mul, "*", &calc->tree);
-    connectLeft(mul, func(mainNode, calc));
-    connectRight(mul, makeDerivativeStep(mainNode, calc));
+    connectLeft(mul, func(node, calc));
+    connectRight(mul, makeDerivativeStep(node, calc));
     return mul;
 }
 
 
 Node *logDerivative(const Node *node, calculator *calc)
 {
+    assert(calc);
+    assert(node);
+
     Node *denominator = copyTree(node, &calc->tree);
     Node *mainNode = createNode(Div, "/", &calc->tree);
-    Node *leftNode = createNode(number, "1", &calc->tree);
+    Node *leftNode = createNode(Number, "1", &calc->tree);
     connectLeft(mainNode, leftNode);
     connectRight(mainNode, denominator);
     return mainNode;
@@ -540,6 +478,9 @@ Node *logDerivative(const Node *node, calculator *calc)
 
 Node *sinDerivative(const Node *node, calculator *calc)
 {
+    assert(calc);
+    assert(node);
+
     Node *cosContent = copyTree(node, &calc->tree);
     Node *mainNode = createNode(Cos, "cos", &calc->tree);
     connectLeft(mainNode, cosContent);
@@ -549,9 +490,12 @@ Node *sinDerivative(const Node *node, calculator *calc)
 
 Node *cosDerivative(const Node *node, calculator *calc)
 {
+    assert(calc);
+    assert(node);
+
     Node *sinContent = copyTree(node, &calc->tree);
     Node *mainNode = createNode(Mul, "*", &calc->tree);
-    Node *rightNode = createNode(number, "-1", &calc->tree);
+    Node *rightNode = createNode(Number, "-1", &calc->tree);
 
     Node *leftNode = createNode(Sin, "sin", &calc->tree);
     connectLeft(leftNode, sinContent);
@@ -564,6 +508,7 @@ Node *cosDerivative(const Node *node, calculator *calc)
 
 Node *addDerivative(const Node *node, calculator *calc)
 {
+    assert(calc);
     assert(node);
     assert(node->right);
     assert(node->left);
@@ -581,6 +526,7 @@ Node *addDerivative(const Node *node, calculator *calc)
 
 Node *subDerivative(const Node *node, calculator *calc)
 {
+    assert(calc);
     assert(node);
     assert(node->right);
     assert(node->left);
@@ -598,6 +544,7 @@ Node *subDerivative(const Node *node, calculator *calc)
 
 Node *mulDerivative(const Node *node, calculator *calc)
 {
+    assert(calc);
     assert(node);
     assert(node->right);
     assert(node->left);
@@ -627,6 +574,7 @@ Node *mulDerivative(const Node *node, calculator *calc)
 
 Node *divDerivative(const Node *node, calculator *calc)
 {
+    assert(calc);
     assert(node);
     assert(node->right);
     assert(node->left);
@@ -669,6 +617,11 @@ Node *divDerivative(const Node *node, calculator *calc)
 
 Node *expDerivative(const Node *node, calculator *calc)
 {
+    assert(calc);
+    assert(node);
+    assert(node->right);
+    assert(node->left);
+
     Node *base1 = copyTree(node->left, &calc->tree);
     Node *base2 = copyTree(node->left, &calc->tree);
     Node *base4 = copyTree(node->left, &calc->tree);
@@ -687,7 +640,7 @@ Node *expDerivative(const Node *node, calculator *calc)
     Node *Cap1 = createNode(Expo, "^", &calc->tree);
     Node *Cap2 = createNode(Expo, "^", &calc->tree);
 
-    Node *log = createNode(Ln, "ln", &calc->tree);
+    Node *log = createNode(Log, "log", &calc->tree);
 
     connectLeft(ProNode1, log);
     connectLeft(log, base1);
@@ -708,7 +661,85 @@ Node *expDerivative(const Node *node, calculator *calc)
     connectLeft(Cap2, base4);
     connectRight(Cap2, mainMinus);
 
-    connectRight(mainMinus, createNode(number, "1", &calc->tree));
+    connectRight(mainMinus, createNode(Number, "1", &calc->tree));
     connectLeft(mainMinus, index4);
     return MainPlus;
+}
+
+
+int foldConstants(Node *node, int operation)
+{
+    assert(node);
+    double firstVal = strtod(node->left->content, NULL),
+            secondVal = strtod(node->right->content, NULL);
+    double result = 0;
+
+    destructNode(node->left);
+    destructNode(node->right);
+    free(node->content);
+
+    node->right = NULL;
+    node->left = NULL;
+    node->type = Number;
+
+    switch (operation)
+    {
+        case Add:
+        {
+            result = firstVal + secondVal;
+            break;
+        }
+        case Sub:
+        {
+            result = firstVal - secondVal;
+            break;
+        }
+        case Mul:
+        {
+            result = firstVal * secondVal;
+            break;
+        }
+        case Div:
+        {
+            result = firstVal / secondVal;
+            break;
+        }
+        case Expo:
+        {
+            result = pow(firstVal, secondVal);
+            break;
+        }
+        default:
+            return 1;
+    }
+    node->content = (char *) calloc(MAX_VALUE_LENGTH, sizeof(char));
+    snprintf(node->content, MAX_VALUE_LENGTH, "%lg", result);
+
+    return 0;
+}
+
+
+int constructCalculator(calculator *calc, const char *outputFileName)
+{
+    assert(calc);
+    assert(outputFileName);
+
+    FILE *output = fopen(outputFileName, "w");
+    if (!output)
+        return 1;
+
+    calc->texFile = output;
+    treeConstruct(&calc->tree);
+    return 0;
+}
+
+
+int destructCalculator(calculator *calc)
+{
+    assert(calc);
+    if (calc->texFile)
+        fclose(calc->texFile);
+
+    destructTree(&calc->tree);
+    return 0;
 }

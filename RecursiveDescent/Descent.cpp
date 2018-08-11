@@ -332,7 +332,7 @@ Node *GetFunc(parser *pars)
     }
 
     Node *func = NULL;
-    nodeConstruct(&func);
+    constructNode(&func);
     func->myTree = &pars->tree;
 
     func->content = (char *) calloc(tokenSize + 1, sizeof(char));
@@ -343,7 +343,7 @@ Node *GetFunc(parser *pars)
     if (status)
         return NULL;
 
-    if (func->type != curVariable && func->type != charConst)
+    if (func->type != CurVariable && func->type != CharConst)
     {
         Node *FuncArg = GetBranches(pars);
         if (!FuncArg)
@@ -372,9 +372,9 @@ Node *GetNumber(parser *pars)
     assert(pars);
     SKIP_SPASES;
 
-    Node *Number = NULL;
-    nodeConstruct(&Number);
-    Number->myTree = &pars->tree;
+    Node *number = NULL;
+    constructNode(&number);
+    number->myTree = &pars->tree;
 
     size_t sizeOfNumber = 0;
     double val = 0;
@@ -385,15 +385,16 @@ Node *GetNumber(parser *pars)
         return NULL;
 
     pars->curCodePos += sizeOfNumber;
-    Number->content = (char *) calloc(sizeOfNumber + 1, sizeof(char));
-    sprintf(Number->content, "%lg", val);
-    Number->type = number;
+    number->content = (char *) calloc(sizeOfNumber + 1, sizeof(char));
+    sprintf(number->content, "%lg", val);
+    number->type = Number;
 
-    return Number;
+    return number;
 }
 
+#define  DEF_CMD_UNARY DEF_CMD
 
-#define  DEF_CMD(operator_, number, code)                   \
+#define  DEF_CMD(operator_, number, func)                   \
     else if (strcmp (#operator_, node->content) == 0)       \
      {                                                      \
         node->type = number;                                \
@@ -409,18 +410,18 @@ int contentAnalyze(Node *node, parser *pars)
 
     if (strcmp(pars->curVar, node->content) == 0)
     {
-        node->type = curVariable;
+        node->type = CurVariable;
         return 0;
     }
 
-#include "MathFunc.h"
+#include "../Commands/MathFunc.h"
 
     else
     {
         SKIP_SPASES;
         if (pars->code[pars->curCodePos] != '(')
         {
-            node->type = charConst;
+            node->type = CharConst;
             return 0;
         }
         else
@@ -431,6 +432,9 @@ int contentAnalyze(Node *node, parser *pars)
     }
 }
 
+
+#undef DEF_CMD
+#undef DEF_CMD_UNARY
 
 int throw_error(unsigned int err_num, const char *usr_msg, const char *err_msg, const char *_func, int _line,
                 const char *_file)

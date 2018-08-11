@@ -3,7 +3,7 @@
 #include <cstring>
 #include <string.h>
 
-#include "../Differentiator/Differentiator.h"
+#include "Tree.h"
 
 void connectRight(Node *mainNode, Node *rightNode)
 {
@@ -28,26 +28,25 @@ void connectLeft(Node *mainNode, Node *leftNode)
     mainNode->myTree->nodeAmount++;
 }
 
-void treeVisitorInf(Node *node, int nodeFunc(Node *node))
+void visitTree(Node *node, int func(Node *node))
 {
     if (node->left)
-        treeVisitorInf(node->left, nodeFunc);
+        visitTree(node->left, func);
     if (node->right)
-        treeVisitorInf(node->right, nodeFunc);
-    nodeFunc(node);
+        visitTree(node->right, func);
+    func(node);
 }
 
-int nodeCount(Node *node)
+int countNodes(Node *node)
 {
     node->myTree->nodeAmount++;
     return 0;
-
 }
 
 #define RETURN_COND(cond) return (cond) ? 0 : 1;
 
 
-int nodeConstruct(Node **node)
+int constructNode(Node **node)
 {
     Node *elem = (Node *) calloc(1, sizeof(Node));
     *node = elem;
@@ -55,11 +54,10 @@ int nodeConstruct(Node **node)
 }
 
 
-int nodeSetName(Node *node, char *content)
+int nodeSetName(Node *node, const char *content)
 {
     node->content = (char *) calloc(strlen(content) + 1, sizeof(char));
     strcpy(node->content, content);
-
     RETURN_COND (node->content)
 }
 
@@ -68,7 +66,7 @@ Node *copyTree(const Node *node, Tree *newTree)
 {
     assert (node);
     Node *retNode;
-    nodeConstruct(&retNode);
+    constructNode(&retNode);
 
     retNode->type = node->type;
     retNode->content = (char *) calloc(strlen(node->content) + 1, sizeof(char));
@@ -81,14 +79,12 @@ Node *copyTree(const Node *node, Tree *newTree)
         retNode->left->parent = retNode;
         retNode->left->myTree = newTree;
     }
-
     if (node->right)
     {
         retNode->right = copyTree(node->right, newTree);
         retNode->right->parent = retNode;
         retNode->right->myTree = newTree;
     }
-
     return retNode;
 }
 
@@ -96,7 +92,8 @@ int treeConstruct(Tree *tree)
 {
     assert (tree);
     tree->root = NULL;
-    tree->nodeAmount = 1;
+    tree->eventFlag = 0;
+    tree->nodeAmount = 0;
     return 0;
 }
 
@@ -120,26 +117,23 @@ void destructTree(Tree *tree)
 
 void destructNodeRec(Node *node)
 {
-
     if (node->left)
         destructNodeRec(node->left);
-
     if (node->right)
         destructNodeRec(node->right);
-
     destructNode(node);
 }
 
 
-Node *createNode(const char type, const char *content, Tree *FinalTree)
+Node *createNode(int type, const char *content, Tree *newTree)
 {
     assert (content);
-    assert (FinalTree);
+    assert (newTree);
 
     Node *mainNode = {};
-    nodeConstruct(&mainNode);
+    constructNode(&mainNode);
 
-    mainNode->myTree = FinalTree;
+    mainNode->myTree = newTree;
     mainNode->content = (char *) calloc(strlen(content) + 1, sizeof(char));
 
     strcpy(mainNode->content, content);
@@ -148,27 +142,6 @@ Node *createNode(const char type, const char *content, Tree *FinalTree)
 }
 
 
-#define NODE_ADDING                                                                 \
-     if(*base + 1 < *base + strlen(*base))  {                                       \
-        *base += 2;                                                                 \
-    }                                                                               \
-    else   return 0;                                                                \
-                                                                                    \
-    nodeConstruct (&nodeHelp);                                                      \
-                                                                                    \
-    separatorPtr = strchr (*base, SEPARATOR);                                       \
-                                                                                    \
-        lengthOfContent = (size_t) (separatorPtr - *base) ;                         \
-        nodeHelp->content = (char *) calloc (lengthOfContent + 2, sizeof (char));   \
-        memcpy (nodeHelp->content, *base, lengthOfContent);                         \
-                                                                                    \
-        printf;\
-    *base += lengthOfContent + 1;
-
-
-#undef RETURN_CONDITION
-
-#undef NODE_ADDING
 
 #define PRINTOUT_REC(function)                                                         \
     if (n->left != NULL)                                                               \
@@ -188,7 +161,7 @@ Node *createNode(const char type, const char *content, Tree *FinalTree)
     CycleChecker = 0;
 
 
-int dumpRecNode(const Node *const n, int *NodeCounter, FILE *outPictureFile1)
+int dumpRecNode(const Node *n, int *NodeCounter, FILE *outPictureFile1)
 {
     fprintf(outPictureFile1,
             "Node%p [shape = record,  color = red, label = \"{ { %s| '%p' } | { parent| '%p' }  | { type | '%d' } | { Tree| '%p' }| ",
@@ -200,74 +173,25 @@ int dumpRecNode(const Node *const n, int *NodeCounter, FILE *outPictureFile1)
     (*NodeCounter)++;
 
     CYCLE_CHEACK
-
     PRINTOUT_REC(dumpRecNode)
-
     return CycleChecker;
-
 }
 
 
-int printRecNode(const Node *const n, int *NodeCounter, FILE *outPictureFile1)
+int printRecNode(const Node *n, int *NodeCounter, FILE *outPictureFile1)
 {
     if (n)
         fprintf(outPictureFile1, "Node%p [shape = record,  color = blue, label = \" { %s }\"] ", n,
-                (char *) n->content);
+                n->content);
     (*NodeCounter)++;
 
     CYCLE_CHEACK
     PRINTOUT_REC(printRecNode);
-
     return CycleChecker;
-
 }
 
 
 #undef CYCLE_CHEACK
-
-
-int printTreeFile(const Tree *const tree, const char *outFileName)
-{
-    FILE *outBaseFile = fopen(outFileName, "w");
-    int NodeCounterRec = 0;
-    printTreeFileRec(tree->root, &(tree->nodeAmount), &NodeCounterRec, outBaseFile);
-}
-
-
-int printTreeFileRec(const Node *const Node, const int *const NodeAmount, int *NodeCounterRec, FILE *outBaseFile1)
-{
-    static int tabsAmount = -1;
-    static int CycleChecker;
-
-    if (*NodeAmount == (*NodeCounterRec) || CycleChecker == 1)
-    {
-        CycleChecker = 1;
-        return CycleChecker;
-    }
-    else
-        CycleChecker = 0;
-
-    if (Node)
-    {
-        (*NodeCounterRec)++;
-        tabsAmount++;
-        for (int i = 0; i < tabsAmount; i++)
-            fprintf(outBaseFile1, "\t");
-
-        fprintf(outBaseFile1, "(%c%s%c\n", SEPARATOR, Node->content, SEPARATOR);
-        printTreeFileRec(Node->left, NodeAmount, NodeCounterRec, outBaseFile1);
-        printTreeFileRec(Node->right, NodeAmount, NodeCounterRec, outBaseFile1);
-
-        for (int i = 0; i < tabsAmount; i++)
-            fprintf(outBaseFile1, "\t");
-        fprintf(outBaseFile1, ")\n");
-        tabsAmount--;
-    }
-
-    return CycleChecker;
-}
-
-
 #undef PRINTOUT_REC
 
 
@@ -286,28 +210,22 @@ int printTreeFileRec(const Node *const Node, const int *const NodeAmount, int *N
     fclose (outPictureFile);                                                \
 
 
-int dumpTreePicture(const Tree *const tree, const char *outFileName)
+int dumpTreePicture(const Tree *tree, const char *outFileName)
 {
-
     FILE *outPictureFile = fopen(outFileName, "w");
-
     PRINTOUT_GLOBAL (dumpRecNode)
 
     system("dot -Tpng picture/dotDump.txt -o picture/Dump.png");
-
     return NodeCounter;
 }
 
 
-int printTree(const Tree *const tree, const char *outFileName)
+int printTree(const Tree *tree, const char *outFileName)
 {
-
     FILE *outPictureFile = fopen(outFileName, "w");
-
     PRINTOUT_GLOBAL (printRecNode)
 
     system("dot -Tpng picture/dotPrint.txt -o picture/Print.png");
-
     return NodeCounter;
 }
 

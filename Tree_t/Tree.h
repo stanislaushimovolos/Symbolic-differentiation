@@ -12,6 +12,7 @@ struct Node;
 struct Tree
 {
     Node *root;
+    int eventFlag;
     int nodeAmount;
 };
 
@@ -25,28 +26,21 @@ struct Node
     char *content;
 };
 
+int countNodes(Node *node);
 
-int nodeConstruct(Node **node);
-
-int nodeSetName(Node *node, char *content);
+int constructNode(Node **node);
 
 int treeConstruct(Tree *tree);
 
-int printTreeFileRec(const Node *const Node, const int *const NodeAmount, int *NodeCounterRec, FILE *outBaseFile1);
+int nodeSetName(Node *node, const char *content);
 
-int printTreeFile(const Tree *const tree, const char *outFileName);
+int printTree(const Tree *tree, const char *outFileName);
 
-int dumpRecNode(const Node *const n, int *nodeCounter, FILE *outPictureFile);
+int dumpTreePicture(const Tree *tree, const char *outFileName);
 
-int printRecNode(const Node *const n, int *NodeCounter, FILE *outPictureFile);
+int dumpRecNode(const Node *n, int *nodeCounter, FILE *outPictureFile);
 
-void connectRight(Node *mainNode, Node *rightNode);
-
-void connectLeft(Node *mainNode, Node *leftNode);
-
-int dumpTreePicture(const Tree *const tree, const char *outFileName);
-
-int printTree(const Tree *const tree, const char *outFileName);
+int printRecNode(const Node *n, int *NodeCounter, FILE *outPictureFile);
 
 void destructNode(Node *node);
 
@@ -54,12 +48,14 @@ void destructTree(Tree *tree);
 
 void destructNodeRec(Node *node);
 
-int nodeCount(Node *node);
+void visitTree(Node *node, int func(Node *node));
 
-void treeVisitorInf(Node *node, int
-nodeFunc(Node
-         *Node));
+void connectLeft(Node *mainNode, Node *leftNode);
+
+void connectRight(Node *mainNode, Node *rightNode);
 
 Node *copyTree(const Node *node, Tree *newTree);
 
-Node *createNode(const char type, const char *content, Tree *FinalTree);
+Node *createNode(int type, const char *content, Tree *newTree);
+
+

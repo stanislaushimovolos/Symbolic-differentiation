@@ -7,15 +7,15 @@
 
 enum
 {
-    number,
-    curVariable,
-    charConst,
+    Number,
+    CurVariable,
+    CharConst,
     Add,
     Sub,
     Mul,
     Div,
     Expo,
-    Ln,
+    Log,
     Sin,
     Cos
 };
@@ -31,11 +31,9 @@ struct parser
 
 struct calculator
 {
-
     Tree tree;
     FILE *texFile;
 };
-
 
 
 #endif //DIFF3_0_COMMANDS_H

@@ -14,6 +14,8 @@ int main()
     GetTree(&pars);
     findDerivative(&pars, &calc);
 
+    printTree(&pars.tree, outFilenameForDotPrint);
+
     destructParser(&pars);
     destructCalculator(&calc);
     return 0;

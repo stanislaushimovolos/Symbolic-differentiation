@@ -1,23 +1,17 @@
 digraph dump
 {
-Node0x559222673d50 [shape = record,  color = blue, label = " { + }"] Node0x559222673b10 [shape = record,  color = blue, label = " { + }"] Node0x559222673a50 [shape = record,  color = blue, label = " { + }"] Node0x559222673990 [shape = record,  color = blue, label = " { 1 }"] 
-Node0x559222673a50 -> Node0x559222673990
-Node0x5592226739f0 [shape = record,  color = blue, label = " { 0 }"] 
-Node0x559222673a50 -> Node0x5592226739f0
+Node0x55de7be9aed0 [shape = record,  color = blue, label = " { ^ }"] Node0x55de7be9ae70 [shape = record,  color = blue, label = " { x }"] 
+Node0x55de7be9aed0 -> Node0x55de7be9ae70
+Node0x55de7be9b050 [shape = record,  color = blue, label = " { + }"] Node0x55de7be9af90 [shape = record,  color = blue, label = " { ^ }"] Node0x55de7be9af30 [shape = record,  color = blue, label = " { x }"] 
+Node0x55de7be9af90 -> Node0x55de7be9af30
+Node0x55de7be9aff0 [shape = record,  color = blue, label = " { 2 }"] 
+Node0x55de7be9af90 -> Node0x55de7be9aff0
 
-Node0x559222673b10 -> Node0x559222673a50
-Node0x559222673ab0 [shape = record,  color = blue, label = " { 0 }"] 
-Node0x559222673b10 -> Node0x559222673ab0
+Node0x55de7be9b050 -> Node0x55de7be9af90
+Node0x55de7be9b110 [shape = record,  color = blue, label = " { / }"] Node0x55de7be9b0b0 [shape = record,  color = blue, label = " { 18 }"] 
+Node0x55de7be9b110 -> Node0x55de7be9b0b0
+Node0x55de7be9b170 [shape = record,  color = blue, label = " { 2.04 }"] 
+Node0x55de7be9b050 -> Node0x55de7be9b110
 
-Node0x559222673d50 -> Node0x559222673b10
-Node0x559222673bd0 [shape = record,  color = blue, label = " { * }"] Node0x559222673c30 [shape = record,  color = blue, label = " { / }"] Node0x559222673c90 [shape = record,  color = blue, label = " { 1 }"] 
-Node0x559222673c30 -> Node0x559222673c90
-Node0x559222673b70 [shape = record,  color = blue, label = " { 4 }"] 
-Node0x559222673c30 -> Node0x559222673b70
-
-Node0x559222673bd0 -> Node0x559222673c30
-Node0x559222673cf0 [shape = record,  color = blue, label = " { 0 }"] 
-Node0x559222673bd0 -> Node0x559222673cf0
-
-Node0x559222673d50 -> Node0x559222673bd0
+Node0x55de7be9aed0 -> Node0x55de7be9b050
 }

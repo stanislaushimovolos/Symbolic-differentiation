@@ -21,8 +21,12 @@ static const char *comments[] = {"After mental calculation: ",
                                  "If you are familiar with calculus: ",
                                  "It's not a secret that: "};
 
+#define MAX_VALUE_LENGTH 50
 
-int simplifyTree(Node *node);
+
+int simplifyTreeRec(Node *node);
+
+int simplifyExpression(calculator * cal);
 
 Node *logDerivative(const Node *node, calculator *calc);
 
@@ -42,16 +46,18 @@ Node *expDerivative(const Node *node, calculator *calc);
 
 Node *makeDerivativeStep(const Node *node, calculator *calc);
 
-Node *findComplexDerivative(const Node *mainNode, calculator *calc,
+Node *findComplexDerivative(const Node *node, calculator *calc,
                             Node *(func)(const Node *node, calculator *calc));
 
 int destructCalculator(calculator *calc);
 
+int foldConstants(Node *node, int operation);
+
 int findDerivative(const parser *pars, calculator *calc);
 
-int constructCalculator(calculator *calc, const char *inputFileName);
+int printExpressionTex(const Node *node, FILE *outFileName);
 
-int printExpressionTex(const Node *const node, int priority, FILE *outFileName);
+int constructCalculator(calculator *calc, const char *inputFileName);
 
 int texDerivativeStep(const Node *original, const Node *result, FILE *outFileName);
 
