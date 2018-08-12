@@ -3,10 +3,8 @@
 //
 
 #include "Descent.h"
-#include <assert.h>
-#include <iostream>
-#include <cstring>
-#include <math.h>
+
+const char difVariableFlag[] = "d/d";
 
 #define SKIP_SPASES                                                                     \
     while (isspace (pars->code[pars->curCodePos]))                                      \
@@ -23,7 +21,6 @@ int constructParser(parser *pars, const char *inputFileName)
 {
     ARG_CHECK(pars && inputFileName)
 
-    pars->tree = {};
     pars->curCodePos = 0;
     treeConstruct(&pars->tree);
 
@@ -372,7 +369,7 @@ Node *GetNumber(parser *pars)
     assert(pars);
     SKIP_SPASES;
 
-    size_t sizeOfNumber = 0;
+    int sizeOfNumber = 0;
     double val = 0;
 
     sscanf(pars->code + pars->curCodePos, "%lg%n", &val, &sizeOfNumber);

@@ -1,4 +1,4 @@
-#include <iostream>
+
 #include "Differentiator.h"
 #include "../RecursiveDescent/Descent.h"
 
@@ -7,15 +7,17 @@ int main()
     calculator calc = {};
     parser pars = {};
 
-    auto status = constructParser(&pars, inputFilename) &
-                  constructCalculator(&calc, outFileTex);
+    int status = constructParser(&pars, inputFilename) &
+                 constructCalculator(&calc, outFileTex);
     if (status)
         return status;
     GetTree(&pars);
     findDerivative(&pars, &calc);
 
-    //printTree(&pars.tree, outFilenameForDotPrint);
+    printTree(&calc.tree, outFilenameForDotDump, dumpRecNode);
+    system("dot -Tpng picture/dotDump.txt -o picture/Dump.png");
 
+    //printPlus(calc.tree.root);
     destructParser(&pars);
     destructCalculator(&calc);
 

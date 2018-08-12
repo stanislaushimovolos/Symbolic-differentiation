@@ -5,12 +5,14 @@
 #ifndef DIFF3_0_DESCENT_H
 #define DIFF3_0_DESCENT_H
 
-
+#include <assert.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
 #include "../Tree_t/Tree.h"
 #include "../Commands/Commands.h"
 
-const char inputFilename[] = "base/base.txt";
-const char difVariableFlag[] = "d/d";
+static const char inputFilename[] = "base/base.txt";
 
 enum
 {

@@ -1,10 +1,22 @@
 #include <assert.h>
-#include <iostream>
-#include <cstring>
 #include <math.h>
+#include <stdlib.h>
 
 #include "Differentiator.h"
 
+
+int printPlus(Node *node)
+{
+    if (node->type == Add)
+        printf("%p\n", node);
+    else return 1;
+
+    if (node->left)
+        printPlus(node->left);
+    if (node->right)
+        printPlus(node->right);
+    return 0;
+}
 
 int findDerivative(const parser *pars, calculator *calc)
 {

@@ -8,9 +8,9 @@
 #include "../Commands/Commands.h"
 
 
-const char outFileTex[] = "Tex/Diff_Super_Test";
-const char outFilenameForDotDump[] = "picture/dotDump.txt";
-const char outFilenameForDotPrint[] = "picture/dotPrint.txt";
+static const char outFileTex[] = "Tex/Diff_Super_Test";
+static const char outFilenameForDotDump[] = "picture/dotDump.txt";
+static const char outFilenameForDotPrint[] = "picture/dotPrint.txt";
 
 #define NUMBER_OF_COMMENTS 7
 static const char *comments[] = {"After mental calculation: ",
@@ -21,12 +21,10 @@ static const char *comments[] = {"After mental calculation: ",
                                  "If you are familiar with calculus: ",
                                  "It's not a secret that: "};
 
-#define MAX_VALUE_LENGTH 50
-
 
 int simplifyTreeRec(Node *node);
 
-int simplifyExpression(calculator * cal);
+int simplifyExpression(calculator *cal);
 
 Node *logDerivative(const Node *node, calculator *calc);
 
@@ -48,6 +46,8 @@ Node *makeDerivativeStep(const Node *node, calculator *calc);
 
 Node *findComplexDerivative(const Node *node, calculator *calc,
                             Node *(func)(const Node *node, calculator *calc));
+
+int printPlus(Node *node);
 
 int destructCalculator(calculator *calc);
 

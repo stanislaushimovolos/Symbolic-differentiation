@@ -3,27 +3,27 @@
 //
 #pragma once
 
-#include <iostream>
+#include <stdio.h>
 
 struct Node;
 
-struct Tree
+typedef struct
 {
-    Node *root;
+    struct Node *root;
     int eventFlag;
     int nodeAmount;
-};
+} Tree;
 
-struct Node
+typedef struct Node
 {
     int type;
-    Node *left;
-    Node *right;
-    Node *parent;
+    struct Node *left;
+    struct Node *right;
+    struct Node *parent;
     Tree *myTree;
     char *content;
     double value;
-};
+} Node;
 
 int countNodes(Node *node);
 
@@ -31,15 +31,17 @@ int constructNode(Node **node);
 
 int treeConstruct(Tree *tree);
 
-int nodeSetName(Node *node, const char *content);
+int dumpRecNode(const Node *n, FILE *outFile);
 
-int printTree(const Tree *tree, const char *outFileName);
+int printRecNode(const Node *n, FILE *outFile);
 
-int dumpTreePicture(const Tree *tree, const char *outFileName);
+int compareTrees(Node *firstRoot, Node *secondRoot);
 
-int dumpRecNode(const Node *n, int *nodeCounter, FILE *outPictureFile);
+int compareNodes(const Node *firstNode, const Node *secondNode);
 
-int printRecNode(const Node *n, int *NodeCounter, FILE *outPictureFile);
+int printTree(const Tree *tree,
+              const char *outputFileName, int (*func)(const Node *node, FILE *out));
+
 
 void destructNode(Node *node);
 
