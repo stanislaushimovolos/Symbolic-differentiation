@@ -3,8 +3,6 @@
 //
 #pragma once
 
-#define SEPARATOR '\"'
-
 #include <iostream>
 
 struct Node;
@@ -24,6 +22,7 @@ struct Node
     Node *parent;
     Tree *myTree;
     char *content;
+    double value;
 };
 
 int countNodes(Node *node);
@@ -56,6 +55,10 @@ void connectRight(Node *mainNode, Node *rightNode);
 
 Node *copyTree(const Node *node, Tree *newTree);
 
-Node *createNode(int type, const char *content, Tree *newTree);
+Node *createTypeNode(int type, Tree *newTree);
+
+Node *createNumericalNode(int type, double value, Tree *newTree);
+
+Node *createLiteralNode(int type, const char *content, Tree *newTree);
 
 

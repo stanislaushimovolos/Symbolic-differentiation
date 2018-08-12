@@ -1,17 +1,21 @@
 digraph dump
 {
-Node0x55de7be9aed0 [shape = record,  color = blue, label = " { ^ }"] Node0x55de7be9ae70 [shape = record,  color = blue, label = " { x }"] 
-Node0x55de7be9aed0 -> Node0x55de7be9ae70
-Node0x55de7be9b050 [shape = record,  color = blue, label = " { + }"] Node0x55de7be9af90 [shape = record,  color = blue, label = " { ^ }"] Node0x55de7be9af30 [shape = record,  color = blue, label = " { x }"] 
-Node0x55de7be9af90 -> Node0x55de7be9af30
-Node0x55de7be9aff0 [shape = record,  color = blue, label = " { 2 }"] 
-Node0x55de7be9af90 -> Node0x55de7be9aff0
+Node0x560f661ac1d0 [shape = record,  color = blue, label = " { + }"] Node0x560f661abed0 [shape = record,  color = blue, label = " { ^ }"] Node0x560f661abe70 [shape = record,  color = blue, label = " { x }"] 
+Node0x560f661abed0 -> Node0x560f661abe70
+Node0x560f661ac050 [shape = record,  color = blue, label = " { + }"] Node0x560f661abf90 [shape = record,  color = blue, label = " { ^ }"] Node0x560f661abf30 [shape = record,  color = blue, label = " { x }"] 
+Node0x560f661abf90 -> Node0x560f661abf30
+Node0x560f661abff0 [shape = record,  color = blue, label = " { 2 }"] 
+Node0x560f661abf90 -> Node0x560f661abff0
 
-Node0x55de7be9b050 -> Node0x55de7be9af90
-Node0x55de7be9b110 [shape = record,  color = blue, label = " { / }"] Node0x55de7be9b0b0 [shape = record,  color = blue, label = " { 18 }"] 
-Node0x55de7be9b110 -> Node0x55de7be9b0b0
-Node0x55de7be9b170 [shape = record,  color = blue, label = " { 2.04 }"] 
-Node0x55de7be9b050 -> Node0x55de7be9b110
+Node0x560f661ac050 -> Node0x560f661abf90
+Node0x560f661ac110 [shape = record,  color = blue, label = " { / }"] Node0x560f661ac0b0 [shape = record,  color = blue, label = " { 18 }"] 
+Node0x560f661ac110 -> Node0x560f661ac0b0
+Node0x560f661ac170 [shape = record,  color = blue, label = " { 2.04 }"] 
+Node0x560f661ac110 -> Node0x560f661ac170
 
-Node0x55de7be9aed0 -> Node0x55de7be9b050
-}
+Node0x560f661ac050 -> Node0x560f661ac110
+
+Node0x560f661abed0 -> Node0x560f661ac050
+
+Node0x560f661ac1d0 -> Node0x560f661abed0
+Node0x560f661ac230 [shape = record,  color = blue, label = " { 1 }"] }

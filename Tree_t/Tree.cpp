@@ -69,10 +69,14 @@ Node *copyTree(const Node *node, Tree *newTree)
     constructNode(&retNode);
 
     retNode->type = node->type;
-    retNode->content = (char *) calloc(strlen(node->content) + 1, sizeof(char));
-    strcpy(retNode->content, node->content);
-    retNode->myTree = node->myTree;
+    retNode->value = node->value;
 
+    if (node->content)
+    {
+        retNode->content = (char *) calloc(strlen(node->content) + 1, sizeof(char));
+        strcpy(retNode->content, node->content);
+    }
+    retNode->myTree = node->myTree;
     if (node->left)
     {
         retNode->left = copyTree(node->left, newTree);
@@ -125,7 +129,7 @@ void destructNodeRec(Node *node)
 }
 
 
-Node *createNode(int type, const char *content, Tree *newTree)
+Node *createLiteralNode(int type, const char *content, Tree *newTree)
 {
     assert (content);
     assert (newTree);
@@ -141,6 +145,31 @@ Node *createNode(int type, const char *content, Tree *newTree)
     return mainNode;
 }
 
+
+Node *createTypeNode(int type, Tree *newTree)
+{
+    assert(newTree);
+
+    Node *mainNode = {};
+    constructNode(&mainNode);
+    mainNode->myTree = newTree;
+
+    mainNode->type = type;
+    return mainNode;
+}
+
+
+Node *createNumericalNode(int type, double value, Tree *newTree)
+{
+    assert(newTree);
+
+    Node *mainNode = {};
+    constructNode(&mainNode);
+    mainNode->type = type;
+
+    mainNode->value = value;
+    return mainNode;
+}
 
 
 #define PRINTOUT_REC(function)                                                         \

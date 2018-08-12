@@ -152,7 +152,7 @@ Node *GetAddSub(parser *pars)
         {
             case '+':
             {
-                NodeAddSub = createNode(Add, "+", &pars->tree);
+                NodeAddSub = createTypeNode(Add, &pars->tree);
                 connectLeft(NodeAddSub, LeftNode);
 
                 Node *RightNode = GetMulDiv(pars);
@@ -168,7 +168,7 @@ Node *GetAddSub(parser *pars)
 
             case '-':
             {
-                NodeAddSub = createNode(Sub, "-", &pars->tree);
+                NodeAddSub = createTypeNode(Sub, &pars->tree);
                 connectLeft(NodeAddSub, LeftNode);
 
                 Node *RightNode = GetMulDiv(pars);
@@ -214,7 +214,7 @@ Node *GetMulDiv(parser *pars)
         {
             case '*':
             {
-                NodeMulDiv = createNode(Mul, "*", &pars->tree);
+                NodeMulDiv = createTypeNode(Mul, &pars->tree);
                 connectLeft(NodeMulDiv, LeftNode);
 
                 Node *RightNode = GetExpo(pars);
@@ -229,7 +229,7 @@ Node *GetMulDiv(parser *pars)
             }
             case '/':
             {
-                NodeMulDiv = createNode(Div, "/", &pars->tree);
+                NodeMulDiv = createTypeNode(Div, &pars->tree);
                 connectLeft(NodeMulDiv, LeftNode);
 
                 Node *RightNode = GetExpo(pars);
@@ -267,7 +267,7 @@ Node *GetExpo(parser *pars)
     {
         SKIP_SPASES;
         pars->curCodePos++;
-        NodeExpo = createNode(Expo, "^", &pars->tree);
+        NodeExpo = createTypeNode(Expo, &pars->tree);
         connectLeft(NodeExpo, LeftNode);
 
         Node *RightNode = GetBranches(pars);
@@ -372,10 +372,6 @@ Node *GetNumber(parser *pars)
     assert(pars);
     SKIP_SPASES;
 
-    Node *number = NULL;
-    constructNode(&number);
-    number->myTree = &pars->tree;
-
     size_t sizeOfNumber = 0;
     double val = 0;
 
@@ -385,9 +381,7 @@ Node *GetNumber(parser *pars)
         return NULL;
 
     pars->curCodePos += sizeOfNumber;
-    number->content = (char *) calloc(sizeOfNumber + 1, sizeof(char));
-    sprintf(number->content, "%lg", val);
-    number->type = Number;
+    Node * number = createNumericalNode(Number, val, &pars->tree);
 
     return number;
 }
