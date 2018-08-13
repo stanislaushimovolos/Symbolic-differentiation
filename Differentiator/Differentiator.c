@@ -25,8 +25,8 @@ int findDerivative(const parser *pars, calculator *calc)
     fclose(calc->texFile);
     calc->texFile = NULL;
 
-    system("pdflatex -output-directory Tex/ Tex/Diff_Super_Test");
-    system("sensible-browser Tex/Diff_Super_Test.pdf &");
+    system("pdflatex -output-directory ../Tex/ ../Tex/Diff_Super_Test");
+    system("sensible-browser ../Tex/Diff_Super_Test.pdf &");
 
     return 0;
 }
@@ -87,8 +87,8 @@ Node *findComplexDerivative(const Node *node, calculator *calc,
     assert(node);
 
     Node *mul = createTypeNode(Mul, &calc->tree);
-    connectLeft(mul, func(node, calc));
-    connectRight(mul, makeDerivativeStep(node, calc));
+    connectRight(mul, func(node, calc));
+    connectLeft(mul, makeDerivativeStep(node, calc));
     return mul;
 }
 
@@ -406,17 +406,60 @@ int simplifyExpression(calculator *calc)
     Tree *tree = &calc->tree;
     tree->eventFlag = 1;
 
+    prepareTreeForSimplification(tree->root);
     while (tree->eventFlag)
     {
         tree->eventFlag = 0;
+        visitTree(tree->root, simplifyTreeAddition);
+        visitTree(tree->root, simplifyTreeMultiplication);
         visitTree(tree->root, simplifyTreeNumerical);
-    }
 
+    }
     return 0;
 }
 
 
-int createListOfSimilarTerms(const Node *node, List *lst)
+int prepareTreeForSimplification(Node *node)
+{
+    assert(node);
+
+    if (node->left)
+        prepareTreeForSimplification(node->left);
+    if (node->right)
+        prepareTreeForSimplification(node->right);
+
+    switch (node->type)
+    {
+        case Sub:
+        {
+            node->type = Add;
+            Node *multiplyNode = createTypeNode(Mul, node->myTree);
+
+            connectRight(multiplyNode, node->right);
+            connectLeft(multiplyNode, createNumericalNode(Number, -1, node->myTree));
+            connectRight(node, multiplyNode);
+            return 1;
+        }
+        case Mul:
+        {
+            if (node->right->type == Number
+                && node->left->type != Number)
+            {
+                Node *keeper = node->left;
+                connectLeft(node, node->right);
+                connectRight(node, keeper);
+
+                return 1;
+            }
+            return 0;
+        }
+        default:
+            return 0;
+    }
+}
+
+
+int findSimilarTerms(const Node *node, List *lst)
 {
     assert(node);
     assert(lst);
@@ -425,15 +468,15 @@ int createListOfSimilarTerms(const Node *node, List *lst)
     {
         case Add:
         {
-            if (node->left->type != Add && node->left->type != Sub)
+            if (node->left->type != Add)
                 push(node->left, lst);
             else
-                createListOfSimilarTerms(node->left, lst);
+                findSimilarTerms(node->left, lst);
 
-            if (node->right->type != Add && node->right->type != Sub)
+            if (node->right->type != Add)
                 push(node->right, lst);
             else
-                createListOfSimilarTerms(node->right, lst);
+                findSimilarTerms(node->right, lst);
             return 1;
         }
         default:
@@ -442,11 +485,80 @@ int createListOfSimilarTerms(const Node *node, List *lst)
 }
 
 
-int simplifySimilarities(Node *node)
+int findNumericalMultipliers(const Node *node, List *lst)
+{
+    switch (node->type)
+    {
+        case Mul:
+        {
+            if (node->left->type == Number)
+                push(node->left, lst);
+            else
+                findNumericalMultipliers(node->left, lst);
+
+            if (node->right->type == Number)
+                push(node->right, lst);
+            else
+                findNumericalMultipliers(node->right, lst);
+            return 1;
+        }
+        default:
+            return 0;
+    }
+}
+
+
+int simplifyTreeMultiplication(Node *node)
 {
     List lst = {};
     constructList(&lst);
-    createListOfSimilarTerms(node, &lst);
+    findNumericalMultipliers(node, &lst);
+
+    if (lst.nodeCounter > 1)
+    {
+        node->myTree->eventFlag = 1;
+        listNode *iterator = lst.start;
+        Tree *tree = node->myTree;
+
+        double multiplier = 1;
+        while (iterator->next)
+        {
+            multiplier *= iterator->data->value;
+            iterator->data->value = 1;
+            iterator = iterator->next;
+        }
+
+        Node *mainNode = createTypeNode(Mul, tree);
+        connectLeft(mainNode, createNumericalNode(Number, multiplier, tree));
+
+        if (node->parent)
+            if (node->parent->left == node)
+            {
+                connectLeft(node->parent, mainNode);
+                connectRight(mainNode, node);
+            }
+            else
+            {
+                connectRight(node->parent, mainNode);
+                connectRight(mainNode, node);
+            }
+        else
+        {
+            node->myTree->root = mainNode;
+            connectRight(mainNode, node);
+        }
+    }
+
+    destructList(lst.start);
+    return 0;
+}
+
+
+int simplifyTreeAddition(Node *node)
+{
+    List lst = {};
+    constructList(&lst);
+    findSimilarTerms(node, &lst);
 
     if (lst.nodeCounter > 1)
     {
@@ -570,8 +682,6 @@ Node *mergeTrees(Node *main, Node *filial, double value)
 
 int simplifyTreeNumerical(Node *node)
 {
-    simplifySimilarities(node);
-
     switch (node->type)
     {
         case Mul:
@@ -966,9 +1076,12 @@ int printExpressionTex(const Node *node, FILE *outFileName)
 int eraseNode(listNode *node)
 {
     assert(node);
-    node->prev->next = node->next;
-    node->next->prev = node->prev;
+    if (node->prev)
+        node->prev->next = node->next;
+    if (node->next)
+        node->next->prev = node->prev;
 
+    node->parent->nodeCounter--;
     free(node);
     return 0;
 }
@@ -984,7 +1097,7 @@ int constructList(List *lst)
     lst->current->prev = NULL;
     lst->current->data = NULL;
 
-    lst->nodeCounter = 1;
+    lst->nodeCounter = 0;
     return 0;
 }
 

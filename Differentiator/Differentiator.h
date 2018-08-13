@@ -9,9 +9,9 @@
 #include "../Commands/Commands.h"
 
 
-static const char outFileTex[] = "Tex/Diff_Super_Test";
-static const char outFilenameForDotDump[] = "picture/dotDump.txt";
-static const char outFilenameForDotPrint[] = "picture/dotPrint.txt";
+static const char outFileTex[] = "../Tex/Diff_Super_Test";
+static const char outFilenameForDotDump[] = "../picture/dotDump.txt";
+static const char outFilenameForDotPrint[] = "../picture/dotPrint.txt";
 
 #define NUMBER_OF_COMMENTS 7
 static const char *comments[] = {"After mental calculation: ",
@@ -41,16 +41,17 @@ typedef struct listNode
     List *parent;
 } listNode;
 
+int simplifyTreeMultiplication(Node *node);
 
-Node *mergeTrees(Node *main, Node *second, double value);
-
-int createListOfSimilarTerms(const Node *node, List *lst);
+int simplifyTreeAddition(Node *node);
 
 int simplifyTreeNumerical(Node *node);
 
-int simplifySimilarities(Node *node);
-
 int simplifyExpression(calculator *cal);
+
+int findSimilarTerms(const Node *node, List *lst);
+
+int prepareTreeForSimplification(Node *node);
 
 Node *logDerivative(const Node *node, calculator *calc);
 
@@ -67,6 +68,8 @@ Node *mulDerivative(const Node *node, calculator *calc);
 Node *divDerivative(const Node *node, calculator *calc);
 
 Node *expDerivative(const Node *node, calculator *calc);
+
+Node *mergeTrees(Node *main, Node *second, double value);
 
 Node *makeDerivativeStep(const Node *node, calculator *calc);
 

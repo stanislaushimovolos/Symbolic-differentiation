@@ -1,1 +1,1 @@
-d/dx x^(x+x)
+d/dx 3*x^x  + 2*x^x

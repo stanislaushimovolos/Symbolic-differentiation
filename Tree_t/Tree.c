@@ -32,6 +32,7 @@ void connectLeft(Node *mainNode, Node *leftNode)
 
 void visitTree(Node *node, int func(Node *node))
 {
+
     if (node->left)
         visitTree(node->left, func);
     if (node->right)

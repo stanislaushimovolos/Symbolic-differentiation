@@ -1,45 +1,33 @@
 digraph dump
 {
-Node0x54de300 [shape = record,  color = orange, label = " {{ parent | '(nil)' } | { self | 0x54de300 } | { content | (null) } | { type | '3' }| { value | '0' }}"]Node0x54de400 [shape = record,  color = orange, label = " {{ parent | '0x54de300' } | { self | 0x54de400 } | { content | (null) } | { type | '5' }| { value | '0' }}"]Node0x54de380 [shape = record,  color = orange, label = " {{ parent | '0x54de400' } | { self | 0x54de380 } | { content | (null) } | { type | '5' }| { value | '0' }}"]Node0x54de680 [shape = record,  color = orange, label = " {{ parent | '0x54de380' } | { self | 0x54de680 } | { content | (null) } | { type | '8' }| { value | '0' }}"]Node0x54dd9b0 [shape = record,  color = orange, label = " {{ parent | '0x54de680' } | { self | 0x54dd9b0 } | { content | x } | { type | '1' }| { value | '0' }}"]
-Node0x54de680 -> Node0x54dd9b0
+Node0x5649fa65ed20 [shape = record,  color = orange, label = " {{ parent | '(nil)' } | { self | 0x5649fa65ed20 } | { content | (null) } | { type | '5' }| { value | '0' }}"]Node0x5649fa65ece0 [shape = record,  color = orange, label = " {{ parent | '0x5649fa65ed20' } | { self | 0x5649fa65ece0 } | { content | (null) } | { type | '0' }| { value | '5' }}"]
+Node0x5649fa65ed20 -> Node0x5649fa65ece0
+Node0x5649fa65e9a0 [shape = record,  color = orange, label = " {{ parent | '0x5649fa65ed20' } | { self | 0x5649fa65e9a0 } | { content | (null) } | { type | '3' }| { value | '0' }}"]Node0x5649fa65ea20 [shape = record,  color = orange, label = " {{ parent | '0x5649fa65e9a0' } | { self | 0x5649fa65ea20 } | { content | (null) } | { type | '5' }| { value | '0' }}"]Node0x5649fa65eb60 [shape = record,  color = orange, label = " {{ parent | '0x5649fa65ea20' } | { self | 0x5649fa65eb60 } | { content | (null) } | { type | '8' }| { value | '0' }}"]Node0x5649fa65e720 [shape = record,  color = orange, label = " {{ parent | '0x5649fa65eb60' } | { self | 0x5649fa65e720 } | { content | x } | { type | '1' }| { value | '0' }}"]
+Node0x5649fa65eb60 -> Node0x5649fa65e720
 
-Node0x54de380 -> Node0x54de680
-Node0x54deca0 [shape = record,  color = orange, label = " {{ parent | '0x54de380' } | { self | 0x54deca0 } | { content | (null) } | { type | '0' }| { value | '2' }}"]
-Node0x54de380 -> Node0x54deca0
+Node0x5649fa65ea20 -> Node0x5649fa65eb60
+Node0x5649fa65eae0 [shape = record,  color = orange, label = " {{ parent | '0x5649fa65ea20' } | { self | 0x5649fa65eae0 } | { content | (null) } | { type | '7' }| { value | '0' }}"]Node0x5649fa65e780 [shape = record,  color = orange, label = " {{ parent | '0x5649fa65eae0' } | { self | 0x5649fa65e780 } | { content | x } | { type | '1' }| { value | '0' }}"]
+Node0x5649fa65eae0 -> Node0x5649fa65e780
+Node0x5649fa65e840 [shape = record,  color = orange, label = " {{ parent | '0x5649fa65eae0' } | { self | 0x5649fa65e840 } | { content | x } | { type | '1' }| { value | '0' }}"]
+Node0x5649fa65eae0 -> Node0x5649fa65e840
 
-Node0x54de400 -> Node0x54de380
-Node0x54de580 [shape = record,  color = orange, label = " {{ parent | '0x54de400' } | { self | 0x54de580 } | { content | (null) } | { type | '7' }| { value | '0' }}"]Node0x54dda80 [shape = record,  color = orange, label = " {{ parent | '0x54de580' } | { self | 0x54dda80 } | { content | x } | { type | '1' }| { value | '0' }}"]
-Node0x54de580 -> Node0x54dda80
-Node0x54df0c0 [shape = record,  color = orange, label = " {{ parent | '0x54de580' } | { self | 0x54df0c0 } | { content | (null) } | { type | '5' }| { value | '0' }}"]Node0x54df140 [shape = record,  color = orange, label = " {{ parent | '0x54df0c0' } | { self | 0x54df140 } | { content | (null) } | { type | '0' }| { value | '2' }}"]
-Node0x54df0c0 -> Node0x54df140
-Node0x54ddca0 [shape = record,  color = orange, label = " {{ parent | '0x54df0c0' } | { self | 0x54ddca0 } | { content | x } | { type | '1' }| { value | '0' }}"]
-Node0x54df0c0 -> Node0x54ddca0
+Node0x5649fa65ea20 -> Node0x5649fa65eae0
 
-Node0x54de580 -> Node0x54df0c0
+Node0x5649fa65e9a0 -> Node0x5649fa65ea20
+Node0x5649fa65ea60 [shape = record,  color = orange, label = " {{ parent | '0x5649fa65e9a0' } | { self | 0x5649fa65ea60 } | { content | (null) } | { type | '5' }| { value | '0' }}"]Node0x5649fa65e8a0 [shape = record,  color = orange, label = " {{ parent | '0x5649fa65ea60' } | { self | 0x5649fa65e8a0 } | { content | x } | { type | '1' }| { value | '0' }}"]
+Node0x5649fa65ea60 -> Node0x5649fa65e8a0
+Node0x5649fa65eb20 [shape = record,  color = orange, label = " {{ parent | '0x5649fa65ea60' } | { self | 0x5649fa65eb20 } | { content | (null) } | { type | '7' }| { value | '0' }}"]Node0x5649fa65e7e0 [shape = record,  color = orange, label = " {{ parent | '0x5649fa65eb20' } | { self | 0x5649fa65e7e0 } | { content | x } | { type | '1' }| { value | '0' }}"]
+Node0x5649fa65eb20 -> Node0x5649fa65e7e0
+Node0x5649fa65e960 [shape = record,  color = orange, label = " {{ parent | '0x5649fa65eb20' } | { self | 0x5649fa65e960 } | { content | (null) } | { type | '3' }| { value | '0' }}"]Node0x5649fa65e900 [shape = record,  color = orange, label = " {{ parent | '0x5649fa65e960' } | { self | 0x5649fa65e900 } | { content | x } | { type | '1' }| { value | '0' }}"]
+Node0x5649fa65e960 -> Node0x5649fa65e900
+Node0x5649fa65f120 [shape = record,  color = orange, label = " {{ parent | '0x5649fa65e960' } | { self | 0x5649fa65f120 } | { content | (null) } | { type | '0' }| { value | '-1' }}"]
+Node0x5649fa65e960 -> Node0x5649fa65f120
 
-Node0x54de400 -> Node0x54de580
+Node0x5649fa65eb20 -> Node0x5649fa65e960
 
-Node0x54de300 -> Node0x54de400
-Node0x54de480 [shape = record,  color = orange, label = " {{ parent | '0x54de300' } | { self | 0x54de480 } | { content | (null) } | { type | '5' }| { value | '0' }}"]Node0x54df4e0 [shape = record,  color = orange, label = " {{ parent | '0x54de480' } | { self | 0x54df4e0 } | { content | (null) } | { type | '5' }| { value | '0' }}"]Node0x54df560 [shape = record,  color = orange, label = " {{ parent | '0x54df4e0' } | { self | 0x54df560 } | { content | (null) } | { type | '0' }| { value | '2' }}"]
-Node0x54df4e0 -> Node0x54df560
-Node0x54ddec0 [shape = record,  color = orange, label = " {{ parent | '0x54df4e0' } | { self | 0x54ddec0 } | { content | x } | { type | '1' }| { value | '0' }}"]
-Node0x54df4e0 -> Node0x54ddec0
+Node0x5649fa65ea60 -> Node0x5649fa65eb20
 
-Node0x54de480 -> Node0x54df4e0
-Node0x54de600 [shape = record,  color = orange, label = " {{ parent | '0x54de480' } | { self | 0x54de600 } | { content | (null) } | { type | '7' }| { value | '0' }}"]Node0x54ddb50 [shape = record,  color = orange, label = " {{ parent | '0x54de600' } | { self | 0x54ddb50 } | { content | x } | { type | '1' }| { value | '0' }}"]
-Node0x54de600 -> Node0x54ddb50
-Node0x54de280 [shape = record,  color = orange, label = " {{ parent | '0x54de600' } | { self | 0x54de280 } | { content | (null) } | { type | '4' }| { value | '0' }}"]Node0x54df960 [shape = record,  color = orange, label = " {{ parent | '0x54de280' } | { self | 0x54df960 } | { content | (null) } | { type | '5' }| { value | '0' }}"]Node0x54df9e0 [shape = record,  color = orange, label = " {{ parent | '0x54df960' } | { self | 0x54df9e0 } | { content | (null) } | { type | '0' }| { value | '2' }}"]
-Node0x54df960 -> Node0x54df9e0
-Node0x54de0e0 [shape = record,  color = orange, label = " {{ parent | '0x54df960' } | { self | 0x54de0e0 } | { content | x } | { type | '1' }| { value | '0' }}"]
-Node0x54df960 -> Node0x54de0e0
+Node0x5649fa65e9a0 -> Node0x5649fa65ea60
 
-Node0x54de280 -> Node0x54df960
-Node0x54de900 [shape = record,  color = orange, label = " {{ parent | '0x54de280' } | { self | 0x54de900 } | { content | (null) } | { type | '0' }| { value | '1' }}"]
-Node0x54de280 -> Node0x54de900
-
-Node0x54de600 -> Node0x54de280
-
-Node0x54de480 -> Node0x54de600
-
-Node0x54de300 -> Node0x54de480
+Node0x5649fa65ed20 -> Node0x5649fa65e9a0
 }

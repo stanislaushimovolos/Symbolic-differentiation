@@ -1,4 +1,3 @@
-
 #include "Differentiator.h"
 #include "../RecursiveDescent/Descent.h"
 
@@ -15,7 +14,7 @@ int main()
     findDerivative(&pars, &calc);
 
     printTree(&calc.tree, outFilenameForDotDump, dumpRecNode);
-    system("dot -Tpng picture/dotDump.txt -o picture/Dump.png");
+    system("dot -Tpng ../picture/dotDump.txt -o ../picture/Dump.png");
 
     destructParser(&pars);
     destructCalculator(&calc);
