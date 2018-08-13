@@ -134,10 +134,10 @@ Node *GetAddSub(parser *pars)
         return NULL;
 
     LeftNode->myTree = &pars->tree;
-    Node *NodeAddSub = NULL;
 
     SKIP_SPASES;
     int op = 0;
+
     while (pars->code[pars->curCodePos] == '+' ||
            pars->code[pars->curCodePos] == '-')
     {
@@ -149,8 +149,8 @@ Node *GetAddSub(parser *pars)
         {
             case '+':
             {
-                NodeAddSub = createTypeNode(Add, &pars->tree);
-                connectLeft(NodeAddSub, LeftNode);
+                Node *addNode = createTypeNode(Add, &pars->tree);
+                connectLeft(addNode, LeftNode);
 
                 Node *RightNode = GetMulDiv(pars);
                 if (!RightNode)
@@ -158,15 +158,15 @@ Node *GetAddSub(parser *pars)
                     printf("Incorrect expression after \"+\"\n");
                     return NULL;
                 }
-                connectRight(NodeAddSub, RightNode);
-                LeftNode = NodeAddSub;
+                connectRight(addNode, RightNode);
+                LeftNode = addNode;
                 break;
             }
 
             case '-':
             {
-                NodeAddSub = createTypeNode(Sub, &pars->tree);
-                connectLeft(NodeAddSub, LeftNode);
+                Node *subNode = createTypeNode(Sub, &pars->tree);
+                connectLeft(subNode, LeftNode);
 
                 Node *RightNode = GetMulDiv(pars);
                 if (!RightNode)
@@ -174,8 +174,8 @@ Node *GetAddSub(parser *pars)
                     printf("Incorrect expression after \"-\"\n");
                     return NULL;
                 }
-                connectRight(NodeAddSub, RightNode);
-                LeftNode = NodeAddSub;
+                connectRight(subNode, RightNode);
+                LeftNode = subNode;
                 break;
             }
             default:

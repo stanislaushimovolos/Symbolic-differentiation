@@ -40,14 +40,6 @@ void visitTree(Node *node, int func(Node *node))
 }
 
 
-int countNodes(Node *node)
-{
-    node->myTree->nodeAmount++;
-    int compareNodes(const Node *firstNode, const Node *secondNode);
-    return 0;
-}
-
-
 #define RETURN_COND(cond) return (cond) ? 0 : 1;
 
 int constructNode(Node **node)
@@ -253,7 +245,6 @@ int compareTrees(Node *firstRoot, Node *secondRoot)
     assert(secondRoot);
 
     int res = compareNodes(firstRoot, secondRoot);
-    //printf("Compare Nodes %d\n", res);
 
     if (!res)
         return 0;
@@ -264,7 +255,6 @@ int compareTrees(Node *firstRoot, Node *secondRoot)
             return 0;
 
         res = compareTrees(firstRoot->left, secondRoot->left);
-        //printf("Compare Lefts %d\n", res);
         if (!res)
             return 0;
     }
@@ -277,7 +267,6 @@ int compareTrees(Node *firstRoot, Node *secondRoot)
             return 0;
 
         res = compareTrees(firstRoot->right, secondRoot->right);
-        //printf("Compare Rights %d\n", res);
         if (!res)
             return 0;
     }

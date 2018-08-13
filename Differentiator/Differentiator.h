@@ -4,6 +4,7 @@
 
 #pragma  once
 
+#include <assert.h>
 #include "../Tree_t/Tree.h"
 #include "../Commands/Commands.h"
 
@@ -22,7 +23,32 @@ static const char *comments[] = {"After mental calculation: ",
                                  "It's not a secret that: "};
 
 
-int simplifyTreeRec(Node *node);
+struct listNode;
+
+typedef struct List
+{
+    struct listNode *current;
+    struct listNode *start;
+    int nodeCounter;
+} List;
+
+
+typedef struct listNode
+{
+    struct listNode *next;
+    struct listNode *prev;
+    Node *data;
+    List *parent;
+} listNode;
+
+
+Node *mergeTrees(Node *main, Node *second, double value);
+
+int createListOfSimilarTerms(const Node *node, List *lst);
+
+int simplifyTreeNumerical(Node *node);
+
+int simplifySimilarities(Node *node);
 
 int simplifyExpression(calculator *cal);
 
@@ -47,8 +73,6 @@ Node *makeDerivativeStep(const Node *node, calculator *calc);
 Node *findComplexDerivative(const Node *node, calculator *calc,
                             Node *(func)(const Node *node, calculator *calc));
 
-int printPlus(Node *node);
-
 int destructCalculator(calculator *calc);
 
 int foldConstants(Node *node, int operation);
@@ -60,4 +84,14 @@ int printExpressionTex(const Node *node, FILE *outFileName);
 int constructCalculator(calculator *calc, const char *inputFileName);
 
 int texDerivativeStep(const Node *original, const Node *result, FILE *outFileName);
+
+int constructList(List *lst);
+
+int push(Node *node, List *lst);
+
+int eraseNode(listNode *node);
+
+int dumpList(List *lst);
+
+int destructList(listNode *node);
 

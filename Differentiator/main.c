@@ -17,7 +17,6 @@ int main()
     printTree(&calc.tree, outFilenameForDotDump, dumpRecNode);
     system("dot -Tpng picture/dotDump.txt -o picture/Dump.png");
 
-    //printPlus(calc.tree.root);
     destructParser(&pars);
     destructCalculator(&calc);
 

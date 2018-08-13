@@ -1,22 +1,8 @@
-#include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 
 #include "Differentiator.h"
-
-
-int printPlus(Node *node)
-{
-    if (node->type == Add)
-        printf("%p\n", node);
-    else return 1;
-
-    if (node->left)
-        printPlus(node->left);
-    if (node->right)
-        printPlus(node->right);
-    return 0;
-}
+#include "../Tree_t/Tree.h"
 
 int findDerivative(const parser *pars, calculator *calc)
 {
@@ -41,9 +27,6 @@ int findDerivative(const parser *pars, calculator *calc)
 
     system("pdflatex -output-directory Tex/ Tex/Diff_Super_Test");
     system("sensible-browser Tex/Diff_Super_Test.pdf &");
-
-    calc->tree.nodeAmount = 0;
-    visitTree(calc->tree.root, countNodes);
 
     return 0;
 }
@@ -143,13 +126,13 @@ Node *cosDerivative(const Node *node, calculator *calc)
 
     Node *sinContent = copyTree(node, &calc->tree);
     Node *mainNode = createTypeNode(Mul, &calc->tree);
-    Node *rightNode = createNumericalNode(Number, -1, &calc->tree);
+    Node *minusNode = createNumericalNode(Number, -1, &calc->tree);
 
-    Node *leftNode = createTypeNode(Sin, &calc->tree);
-    connectLeft(leftNode, sinContent);
+    Node *sin = createTypeNode(Sin, &calc->tree);
+    connectLeft(sin, sinContent);
 
-    connectRight(mainNode, rightNode);
-    connectLeft(mainNode, leftNode);
+    connectRight(mainNode, sin);
+    connectLeft(mainNode, minusNode);
     return mainNode;
 }
 
@@ -426,14 +409,169 @@ int simplifyExpression(calculator *calc)
     while (tree->eventFlag)
     {
         tree->eventFlag = 0;
-        visitTree(tree->root, simplifyTreeRec);
+        visitTree(tree->root, simplifyTreeNumerical);
     }
+
     return 0;
 }
 
 
-int simplifyTreeRec(Node *node)
+int createListOfSimilarTerms(const Node *node, List *lst)
 {
+    assert(node);
+    assert(lst);
+
+    switch (node->type)
+    {
+        case Add:
+        {
+            if (node->left->type != Add && node->left->type != Sub)
+                push(node->left, lst);
+            else
+                createListOfSimilarTerms(node->left, lst);
+
+            if (node->right->type != Add && node->right->type != Sub)
+                push(node->right, lst);
+            else
+                createListOfSimilarTerms(node->right, lst);
+            return 1;
+        }
+        default:
+            return 1;
+    }
+}
+
+
+int simplifySimilarities(Node *node)
+{
+    List lst = {};
+    constructList(&lst);
+    createListOfSimilarTerms(node, &lst);
+
+    if (lst.nodeCounter > 1)
+    {
+        listNode *mainIterator = lst.start;
+        listNode *secondIterator = NULL;
+
+        Tree *tree = node->myTree;
+
+        while (mainIterator->next)
+        {
+            Node *primarySubTree = mainIterator->data;
+            Node *primaryComparableNode = primarySubTree;
+
+            secondIterator = mainIterator->next;
+            while (secondIterator->next)
+            {
+                Node *secondComparableNode = secondIterator->data;
+                Node *secondSubTree = secondComparableNode;
+
+                double primaryMultiplier = 1;
+                double secondMultiplier = 1;
+
+                if (primarySubTree->type == Mul)
+                {
+                    if (primarySubTree->left->type == Number)
+                    {
+                        primaryMultiplier = primarySubTree->left->value;
+                        primaryComparableNode = primarySubTree->right;
+                    }
+                }
+                if (secondSubTree->type == Mul)
+                {
+                    if (secondIterator->data->left->type == Number)
+                    {
+                        secondMultiplier = secondSubTree->left->value;
+                        secondComparableNode = secondSubTree->right;
+                    }
+                }
+
+                int res = compareTrees(primaryComparableNode, secondComparableNode);
+
+                if (res)
+                {
+                    tree->eventFlag = 1;
+                    if (primaryMultiplier != 1)
+                    {
+                        destructNode(primarySubTree->left);
+
+                        if (primarySubTree == primarySubTree->parent->left)
+                            connectLeft(primarySubTree->parent, primaryComparableNode);
+                        else
+                            connectRight(primarySubTree->parent, primaryComparableNode);
+
+                        destructNode(primarySubTree);
+                        primarySubTree = primaryComparableNode;
+                    }
+                    if (secondMultiplier != 1)
+                    {
+                        destructNode(secondSubTree->left);
+
+                        if (secondSubTree == secondSubTree->parent->left)
+                            connectLeft(secondSubTree->parent, secondComparableNode);
+                        else
+                            connectRight(secondSubTree->parent, secondComparableNode);
+
+                        destructNode(secondSubTree);
+                        secondSubTree = secondComparableNode;
+                    }
+
+                    double coreMultiplier = primaryMultiplier + secondMultiplier;
+                    listNode *secondIteratorKeeper = secondIterator->next;
+
+                    primarySubTree = mergeTrees(primarySubTree, secondSubTree, coreMultiplier);
+                    eraseNode(secondIterator);
+
+                    secondIterator = secondIteratorKeeper;
+                    continue;
+                }
+                else
+                    secondIterator = secondIterator->next;
+            }
+            mainIterator = mainIterator->next;
+        }
+    }
+
+    destructList(lst.start);
+    return 0;
+}
+
+
+Node *mergeTrees(Node *main, Node *filial, double value)
+{
+    assert(main);
+    assert(filial);
+
+    Node *fakeFilial = createNumericalNode(Number, 0, filial->myTree);
+
+    if (filial->parent->right == filial)
+        connectRight(filial->parent, fakeFilial);
+    else
+        connectLeft(filial->parent, fakeFilial);
+
+    Node *multiplyNode = createTypeNode(Mul, main->myTree);
+    if (!main->parent)
+        main->myTree->root = multiplyNode;
+    else
+    {
+        if (main->parent->right == main)
+            connectRight(main->parent, multiplyNode);
+        else
+            connectLeft(main->parent, multiplyNode);
+    }
+
+    connectRight(multiplyNode, main);
+    connectLeft(multiplyNode, createNumericalNode(Number, value, filial->myTree));
+
+    destructNodeRec(filial);
+    return multiplyNode;
+}
+
+
+int simplifyTreeNumerical(Node *node)
+{
+    simplifySimilarities(node);
+
     switch (node->type)
     {
         case Mul:
@@ -672,16 +810,36 @@ int printExpressionTex(const Node *node, FILE *outFileName)
             if (node->parent && node->parent->type == Mul)
             {
                 fprintf(outFileName, "(");
-                printExpressionTex(node->left, outFileName);
-                fprintf(outFileName, " + ");
-                printExpressionTex(node->right, outFileName);
+                if (node->right->type == Sub)
+                {
+                    printExpressionTex(node->left, outFileName);
+                    fprintf(outFileName, " + (");
+                    printExpressionTex(node->right, outFileName);
+                    fprintf(outFileName, ")");
+                }
+                else
+                {
+                    printExpressionTex(node->left, outFileName);
+                    fprintf(outFileName, " + ");
+                    printExpressionTex(node->right, outFileName);
+                }
                 fprintf(outFileName, ")");
             }
             else
             {
-                printExpressionTex(node->left, outFileName);
-                fprintf(outFileName, " + ");
-                printExpressionTex(node->right, outFileName);
+                if (node->right->type == Sub)
+                {
+                    printExpressionTex(node->left, outFileName);
+                    fprintf(outFileName, " + (");
+                    printExpressionTex(node->right, outFileName);
+                    fprintf(outFileName, ")");
+                }
+                else
+                {
+                    printExpressionTex(node->left, outFileName);
+                    fprintf(outFileName, " + ");
+                    printExpressionTex(node->right, outFileName);
+                }
             }
             return 0;
         }
@@ -690,16 +848,36 @@ int printExpressionTex(const Node *node, FILE *outFileName)
             if (node->parent && node->parent->type == Mul)
             {
                 fprintf(outFileName, "(");
-                printExpressionTex(node->left, outFileName);
-                fprintf(outFileName, " - ");
-                printExpressionTex(node->right, outFileName);
+                if (node->right->type == Add)
+                {
+                    printExpressionTex(node->left, outFileName);
+                    fprintf(outFileName, " - (");
+                    printExpressionTex(node->right, outFileName);
+                    fprintf(outFileName, ")");
+                }
+                else
+                {
+                    printExpressionTex(node->left, outFileName);
+                    fprintf(outFileName, " - ");
+                    printExpressionTex(node->right, outFileName);
+                }
                 fprintf(outFileName, ")");
             }
             else
             {
-                printExpressionTex(node->left, outFileName);
-                fprintf(outFileName, " - ");
-                printExpressionTex(node->right, outFileName);
+                if (node->right->type == Add)
+                {
+                    printExpressionTex(node->left, outFileName);
+                    fprintf(outFileName, " - (");
+                    printExpressionTex(node->right, outFileName);
+                    fprintf(outFileName, ")");
+                }
+                else
+                {
+                    printExpressionTex(node->left, outFileName);
+                    fprintf(outFileName, " - ");
+                    printExpressionTex(node->right, outFileName);
+                }
             }
             return 0;
         }
@@ -782,4 +960,74 @@ int printExpressionTex(const Node *node, FILE *outFileName)
         default:
             return 1;
     }
+}
+
+
+int eraseNode(listNode *node)
+{
+    assert(node);
+    node->prev->next = node->next;
+    node->next->prev = node->prev;
+
+    free(node);
+    return 0;
+}
+
+
+int constructList(List *lst)
+{
+    assert(lst);
+    lst->current = (listNode *) calloc(1, sizeof(listNode));
+    lst->start = lst->current;
+    lst->current->parent = lst;
+    lst->current->next = NULL;
+    lst->current->prev = NULL;
+    lst->current->data = NULL;
+
+    lst->nodeCounter = 1;
+    return 0;
+}
+
+
+int push(Node *node, List *lst)
+{
+    assert(node);
+    assert(lst);
+
+    listNode *new = (listNode *) calloc(1, sizeof(listNode));
+    new->parent = lst;
+    new->prev = lst->current;
+    new->next = NULL;
+    new->data = NULL;
+
+    lst->nodeCounter++;
+    lst->current->data = node;
+    lst->current->next = new;
+    lst->current = new;
+    return 0;
+}
+
+
+int dumpList(List *lst)
+{
+    assert(lst);
+
+    listNode *current = lst->start;
+    while (current->next)
+    {
+        printf("%p\n", current->data);
+        current = current->next;
+    }
+
+    return 0;
+}
+
+
+int destructList(listNode *node)
+{
+    if (node->next)
+        destructList(node->next);
+
+    free(node);
+    return 0;
 }
