@@ -1,0 +1,104 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Debian) (preloaded format=pdflatex 2018.8.8)  15 AUG 2018 16:37
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**Tex/Diff_Result
+(./Tex/Diff_Result
+LaTeX2e <2017/01/01> patch level 3
+Babel <3.9r> and hyphenation patterns for 3 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(Tex//Diff_Result.aux)
+\openout1 = `Diff_Result.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 3.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 3.
+
+Overfull \hbox (29.56744pt too wide) detected at line 18
+\OT1/cmr/m/n/10 ([](\OML/cmm/m/it/10 x \OT1/cmr/m/n/10 + \OML/cmm/m/it/10 x \OT
+1/cmr/m/n/10 + []))[] = (1 + 1 + []) \OMS/cmsy/m/n/10 ^^A []\OT1/cmr/m/n/10 (\O
+ML/cmm/m/it/10 x \OT1/cmr/m/n/10 + \OML/cmm/m/it/10 x \OT1/cmr/m/n/10 + [])
+ []
+
+
+Overfull \hbox (198.2622pt too wide) detected at line 20
+\OT1/cmr/m/n/10 (6 \OMS/cmsy/m/n/10 ^^A \OML/cmm/m/it/10 x[] \OT1/cmr/m/n/10 + 
+[](\OML/cmm/m/it/10 x \OT1/cmr/m/n/10 + \OML/cmm/m/it/10 x \OT1/cmr/m/n/10 + []
+))[] = \OML/cmm/m/it/10 x[] \OMS/cmsy/m/n/10 ^^A \OT1/cmr/m/n/10 0 + 6 \OMS/cms
+y/m/n/10 ^^A \OT1/cmr/m/n/10 ([](\OML/cmm/m/it/10 x\OT1/cmr/m/n/10 ) \OMS/cmsy/
+m/n/10 ^^A \OT1/cmr/m/n/10 1 \OMS/cmsy/m/n/10 ^^A \OML/cmm/m/it/10 x[] \OT1/cmr
+/m/n/10 + \OML/cmm/m/it/10 x \OMS/cmsy/m/n/10 ^^A \OT1/cmr/m/n/10 1 \OMS/cmsy/m
+/n/10 ^^A \OML/cmm/m/it/10 x[]\OT1/cmr/m/n/10 ) + (1 + 1 + []) \OMS/cmsy/m/n/10
+ ^^A []\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x \OT1/cmr/m/n/10 + \OML/cmm/m/it/10 x
+ \OT1/cmr/m/n/10 + [])
+ []
+
+[1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+Overfull \hbox (317.31796pt too wide) detected at line 24
+\OT1/cmr/m/n/10 (6 \OMS/cmsy/m/n/10 ^^A \OML/cmm/m/it/10 x[] \OT1/cmr/m/n/10 + 
+[](\OML/cmm/m/it/10 x \OT1/cmr/m/n/10 + \OML/cmm/m/it/10 x \OT1/cmr/m/n/10 + []
+) + \OML/cmm/m/it/10 x[]\OT1/cmr/m/n/10 )[] = \OML/cmm/m/it/10 x[] \OMS/cmsy/m/
+n/10 ^^A \OT1/cmr/m/n/10 0 + 6 \OMS/cmsy/m/n/10 ^^A \OT1/cmr/m/n/10 ([](\OML/cm
+m/m/it/10 x\OT1/cmr/m/n/10 ) \OMS/cmsy/m/n/10 ^^A \OT1/cmr/m/n/10 1 \OMS/cmsy/m
+/n/10 ^^A \OML/cmm/m/it/10 x[] \OT1/cmr/m/n/10 + \OML/cmm/m/it/10 x \OMS/cmsy/m
+/n/10 ^^A \OT1/cmr/m/n/10 1 \OMS/cmsy/m/n/10 ^^A \OML/cmm/m/it/10 x[]\OT1/cmr/m
+/n/10 ) + (1 + 1 + []) \OMS/cmsy/m/n/10 ^^A []\OT1/cmr/m/n/10 (\OML/cmm/m/it/10
+ x \OT1/cmr/m/n/10 + \OML/cmm/m/it/10 x \OT1/cmr/m/n/10 + []) + [](\OML/cmm/m/i
+t/10 x\OT1/cmr/m/n/10 ) \OMS/cmsy/m/n/10 ^^A \OT1/cmr/m/n/10 1 \OMS/cmsy/m/n/10
+ ^^A \OML/cmm/m/it/10 x[] \OT1/cmr/m/n/10 + \OML/cmm/m/it/10 x \OMS/cmsy/m/n/10
+ ^^A \OT1/cmr/m/n/10 1 \OMS/cmsy/m/n/10 ^^A \OML/cmm/m/it/10 x[]
+ []
+
+[2] (Tex//Diff_Result.aux) ) 
+Here is how much of TeX's memory you used:
+ 205 strings out of 494945
+ 2254 string characters out of 6181033
+ 52493 words of memory out of 5000000
+ 3584 multiletter control sequences out of 15000+600000
+ 3640 words of font info for 14 fonts, out of 8000000 for 9000
+ 14 hyphenation exceptions out of 8191
+ 23i,5n,17p,341b,162s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+r10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb>
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/
+share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
+Output written on Tex//Diff_Result.pdf (2 pages, 57714 bytes).
+PDF statistics:
+ 35 PDF objects out of 1000 (max. 8388607)
+ 24 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+

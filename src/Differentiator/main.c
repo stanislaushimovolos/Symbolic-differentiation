@@ -6,7 +6,7 @@ int main()
     calculator calc = {};
     parser pars = {};
 
-    int status = constructParser(&pars, inputFilename) &
+    int status = constructParser(&pars, inputFilename) ^
                  constructCalculator(&calc, outFileTex);
     if (status)
         return status;

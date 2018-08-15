@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include "Differentiator.h"
-#include "../Tree_t/Tree.h"
 
 int findDerivative(const parser *pars, calculator *calc)
 {
@@ -25,8 +24,8 @@ int findDerivative(const parser *pars, calculator *calc)
     fclose(calc->texFile);
     calc->texFile = NULL;
 
-    system("pdflatex -output-directory ../Tex/ ../Tex/Diff_Super_Test");
-    system("sensible-browser ../Tex/Diff_Super_Test.pdf &");
+    system("pdflatex -output-directory Tex/ Tex/Diff_Result");
+    system("sensible-browser Tex/Diff_Result.pdf &");
 
     return 0;
 }
@@ -373,16 +372,18 @@ int simplifyExpression(calculator *calc)
     Tree *tree = &calc->tree;
 
     visitTreePost(tree->root, simplifyTreeNumerical);
-    visitTreePost(tree->root, prepareTreeForSimplification);
+    visitTreePost(tree->root, foldConstantsGlobal);
 
     tree->eventFlag = 1;
     while (tree->eventFlag)
     {
         tree->eventFlag = 0;
+        visitTreePost(tree->root, prepareTreeForSimplification);
+        visitTreePost(tree->root, simplifyTreeNumerical);
         visitTreePref(tree->root, simplifyTreeMultiplication);
         visitTreePref(tree->root, simplifyTreeAddition);
-        visitTreePost(tree->root, simplifyTreeNumerical);
     }
+    visitTreePost(tree->root, prepareTreeForPrinting);
 
     return 0;
 }
@@ -397,24 +398,21 @@ int prepareTreeForSimplification(Node *node)
         case Sub:
         {
             node->type = Add;
-            Node *multiplyNode = createSimpleNode(Mul, node->myTree);
+            if (node->right->type != Number)
+            {
+                Node *multiplyNode = createSimpleNode(Mul, node->myTree);
 
-            connectRight(multiplyNode, node->right);
-            connectLeft(multiplyNode, createNumericalNode(Number, -1, node->myTree));
-            connectRight(node, multiplyNode);
+                connectRight(multiplyNode, node->right);
+                connectLeft(multiplyNode, createNumericalNode(Number, -1, node->myTree));
+                connectRight(node, multiplyNode);
+            }
+            else
+                node->right->value = -node->right->value;
+
             return 1;
         }
         case Mul:
         {
-            if (node->right->type == Number
-                && node->left->type != Number)
-            {
-                Node *keeper = node->left;
-                connectLeft(node, node->right);
-                connectRight(node, keeper);
-
-                return 1;
-            }
             if (node->left->type == Number && node->right->type == Add)
             {
                 double multiplier = node->left->value;
@@ -440,7 +438,23 @@ int prepareTreeForSimplification(Node *node)
 
                 return 1;
             }
-            return 0;
+            if (node->right->type == Number
+                && node->left->type != Number)
+            {
+                Node *keeper = node->left;
+                connectLeft(node, node->right);
+                connectRight(node, keeper);
+
+                return 1;
+            }
+
+            int result = compareTrees(node->right, node->left);
+            if (!result)
+                return 0;
+
+            node->type = Expo;
+            destructNodeRec(node->right);
+            connectRight(node, createNumericalNode(Number, 2, node->myTree));
         }
         default:
             return 0;
@@ -497,6 +511,59 @@ int findNumericalMultipliers(const Node *node, List *lst)
 }
 
 
+double findNumericalSums(Node *node)
+{
+    double value = 0;
+
+    if (node->type == Add)
+    {
+        if (node->left->type == Number)
+        {
+            value += node->left->value;
+            node->left->value = 0;
+        }
+        else
+            value += findNumericalSums(node->left);
+
+        if (node->right->type == Number)
+        {
+            value += node->right->value;
+            node->right->value = 0;
+        }
+        else
+            value += findNumericalSums(node->right);
+    }
+    return value;
+}
+
+
+int foldConstantsGlobal(Node *node)
+{
+    if (node->type == Add && (!node->parent || (node->parent && node->parent->type != Add)))
+    {
+        double sum = findNumericalSums(node);
+        if (sum != 0)
+        {
+            Node *mainPlus = createSimpleNode(Add, node->myTree);
+            connectRight(mainPlus, createNumericalNode(Number, sum, node->myTree));
+
+            if (node->parent)
+                if (node->parent->left == node)
+                    connectLeft(node->parent, mainPlus);
+                else
+                    connectRight(node->parent, mainPlus);
+            else
+                node->myTree->root = mainPlus;
+
+            connectLeft(mainPlus, node);
+            return 1;
+        }
+    }
+    return 0;
+
+}
+
+
 int simplifyTreeMultiplication(Node *node)
 {
     if (node->type == Mul)
@@ -518,20 +585,14 @@ int simplifyTreeMultiplication(Node *node)
 
                 if (node->parent)
                     if (node->parent->left == node)
-                    {
                         connectLeft(node->parent, mainNode);
-                        connectRight(mainNode, node);
-                    }
                     else
-                    {
                         connectRight(node->parent, mainNode);
-                        connectRight(mainNode, node);
-                    }
                 else
-                {
                     node->myTree->root = mainNode;
-                    connectRight(mainNode, node);
-                }
+
+                connectRight(mainNode, node);
+
                 visitTreePost(mainNode, simplifyTreeNumerical);
             }
         }
@@ -554,23 +615,43 @@ int simplifyTreeMultiplication(Node *node)
 
             if (node->parent)
                 if (node->parent->left == node)
-                {
                     connectLeft(node->parent, mainNode);
-                    connectRight(mainNode, node);
-                }
                 else
-                {
                     connectRight(node->parent, mainNode);
-                    connectRight(mainNode, node);
-                }
             else
-            {
                 node->myTree->root = mainNode;
-                connectRight(mainNode, node);
-            }
+
+            connectRight(mainNode, node);
+
             visitTreePost(mainNode, simplifyTreeNumerical);
         }
         destructList(lst.start);
+    }
+    return 0;
+}
+
+
+int prepareTreeForPrinting(Node *node)
+{
+    assert(node);
+
+    if (node->type == Add)
+    {
+        if (node->right->type == Number && node->right->value < 0)
+        {
+            node->type = Sub;
+            node->right->value = -node->right->value;
+            return 1;
+        }
+        if (node->right->type == Mul && node->right->left->value == -1)
+        {
+            node->type = Sub;
+            Node *keeper = node->right;
+            connectRight(node, keeper->right);
+            destructNode(keeper->left);
+            destructNode(keeper);
+            return 1;
+        }
     }
     return 0;
 }
@@ -628,7 +709,6 @@ int simplifyTreeAddition(Node *node)
                             secondComparableNode = secondSubTree->right;
                         }
                     }
-
                     int result = compareTrees(primaryComparableNode, secondComparableNode);
 
                     if (result)

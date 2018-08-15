@@ -3,7 +3,7 @@
 #include "../Commands/Commands.h"
 
 
-static const char outFileTex[] = "../Tex/Diff_Super_Test";
+static const char outFileTex[] = "Tex/Diff_Result";
 static const char outFilenameForDotDump[] = "../picture/dotDump.txt";
 static const char outFilenameForDotPrint[] = "../picture/dotPrint.txt";
 
@@ -46,21 +46,25 @@ int push(Node *node, List *lst);
 
 int destructList(listNode *node);
 
-int simplifyConstants(Node *node);
-
-double collectConstants(Node *node);
-
 int simplifyTreeAddition(Node *node);
 
 int simplifyTreeNumerical(Node *node);
 
+int prepareTreeForPrinting(Node *node);
+
 int simplifyExpression(calculator *cal);
+
+int foldConstantsGlobal(Node *node);
+
+double findNumericalSums(Node *node);
 
 int simplifyTreeMultiplication(Node *node);
 
 int prepareTreeForSimplification(Node *node);
 
 int findSimilarTerms(const Node *node, List *lst);
+
+int findNumericalMultipliers(const Node *node, List *lst);
 
 Node *logDerivative(const Node *node, calculator *calc);
 

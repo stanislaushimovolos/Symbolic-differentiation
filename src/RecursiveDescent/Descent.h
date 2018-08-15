@@ -12,7 +12,7 @@
 #include "../Tree_t/Tree.h"
 #include "../Commands/Commands.h"
 
-static const char inputFilename[] = "../base/base.txt";
+static const char inputFilename[] = "Differentiator/expression.txt";
 
 enum
 {
