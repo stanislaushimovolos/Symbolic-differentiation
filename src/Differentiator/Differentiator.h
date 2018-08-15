@@ -17,6 +17,14 @@ static const char *comments[] = {"After mental calculation: ",
                                  "It's not a secret that: "};
 
 
+
+typedef struct calculator
+{
+    Tree tree;
+    FILE *texFile;
+} calculator;
+
+
 struct listNode;
 
 typedef struct List
@@ -93,7 +101,7 @@ int destructCalculator(calculator *calc);
 
 int foldConstants(Node *node, int operation);
 
-int findDerivative(const parser *pars, calculator *calc);
+int findDerivative(const Tree *tree, calculator *calc);
 
 int texResult(const Node *node, FILE *outFileName);
 

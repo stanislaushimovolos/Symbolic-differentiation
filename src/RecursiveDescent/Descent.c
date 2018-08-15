@@ -60,19 +60,19 @@ int getData(parser *pars, const char *inputFileName)
             }
         }
         SKIP_SPASES;
-        size_t difVariableSizeCounter = 0;
+        size_t currentVariableSizeCounter = 0;
 
         while (isalpha(pars->code[pars->curCodePos++]))
-            difVariableSizeCounter++;
+            currentVariableSizeCounter++;
 
-        if (difVariableSizeCounter == 0)
+        if (currentVariableSizeCounter == 0)
         {
             printf("%s", errorList[FORMAT_ERROR]);
             return FORMAT_ERROR;
         }
-        pars->curVar = (char *) calloc(difVariableSizeCounter + 1, sizeof(char));
-        memcpy(pars->curVar, pars->code + pars->curCodePos - difVariableSizeCounter - 1,
-               difVariableSizeCounter);
+        pars->curVar = (char *) calloc(currentVariableSizeCounter + 1, sizeof(char));
+        memcpy(pars->curVar, pars->code + pars->curCodePos - currentVariableSizeCounter - 1,
+               currentVariableSizeCounter);
     }
     else
     {
@@ -130,14 +130,18 @@ Node *getAddSub(parser *pars)
     assert(pars);
     SKIP_SPASES;
 
-    Node *LeftNode = getMulDiv(pars);
-    if (!LeftNode)
+    //curLeftNode + other nodes (if there are any)
+    Node *curLeftNode = getMulDiv(pars);
+    if (!curLeftNode)
         return NULL;
 
-    LeftNode->myTree = &pars->tree;
-
     SKIP_SPASES;
-    int op = 0;
+
+    //plus or minus
+    char op = 0;
+
+    Node *curSignNode = NULL;
+    Node *curRightNode = NULL;
 
     while (pars->code[pars->curCodePos] == '+' ||
            pars->code[pars->curCodePos] == '-')
@@ -148,42 +152,60 @@ Node *getAddSub(parser *pars)
 
         switch (op)
         {
+
             case '+':
             {
-                Node *addNode = createSimpleNode(Add, &pars->tree);
-                connectLeft(addNode, LeftNode);
+                curSignNode = createSimpleNode(Add, &pars->tree);
+                connectLeft(curSignNode, curLeftNode);
 
-                Node *RightNode = getMulDiv(pars);
-                if (!RightNode)
+                /*
+                 *                          ____________    ...
+                 *                         |            (next node)
+                 *                         | Left
+                 *                   ______|_______
+                 *                  |              |
+                 *           _______| curSignNode  |________
+                 *          |       |       +      |        |
+                 *          | Left  |______________|  Right |
+                 *  ________|__                           __|_________
+                 * |           |                         |            |
+                 * |curLeftNode|                         |curRightNode|
+                 * |___________|                         |____________|
+                 */
+
+                curRightNode = getMulDiv(pars);
+                if (!curRightNode)
                 {
                     printf("Incorrect expression after \"+\"\n");
                     return NULL;
                 }
-                connectRight(addNode, RightNode);
-                LeftNode = addNode;
+                connectRight(curSignNode, curRightNode);
+
+                //Push curPlusNode below to connect new nodes.
+                curLeftNode = curSignNode;
                 break;
             }
 
             case '-':
             {
-                Node *subNode = createSimpleNode(Sub, &pars->tree);
-                connectLeft(subNode, LeftNode);
+                curSignNode = createSimpleNode(Sub, &pars->tree);
+                connectLeft(curSignNode, curLeftNode);
 
-                Node *RightNode = getMulDiv(pars);
-                if (!RightNode)
+                curRightNode = getMulDiv(pars);
+                if (!curRightNode)
                 {
                     printf("Incorrect expression after \"-\"\n");
                     return NULL;
                 }
-                connectRight(subNode, RightNode);
-                LeftNode = subNode;
+                connectRight(curSignNode, curRightNode);
+                curLeftNode = curSignNode;
                 break;
             }
             default:
                 return NULL;
         }
     }
-    return LeftNode;
+    return curLeftNode;
 }
 
 
@@ -196,7 +218,6 @@ Node *getMulDiv(parser *pars)
     if (!LeftNode)
         return NULL;
 
-    LeftNode->myTree = &pars->tree;
     Node *NodeMulDiv = NULL;
 
     SKIP_SPASES;
@@ -257,8 +278,7 @@ Node *getExpo(parser *pars)
     if (!LeftNode)
         return NULL;
 
-    LeftNode->myTree = &pars->tree;
-    Node *NodeExpo = 0;
+    Node *NodeExpo = NULL;
 
     SKIP_SPASES;
     while (pars->code[pars->curCodePos] == '^')

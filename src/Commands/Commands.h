@@ -20,21 +20,4 @@ enum
     Cos
 };
 
-
-typedef struct parser
-{
-    Tree tree;
-    size_t sizeOfCode;
-    int curCodePos;
-    char *curVar;
-    char *code;
-} parser;
-
-typedef struct calculator
-{
-    Tree tree;
-    FILE *texFile;
-} calculator;
-
-
 #endif //DIFF3_0_COMMANDS_H

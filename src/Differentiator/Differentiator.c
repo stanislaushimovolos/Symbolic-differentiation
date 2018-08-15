@@ -3,18 +3,18 @@
 
 #include "Differentiator.h"
 
-int findDerivative(const parser *pars, calculator *calc)
+int findDerivative(const Tree *tree, calculator *calc)
 {
-    assert (pars);
+    assert (tree);
     assert (calc);
 
     fprintf(calc->texFile, "\\documentclass{article}\n"
                            "\\begin{document} \\begin{center} "
                            "The original expression \n \\[");
-    texResult(pars->tree.root, calc->texFile);
+    texResult(tree->root, calc->texFile);
     fprintf(calc->texFile, "\\]");
 
-    calc->tree.root = makeDerivativeStep(pars->tree.root, calc);
+    calc->tree.root = makeDerivativeStep(tree->root, calc);
     simplifyExpression(calc);
 
     fprintf(calc->texFile, "\n\nThe final expression\n \\[");
