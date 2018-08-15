@@ -1,9 +1,3 @@
-//
-// Created by Tom on 22.11.2017.
-//
-
-#pragma  once
-
 #include <assert.h>
 #include "../Tree_t/Tree.h"
 #include "../Commands/Commands.h"
@@ -41,7 +35,20 @@ typedef struct listNode
     List *parent;
 } listNode;
 
-int simplifyTreeMultiplication(Node *node);
+
+int dumpList(List *lst);
+
+int constructList(List *lst);
+
+int eraseNode(listNode *node);
+
+int push(Node *node, List *lst);
+
+int destructList(listNode *node);
+
+int simplifyConstants(Node *node);
+
+double collectConstants(Node *node);
 
 int simplifyTreeAddition(Node *node);
 
@@ -49,9 +56,11 @@ int simplifyTreeNumerical(Node *node);
 
 int simplifyExpression(calculator *cal);
 
-int findSimilarTerms(const Node *node, List *lst);
+int simplifyTreeMultiplication(Node *node);
 
 int prepareTreeForSimplification(Node *node);
+
+int findSimilarTerms(const Node *node, List *lst);
 
 Node *logDerivative(const Node *node, calculator *calc);
 
@@ -82,19 +91,9 @@ int foldConstants(Node *node, int operation);
 
 int findDerivative(const parser *pars, calculator *calc);
 
-int printExpressionTex(const Node *node, FILE *outFileName);
+int texResult(const Node *node, FILE *outFileName);
 
 int constructCalculator(calculator *calc, const char *inputFileName);
 
 int texDerivativeStep(const Node *original, const Node *result, FILE *outFileName);
-
-int constructList(List *lst);
-
-int push(Node *node, List *lst);
-
-int eraseNode(listNode *node);
-
-int dumpList(List *lst);
-
-int destructList(listNode *node);
 

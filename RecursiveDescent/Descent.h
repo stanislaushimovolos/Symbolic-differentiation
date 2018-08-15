@@ -32,30 +32,29 @@ static const char *errorList[] = {"",
                                   "Expected arithmetic operation\n"
 };
 
-Node *GetAddSub(parser *tree);
+Node *getAddSub(parser *tree);
 
-Node *GetMulDiv(parser *tree);
+Node *getMulDiv(parser *tree);
 
-Node *GetExpo(parser *tree);
+Node *getExpo(parser *tree);
 
-Node *GetBranches(parser *tree);
+Node *getBranches(parser *tree);
 
-Node *GetFunc(parser *tree);
+Node *getFunc(parser *tree);
 
-Node *GetNumber(parser *tree);
+Node *getNumber(parser *tree);
+
+int destructParser(parser *pars);
+
+int getTree(parser *tree);
+
+int analyzeData(Node *node, parser *pars);
 
 int getData(parser *pars, const char *inputFileName);
 
 int getBuf(parser *data, const char *inputFileName);
 
-int destructParser(parser *pars);
-
 int constructParser(parser *pars, const char *inputFileName);
-
-int GetTree(parser *tree);
-
-
-int contentAnalyze(Node *node, parser *pars);
 
 int throw_error(unsigned int err_num, const char *usr_msg, const char *err_msg, const char *_func, int _line,
                 const char *_file);

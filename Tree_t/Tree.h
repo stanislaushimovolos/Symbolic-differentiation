@@ -16,13 +16,15 @@ typedef struct
 
 typedef struct Node
 {
-    int type;
-    struct Node *left;
-    struct Node *right;
-    struct Node *parent;
     Tree *myTree;
     char *content;
     double value;
+
+    struct Node *left;
+    struct Node *right;
+    struct Node *parent;
+    int type;
+
 } Node;
 
 int countNodes(Node *node);
@@ -49,7 +51,9 @@ void destructTree(Tree *tree);
 
 void destructNodeRec(Node *node);
 
-void visitTree(Node *node, int func(Node *node));
+void visitTreePost(Node *node, int func(Node *node));
+
+void visitTreePref(Node *node, int func(Node *node));
 
 void connectLeft(Node *mainNode, Node *leftNode);
 
@@ -57,7 +61,7 @@ void connectRight(Node *mainNode, Node *rightNode);
 
 Node *copyTree(const Node *node, Tree *newTree);
 
-Node *createTypeNode(int type, Tree *newTree);
+Node *createSimpleNode(int type, Tree *newTree);
 
 Node *createNumericalNode(int type, double value, Tree *newTree);
 

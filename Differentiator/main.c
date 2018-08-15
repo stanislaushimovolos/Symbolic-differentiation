@@ -10,11 +10,12 @@ int main()
                  constructCalculator(&calc, outFileTex);
     if (status)
         return status;
-    GetTree(&pars);
-    findDerivative(&pars, &calc);
+    status = getTree(&pars);
 
-    printTree(&calc.tree, outFilenameForDotDump, dumpRecNode);
-    system("dot -Tpng ../picture/dotDump.txt -o ../picture/Dump.png");
+    if (status)
+        return status;
+
+    findDerivative(&pars, &calc);
 
     destructParser(&pars);
     destructCalculator(&calc);

@@ -114,22 +114,23 @@ int getBuf(parser *data, const char *inputFileName)
 }
 
 
-int GetTree(parser *pars)
+int getTree(parser *pars)
 {
     ARG_CHECK(pars)
-    pars->tree.root = GetAddSub(pars);
+    pars->tree.root = getAddSub(pars);
 
     if (pars->tree.root == NULL)
         return USER_ERROR;
+    return 0;
 }
 
 
-Node *GetAddSub(parser *pars)
+Node *getAddSub(parser *pars)
 {
     assert(pars);
     SKIP_SPASES;
 
-    Node *LeftNode = GetMulDiv(pars);
+    Node *LeftNode = getMulDiv(pars);
     if (!LeftNode)
         return NULL;
 
@@ -149,10 +150,10 @@ Node *GetAddSub(parser *pars)
         {
             case '+':
             {
-                Node *addNode = createTypeNode(Add, &pars->tree);
+                Node *addNode = createSimpleNode(Add, &pars->tree);
                 connectLeft(addNode, LeftNode);
 
-                Node *RightNode = GetMulDiv(pars);
+                Node *RightNode = getMulDiv(pars);
                 if (!RightNode)
                 {
                     printf("Incorrect expression after \"+\"\n");
@@ -165,10 +166,10 @@ Node *GetAddSub(parser *pars)
 
             case '-':
             {
-                Node *subNode = createTypeNode(Sub, &pars->tree);
+                Node *subNode = createSimpleNode(Sub, &pars->tree);
                 connectLeft(subNode, LeftNode);
 
-                Node *RightNode = GetMulDiv(pars);
+                Node *RightNode = getMulDiv(pars);
                 if (!RightNode)
                 {
                     printf("Incorrect expression after \"-\"\n");
@@ -186,12 +187,12 @@ Node *GetAddSub(parser *pars)
 }
 
 
-Node *GetMulDiv(parser *pars)
+Node *getMulDiv(parser *pars)
 {
     assert(pars);
     SKIP_SPASES;
 
-    Node *LeftNode = GetExpo(pars);
+    Node *LeftNode = getExpo(pars);
     if (!LeftNode)
         return NULL;
 
@@ -211,10 +212,10 @@ Node *GetMulDiv(parser *pars)
         {
             case '*':
             {
-                NodeMulDiv = createTypeNode(Mul, &pars->tree);
+                NodeMulDiv = createSimpleNode(Mul, &pars->tree);
                 connectLeft(NodeMulDiv, LeftNode);
 
-                Node *RightNode = GetExpo(pars);
+                Node *RightNode = getExpo(pars);
                 if (!RightNode)
                 {
                     printf("Incorrect expression after \"*\"\n");
@@ -226,10 +227,10 @@ Node *GetMulDiv(parser *pars)
             }
             case '/':
             {
-                NodeMulDiv = createTypeNode(Div, &pars->tree);
+                NodeMulDiv = createSimpleNode(Div, &pars->tree);
                 connectLeft(NodeMulDiv, LeftNode);
 
-                Node *RightNode = GetExpo(pars);
+                Node *RightNode = getExpo(pars);
                 if (!RightNode)
                 {
                     printf("Incorrect expression after \"/\"\n");
@@ -247,12 +248,12 @@ Node *GetMulDiv(parser *pars)
 }
 
 
-Node *GetExpo(parser *pars)
+Node *getExpo(parser *pars)
 {
     assert(pars);
     SKIP_SPASES
 
-    Node *LeftNode = GetBranches(pars);
+    Node *LeftNode = getBranches(pars);
     if (!LeftNode)
         return NULL;
 
@@ -264,10 +265,10 @@ Node *GetExpo(parser *pars)
     {
         SKIP_SPASES;
         pars->curCodePos++;
-        NodeExpo = createTypeNode(Expo, &pars->tree);
+        NodeExpo = createSimpleNode(Expo, &pars->tree);
         connectLeft(NodeExpo, LeftNode);
 
-        Node *RightNode = GetBranches(pars);
+        Node *RightNode = getBranches(pars);
         if (!RightNode)
         {
             printf("Incorrect expression after \"^\"\n");
@@ -280,7 +281,7 @@ Node *GetExpo(parser *pars)
 }
 
 
-Node *GetBranches(parser *pars)
+Node *getBranches(parser *pars)
 {
     assert(pars);
     SKIP_SPASES;
@@ -288,7 +289,7 @@ Node *GetBranches(parser *pars)
     if (pars->code[pars->curCodePos] == '(')
     {
         pars->curCodePos++;
-        Node *node = GetAddSub(pars);
+        Node *node = getAddSub(pars);
         SKIP_SPASES;
 
         if (pars->code[pars->curCodePos] != ')')
@@ -299,11 +300,11 @@ Node *GetBranches(parser *pars)
         pars->curCodePos++;
         return node;
     }
-    return GetFunc(pars);
+    return getFunc(pars);
 }
 
 
-Node *GetFunc(parser *pars)
+Node *getFunc(parser *pars)
 {
     assert(pars);
     SKIP_SPASES;
@@ -314,7 +315,7 @@ Node *GetFunc(parser *pars)
 
     if (tokenSize == 0)
     {
-        Node *Number = GetNumber(pars);
+        Node *Number = getNumber(pars);
         SKIP_SPASES;
 
         if (pars->code[pars->curCodePos] != '+' && pars->code[pars->curCodePos] != '-' &&
@@ -336,13 +337,13 @@ Node *GetFunc(parser *pars)
     memcpy(func->content, pars->code + pars->curCodePos, tokenSize);
     pars->curCodePos += tokenSize;
 
-    int status = contentAnalyze(func, pars);
+    int status = analyzeData(func, pars);
     if (status)
         return NULL;
 
     if (func->type != CurVariable && func->type != CharConst)
     {
-        Node *FuncArg = GetBranches(pars);
+        Node *FuncArg = getBranches(pars);
         if (!FuncArg)
         {
             printf("Error, wrong argument at function \"%s\"\n", func->content);
@@ -364,7 +365,7 @@ Node *GetFunc(parser *pars)
 }
 
 
-Node *GetNumber(parser *pars)
+Node *getNumber(parser *pars)
 {
     assert(pars);
     SKIP_SPASES;
@@ -378,7 +379,7 @@ Node *GetNumber(parser *pars)
         return NULL;
 
     pars->curCodePos += sizeOfNumber;
-    Node * number = createNumericalNode(Number, val, &pars->tree);
+    Node *number = createNumericalNode(Number, val, &pars->tree);
 
     return number;
 }
@@ -393,7 +394,7 @@ Node *GetNumber(parser *pars)
     }
 
 
-int contentAnalyze(Node *node, parser *pars)
+int analyzeData(Node *node, parser *pars)
 {
     assert(pars);
     assert(node);

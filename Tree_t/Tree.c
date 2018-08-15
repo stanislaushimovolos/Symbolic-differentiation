@@ -30,14 +30,23 @@ void connectLeft(Node *mainNode, Node *leftNode)
 }
 
 
-void visitTree(Node *node, int func(Node *node))
+void visitTreePost(Node *node, int func(Node *node))
 {
 
     if (node->left)
-        visitTree(node->left, func);
+        visitTreePost(node->left, func);
     if (node->right)
-        visitTree(node->right, func);
+        visitTreePost(node->right, func);
     func(node);
+}
+
+void visitTreePref(Node *node, int func(Node *node))
+{
+    func(node);
+    if (node->left)
+        visitTreePost(node->left, func);
+    if (node->right)
+        visitTreePost(node->right, func);
 }
 
 
@@ -85,8 +94,8 @@ Node *copyTree(const Node *node, Tree *newTree)
 int treeConstruct(Tree *tree)
 {
     assert (tree);
-    tree->root = NULL;
     tree->eventFlag = 0;
+    tree->root = NULL;
     tree->nodeAmount = 0;
     return 0;
 }
@@ -136,7 +145,7 @@ Node *createLiteralNode(int type, const char *content, Tree *newTree)
 }
 
 
-Node *createTypeNode(int type, Tree *newTree)
+Node *createSimpleNode(int type, Tree *newTree)
 {
     assert(newTree);
 
@@ -169,11 +178,11 @@ int dumpRecNode(const Node *n, FILE *outFile)
 
     fprintf(outFile,
             "Node%p [shape = record,  color = orange, label = \" {{ parent | '%p' } | { self | %p } "
-            "| { content | %s } | { type | '%d' }| { value | '%lg' }}\"]",
+            "| { content | %s } | { type | '%d' }| { value | '%lg' } | { right | %p } | { left | %p }}\"]",
             n,
             n->parent,
             n,
-            n->content, n->type, n->value);
+            n->content, n->type, n->value,n->right, n->left);
 
     if (n->left)
         dumpRecNode(n->left, outFile);
