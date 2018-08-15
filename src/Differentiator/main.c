@@ -8,18 +8,22 @@
 #include "Differentiator.h"
 #include "../RecursiveDescent/Descent.h"
 
-int main()
+int main(int argc, char *argv[])
 {
     calculator calc = {};
     parser pars = {};
 
     //Read data and check output file
-    int status = constructParser(&pars, inputFilename) ^
-                 constructCalculator(&calc, outFileTex);
+    int status = constructParser(&pars, inputFilename);
     if (status)
         return status;
-    status = getTree(&pars);
 
+    status = constructCalculator(&calc, outFileTex);
+    if (status)
+        return status;
+
+    //Create a binary tree
+    status = getTree(&pars);
     if (status)
         return status;
 
@@ -27,6 +31,5 @@ int main()
 
     destructParser(&pars);
     destructCalculator(&calc);
-
     return 0;
 }

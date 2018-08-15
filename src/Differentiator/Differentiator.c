@@ -1,3 +1,11 @@
+/*!
+ * @file Differentiator.c
+ * @brief Realization of @ref Differentiator.h functions.
+ * @author Stanislau Shimovolos
+ * @date 2018-8-15
+ */
+
+
 #include <math.h>
 #include <stdlib.h>
 
@@ -276,33 +284,33 @@ Node *expDerivative(const Node *node, calculator *calc)
     Node *mainMinus = createSimpleNode(Sub, tree);
     Node *mainPlus = createSimpleNode(Add, tree);
     Node *mulNode1 = createSimpleNode(Mul, tree);
-    Node *ProNode2 = createSimpleNode(Mul, tree);
-    Node *ProNode3 = createSimpleNode(Mul, tree);
-    Node *ProNode4 = createSimpleNode(Mul, tree);
+    Node *mulNode2 = createSimpleNode(Mul, tree);
+    Node *mulNode3 = createSimpleNode(Mul, tree);
+    Node *mulNode4 = createSimpleNode(Mul, tree);
 
-    Node *Cap1 = createSimpleNode(Expo, tree);
-    Node *Cap2 = createSimpleNode(Expo, tree);
+    Node *cap1 = createSimpleNode(Expo, tree);
+    Node *cap2 = createSimpleNode(Expo, tree);
 
     Node *log = createSimpleNode(Log, tree);
 
     connectLeft(mulNode1, log);
     connectLeft(log, base1);
     connectRight(mulNode1, makeDerivativeStep(node->right, calc));
-    connectLeft(ProNode2, mulNode1);
-    connectRight(ProNode2, Cap1);
-    connectLeft(Cap1, base2);
-    connectRight(Cap1, index2);
-    connectRight(ProNode2, Cap1);
-    connectLeft(mainPlus, ProNode2);
+    connectLeft(mulNode2, mulNode1);
+    connectRight(mulNode2, cap1);
+    connectLeft(cap1, base2);
+    connectRight(cap1, index2);
+    connectRight(mulNode2, cap1);
+    connectLeft(mainPlus, mulNode2);
 
-    connectRight(mainPlus, ProNode3);
-    connectRight(ProNode3, Cap2);
-    connectLeft(ProNode3, ProNode4);
+    connectRight(mainPlus, mulNode3);
+    connectRight(mulNode3, cap2);
+    connectLeft(mulNode3, mulNode4);
 
-    connectLeft(ProNode4, index3);
-    connectRight(ProNode4, makeDerivativeStep(node->left, calc));
-    connectLeft(Cap2, base4);
-    connectRight(Cap2, mainMinus);
+    connectLeft(mulNode4, index3);
+    connectRight(mulNode4, makeDerivativeStep(node->left, calc));
+    connectLeft(cap2, base4);
+    connectRight(cap2, mainMinus);
 
     connectRight(mainMinus, createNumericalNode(Number, 1, tree));
     connectLeft(mainMinus, index4);
@@ -312,7 +320,7 @@ Node *expDerivative(const Node *node, calculator *calc)
 }
 
 
-int foldConstants(Node *node, int operation)
+int foldConstants(Node *node)
 {
     assert(node);
 
@@ -320,6 +328,7 @@ int foldConstants(Node *node, int operation)
             secondVal = node->right->value;
     double result = 0;
 
+    int operation = node->type;
     destructNode(node->left);
     destructNode(node->right);
     free(node->content);
@@ -356,11 +365,11 @@ int foldConstants(Node *node, int operation)
             break;
         }
         default:
-            return 1;
+            return 0;
     }
 
     node->value = result;
-    return 0;
+    return 1;
 }
 
 
@@ -682,8 +691,8 @@ int simplifyTreeAddition(Node *node)
                 Node *secondComparableNode = NULL;
                 Node *secondSubTree = NULL;
 
-                double primaryMultiplier = 1;
-                double secondMultiplier = 1;
+                double primaryMultiplier = 0;
+                double secondMultiplier = 0;
 
                 while (secondIterator->next)
                 {
@@ -863,7 +872,7 @@ int simplifyTreeNumerical(Node *node)
                 }
                 if (node->right->type == Number)
                 {
-                    foldConstants(node, Mul);
+                    foldConstants(node);
                     return 1;
                 }
                 return 0;
@@ -896,7 +905,7 @@ int simplifyTreeNumerical(Node *node)
                 }
                 if (node->right->type == Number)
                 {
-                    foldConstants(node, Add);
+                    foldConstants(node);
                     return 1;
                 }
                 return 0;
@@ -924,7 +933,7 @@ int simplifyTreeNumerical(Node *node)
                 }
                 if (node->right->type == Number)
                 {
-                    foldConstants(node, Sub);
+                    foldConstants(node);
                     return 1;
                 }
                 return 0;
@@ -955,7 +964,7 @@ int simplifyTreeNumerical(Node *node)
                 }
                 if (node->right->type == Number)
                 {
-                    foldConstants(node, Expo);
+                    foldConstants(node);
                     return 1;
                 }
                 return 0;
@@ -987,7 +996,7 @@ int simplifyTreeNumerical(Node *node)
                 }
                 if (node->left->type == Number)
                 {
-                    foldConstants(node, Div);
+                    foldConstants(node);
                     return 1;
                 }
                 return 0;

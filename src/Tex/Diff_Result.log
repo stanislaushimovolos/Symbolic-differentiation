@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Debian) (preloaded format=pdflatex 2018.8.8)  15 AUG 2018 20:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Debian) (preloaded format=pdflatex 2018.8.8)  15 AUG 2018 22:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -43,28 +43,8 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 3.
 
-Overfull \hbox (6.70975pt too wide) detected at line 14
-\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x \OT1/cmr/m/n/10 + 2 \OMS/cmsy/m/n/10 ^^A \O
-ML/cmm/m/it/10 x[] \OT1/cmr/m/n/10 + [])[] = 1 + \OML/cmm/m/it/10 x[] \OMS/cmsy
-/m/n/10 ^^A \OT1/cmr/m/n/10 0 + 2 \OMS/cmsy/m/n/10 ^^A \OT1/cmr/m/n/10 ([](\OML
-/cmm/m/it/10 x\OT1/cmr/m/n/10 ) \OMS/cmsy/m/n/10 ^^A \OT1/cmr/m/n/10 1 \OMS/cms
-y/m/n/10 ^^A \OML/cmm/m/it/10 x[] \OT1/cmr/m/n/10 + \OML/cmm/m/it/10 x \OMS/cms
-y/m/n/10 ^^A \OT1/cmr/m/n/10 1 \OMS/cmsy/m/n/10 ^^A \OML/cmm/m/it/10 x[]\OT1/cm
-r/m/n/10 ) + []
- []
-
-
-Overfull \hbox (125.7655pt too wide) detected at line 18
-\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x \OT1/cmr/m/n/10 + 2 \OMS/cmsy/m/n/10 ^^A \O
-ML/cmm/m/it/10 x[] \OT1/cmr/m/n/10 + [] + \OML/cmm/m/it/10 x[]\OT1/cmr/m/n/10 )
-[] = 1 + \OML/cmm/m/it/10 x[] \OMS/cmsy/m/n/10 ^^A \OT1/cmr/m/n/10 0 + 2 \OMS/c
-msy/m/n/10 ^^A \OT1/cmr/m/n/10 ([](\OML/cmm/m/it/10 x\OT1/cmr/m/n/10 ) \OMS/cms
-y/m/n/10 ^^A \OT1/cmr/m/n/10 1 \OMS/cmsy/m/n/10 ^^A \OML/cmm/m/it/10 x[] \OT1/c
-mr/m/n/10 + \OML/cmm/m/it/10 x \OMS/cmsy/m/n/10 ^^A \OT1/cmr/m/n/10 1 \OMS/cmsy
-/m/n/10 ^^A \OML/cmm/m/it/10 x[]\OT1/cmr/m/n/10 ) + [] + [](\OML/cmm/m/it/10 x\
-OT1/cmr/m/n/10 ) \OMS/cmsy/m/n/10 ^^A \OT1/cmr/m/n/10 1 \OMS/cmsy/m/n/10 ^^A \O
-ML/cmm/m/it/10 x[] \OT1/cmr/m/n/10 + \OML/cmm/m/it/10 x \OMS/cmsy/m/n/10 ^^A \O
-T1/cmr/m/n/10 1 \OMS/cmsy/m/n/10 ^^A \OML/cmm/m/it/10 x[]
+Overfull \hbox (143.8193pt too wide) detected at line 12
+\OT1/cmr/m/n/10 ([])[] = []
  []
 
 [1
@@ -73,22 +53,21 @@ T1/cmr/m/n/10 1 \OMS/cmsy/m/n/10 ^^A \OML/cmm/m/it/10 x[]
 Here is how much of TeX's memory you used:
  205 strings out of 494945
  2254 string characters out of 6181033
- 51493 words of memory out of 5000000
+ 50493 words of memory out of 5000000
  3584 multiletter control sequences out of 15000+600000
  3640 words of font info for 14 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 23i,4n,17p,263b,109s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 23i,4n,17p,260b,109s stack positions out of 5000i,500n,10000p,200000b,80000s
 </
 usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on Tex//Diff_Result.pdf (1 page, 55857 bytes).
+are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
+Output written on Tex//Diff_Result.pdf (1 page, 48292 bytes).
 PDF statistics:
- 32 PDF objects out of 1000 (max. 8388607)
- 22 compressed objects within 1 object stream
+ 28 PDF objects out of 1000 (max. 8388607)
+ 19 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

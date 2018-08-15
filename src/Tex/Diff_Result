@@ -1,25 +1,19 @@
 \documentclass{article}
 \begin{document} \begin{center} The original expression 
- \[x + 2\cdot x^{x} + \frac{\sin(x)}{x} + x^{x}\]\[$$After mental calculation: 
-$$(x^{x})' = \log(x)\cdot 1\cdot x^{x} + x\cdot 1\cdot x^{x - 1}\]
+ \[\frac{5\cdot \sin(x^{2}\cdot 2)}{x}\]\[$$After mental calculation: 
+$$(x^{2})' = \log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}\]
 \[$$It is well known that: 
-$$(2\cdot x^{x})' = x^{x}\cdot 0 + 2\cdot (\log(x)\cdot 1\cdot x^{x} + x\cdot 1\cdot x^{x - 1})\]
+$$(x^{2}\cdot 2)' = 2\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + x^{2}\cdot 0\]
 \[$$Using  WolframAlpha we have: 
-$$(x + 2\cdot x^{x})' = 1 + x^{x}\cdot 0 + 2\cdot (\log(x)\cdot 1\cdot x^{x} + x\cdot 1\cdot x^{x - 1})\]
+$$(\sin(x^{2}\cdot 2))' = (2\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + x^{2}\cdot 0)\cdot \cos(x^{2}\cdot 2)\]
 \[$$Every child knows that: 
-$$(\sin(x))' = 1\cdot \cos(x)\]
+$$(5\cdot \sin(x^{2}\cdot 2))' = \sin(x^{2}\cdot 2)\cdot 0 + 5\cdot (2\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + x^{2}\cdot 0)\cdot \cos(x^{2}\cdot 2)\]
 \[$$For a detailed explanation you should purchase the paid version: 
-$$(\frac{\sin(x)}{x})' = \frac{x\cdot 1\cdot \cos(x) - \sin(x)\cdot 1}{x\cdot x}\]
-\[$$If you are familiar with calculus: 
-$$(x + 2\cdot x^{x} + \frac{\sin(x)}{x})' = 1 + x^{x}\cdot 0 + 2\cdot (\log(x)\cdot 1\cdot x^{x} + x\cdot 1\cdot x^{x - 1}) + \frac{x\cdot 1\cdot \cos(x) - \sin(x)\cdot 1}{x\cdot x}\]
-\[$$It's not a secret that: 
-$$(x^{x})' = \log(x)\cdot 1\cdot x^{x} + x\cdot 1\cdot x^{x - 1}\]
-\[$$After mental calculation: 
-$$(x + 2\cdot x^{x} + \frac{\sin(x)}{x} + x^{x})' = 1 + x^{x}\cdot 0 + 2\cdot (\log(x)\cdot 1\cdot x^{x} + x\cdot 1\cdot x^{x - 1}) + \frac{x\cdot 1\cdot \cos(x) - \sin(x)\cdot 1}{x\cdot x} + \log(x)\cdot 1\cdot x^{x} + x\cdot 1\cdot x^{x - 1}\]
+$$(\frac{5\cdot \sin(x^{2}\cdot 2)}{x})' = \frac{x\cdot (\sin(x^{2}\cdot 2)\cdot 0 + 5\cdot (2\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + x^{2}\cdot 0)\cdot \cos(x^{2}\cdot 2)) - 5\cdot \sin(x^{2}\cdot 2)\cdot 1}{x\cdot x}\]
 
 
 The final expression
- \[3\cdot \log(x)\cdot x^{x} + 3\cdot x\cdot x^{x - 1} + \frac{x\cdot \cos(x) - \sin(x)}{x^{2}} + 1 \]
+ \[\frac{20\cdot x\cdot x\cdot \cos(2\cdot x^{2}) + (-5)\cdot \sin(2\cdot x^{2})}{x^{2}} \]
 
 \end{center}\end{document}
 \end

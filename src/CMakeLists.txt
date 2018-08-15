@@ -3,7 +3,7 @@ project(Diff3_0)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES Differentiator/main.c Tree_t/Tree.c Tree_t/Tree.h "Differentiator/Differentiator.c" "Differentiator/Differentiator.h" Commands/MathFunc.h RecursiveDescent/Descent.c RecursiveDescent/Descent.h Commands/Commands.h)
+set(SOURCE_FILES Differentiator/main.c Tree_t/Tree.c Tree_t/Tree.h "Differentiator/Differentiator.c" "Differentiator/Differentiator.h" Commands/MathFunc.h RecursiveDescent/Descent.c RecursiveDescent/Descent.h Commands/Commands.h Differentiator/List.h)
 add_executable(Diff3_0 ${SOURCE_FILES} Tree_t/Tree.c Tree_t/Tree.h)
 
 set(GCC_COVERAGE_COMPILE_FLAGS "-lm")

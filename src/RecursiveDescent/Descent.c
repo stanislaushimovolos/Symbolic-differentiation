@@ -1,6 +1,9 @@
-//
-// Created by superstraz on 8/8/18.
-//
+/*!
+ * @file Descent.c
+ * @brief Implementation of @ref  Descent.h functions.
+ * @author Stanislau Shimovolos
+ * @date 2018-8-15
+ */
 
 #include "Descent.h"
 
@@ -152,58 +155,49 @@ Node *getAddSub(parser *pars)
 
         switch (op)
         {
-
             case '+':
             {
                 curSignNode = createSimpleNode(Add, &pars->tree);
-                connectLeft(curSignNode, curLeftNode);
-
-                /*
-                 *                          ____________    ...
-                 *                         |            (next node)
-                 *                         | Left
-                 *                   ______|_______
-                 *                  |              |
-                 *           _______| curSignNode  |________
-                 *          |       |       +      |        |
-                 *          | Left  |______________|  Right |
-                 *  ________|__                           __|_________
-                 * |           |                         |            |
-                 * |curLeftNode|                         |curRightNode|
-                 * |___________|                         |____________|
-                 */
-
-                curRightNode = getMulDiv(pars);
-                if (!curRightNode)
-                {
-                    printf("Incorrect expression after \"+\"\n");
-                    return NULL;
-                }
-                connectRight(curSignNode, curRightNode);
-
-                //Push curPlusNode below to connect new nodes.
-                curLeftNode = curSignNode;
                 break;
             }
 
             case '-':
             {
                 curSignNode = createSimpleNode(Sub, &pars->tree);
-                connectLeft(curSignNode, curLeftNode);
-
-                curRightNode = getMulDiv(pars);
-                if (!curRightNode)
-                {
-                    printf("Incorrect expression after \"-\"\n");
-                    return NULL;
-                }
-                connectRight(curSignNode, curRightNode);
-                curLeftNode = curSignNode;
                 break;
             }
             default:
                 return NULL;
         }
+
+        /*
+         *                          ____________    ...
+         *                         |            (next node)
+         *                         | Left
+         *                   ______|_______
+         *                  |              |
+         *           _______| curSignNode  |________
+         *          |       |    + or -    |        |
+         *          | Left  |______________|  Right |
+         *  ________|__                           __|_________
+         * |           |                         |            |
+         * |curLeftNode|                         |curRightNode|
+         * |___________|                         |____________|
+         */
+
+
+        connectLeft(curSignNode, curLeftNode);
+
+        curRightNode = getMulDiv(pars);
+        if (!curRightNode)
+        {
+            printf("Incorrect expression after \"%c\"\n", op);
+            return NULL;
+        }
+        connectRight(curSignNode, curRightNode);
+
+        //Push curSignNode below to connect new nodes.
+        curLeftNode = curSignNode;
     }
     return curLeftNode;
 }
@@ -214,58 +208,72 @@ Node *getMulDiv(parser *pars)
     assert(pars);
     SKIP_SPASES;
 
-    Node *LeftNode = getExpo(pars);
-    if (!LeftNode)
+    //curLeftNode * other nodes (if there are any)
+    Node *curLeftNode = getExpo(pars);
+    if (!curLeftNode)
         return NULL;
 
-    Node *NodeMulDiv = NULL;
-
     SKIP_SPASES;
-    int op = 0;
+
+    //mul or div
+    char curOperator = 0;
+
+    Node *curSignNode = NULL;
+    Node *curRightNode = NULL;
+
     while (pars->code[pars->curCodePos] == '*' ||
            pars->code[pars->curCodePos] == '/')
     {
         SKIP_SPASES;
-        op = pars->code[pars->curCodePos];
+        curOperator = pars->code[pars->curCodePos];
         pars->curCodePos++;
 
-        switch (op)
+        switch (curOperator)
         {
             case '*':
             {
-                NodeMulDiv = createSimpleNode(Mul, &pars->tree);
-                connectLeft(NodeMulDiv, LeftNode);
-
-                Node *RightNode = getExpo(pars);
-                if (!RightNode)
-                {
-                    printf("Incorrect expression after \"*\"\n");
-                    return NULL;
-                }
-                connectRight(NodeMulDiv, RightNode);
-                LeftNode = NodeMulDiv;
+                curSignNode = createSimpleNode(Mul, &pars->tree);
                 break;
             }
             case '/':
             {
-                NodeMulDiv = createSimpleNode(Div, &pars->tree);
-                connectLeft(NodeMulDiv, LeftNode);
-
-                Node *RightNode = getExpo(pars);
-                if (!RightNode)
-                {
-                    printf("Incorrect expression after \"/\"\n");
-                    return NULL;
-                }
-                connectRight(NodeMulDiv, RightNode);
-                LeftNode = NodeMulDiv;
+                curSignNode = createSimpleNode(Div, &pars->tree);
                 break;
             }
             default:
                 return NULL;
         }
+
+        /*
+         *                          ____________    ...
+         *                         |            (next node)
+         *                         | Left
+         *                   ______|_______
+         *                  |              |
+         *           _______| curSignNode  |________
+         *          |       |    / or *    |        |
+         *          | Left  |______________|  Right |
+         *  ________|__                           __|_________
+         * |           |                         |            |
+         * |curLeftNode|                         |curRightNode|
+         * |___________|                         |____________|
+         */
+
+
+        connectLeft(curSignNode, curLeftNode);
+
+        curRightNode = getExpo(pars);
+        if (!curRightNode)
+        {
+            printf("Incorrect expression after %c\n", curOperator);
+            return NULL;
+        }
+        connectRight(curSignNode, curRightNode);
+
+        //Push curSignNode below to connect new nodes.
+        curLeftNode = curSignNode;
     }
-    return LeftNode;
+    return curLeftNode;
 }
 
 
@@ -274,30 +282,51 @@ Node *getExpo(parser *pars)
     assert(pars);
     SKIP_SPASES
 
-    Node *LeftNode = getBranches(pars);
-    if (!LeftNode)
+    Node *curLeftNode = getBranches(pars);
+    if (!curLeftNode)
         return NULL;
 
-    Node *NodeExpo = NULL;
+    Node *curExpoNode = NULL;
+    Node *curRightNode = NULL;
 
     SKIP_SPASES;
     while (pars->code[pars->curCodePos] == '^')
     {
         SKIP_SPASES;
         pars->curCodePos++;
-        NodeExpo = createSimpleNode(Expo, &pars->tree);
-        connectLeft(NodeExpo, LeftNode);
 
-        Node *RightNode = getBranches(pars);
-        if (!RightNode)
+        curExpoNode = createSimpleNode(Expo, &pars->tree);
+
+        /*
+         *                          ____________    ...
+         *                         |            (next node)
+         *                         | Left
+         *                   ______|_______
+         *                  |              |
+         *           _______| curExpoNode  |________
+         *          |       |      ^       |        |
+         *          | Left  |______________|  Right |
+         *  ________|__                           __|_________
+         * |           |                         |            |
+         * |curLeftNode|                         |curRightNode|
+         * |___________|                         |____________|
+         */
+
+
+        connectLeft(curExpoNode, curLeftNode);
+
+        curRightNode = getBranches(pars);
+        if (!curRightNode)
         {
             printf("Incorrect expression after \"^\"\n");
             return NULL;
         }
-        connectRight(NodeExpo, RightNode);
-        LeftNode = NodeExpo;
+        connectRight(curExpoNode, curRightNode);
+
+        //Push curExpoNode below to connect new nodes.
+        curLeftNode = curExpoNode;
     }
-    return LeftNode;
+    return curLeftNode;
 }
 
 
