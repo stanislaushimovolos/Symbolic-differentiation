@@ -94,8 +94,8 @@ Node *copyTree(const Node *node, Tree *newTree)
 int treeConstruct(Tree *tree)
 {
     assert (tree);
-    tree->eventFlag = 0;
     tree->root = NULL;
+    tree->eventFlag = 0;
     tree->nodeAmount = 0;
     return 0;
 }
@@ -182,7 +182,7 @@ int dumpRecNode(const Node *n, FILE *outFile)
             n,
             n->parent,
             n,
-            n->content, n->type, n->value,n->right, n->left);
+            n->content, n->type, n->value, n->right, n->left);
 
     if (n->left)
         dumpRecNode(n->left, outFile);

@@ -12,9 +12,13 @@ int main(int argc, char *argv[])
 {
     calculator calc = {};
     parser pars = {};
+    int status = 0;
 
     //Read data and check output file
-    int status = constructParser(&pars, inputFilename);
+    if (argc > 1)
+        status = constructParser(&pars, argv[1]);
+    else
+        status = constructParser(&pars, inputFilename);
     if (status)
         return status;
 

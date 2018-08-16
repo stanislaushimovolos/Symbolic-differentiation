@@ -58,10 +58,10 @@ int prepareTreeForPrinting(Node *node);
 
 /*!
     @brief Simplify tree (do all simplifications).
-    @param[in] calc pointer to @ref calculator structure.
+    @param[in] tree current subtree.
     @return it returns 1, if operation was made, else returns 0.
 */
-int simplifyExpression(calculator *cal);
+int simplifyExpression(Tree *tree);
 
 /*!
     @brief Collects all numbers (5+ x + x^2 + 4 => x + x^2 + 9).
@@ -119,7 +119,7 @@ int foldConstants(Node *node);
     @param[in] calc pointer to @ref calculator structure.
     @param[in] tree original expression (in binary tree form).
 */
-int findDerivative(const Tree *tree, calculator *calc);
+int findDerivative(Tree *tree, calculator *calc);
 
 /*!
     @brief Prints subtree to the Tex file.

@@ -1,6 +1,9 @@
-//
-// Created by superstraz on 8/15/18.
-//
+/*!
+ * @file List.h
+ * @brief Simple implementation of doubly connected list.
+ * @author Stanislau Shimovolos
+ * @date 2018-8-15
+ */
 
 #ifndef DIFF3_0_LIST_H
 #define DIFF3_0_LIST_H

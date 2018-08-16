@@ -11,20 +11,24 @@
 
 #include "Differentiator.h"
 
-int findDerivative(const Tree *tree, calculator *calc)
+int findDerivative(Tree *tree, calculator *calc)
 {
     assert (tree);
     assert (calc);
 
+    //Print the original (not changed expression).
     fprintf(calc->texFile, "\\documentclass{article}\n"
                            "\\begin{document} \\begin{center} "
                            "The original expression \n \\[");
     texResult(tree->root, calc->texFile);
     fprintf(calc->texFile, "\\]");
 
+    //Take derivative.
     calc->tree.root = makeDerivativeStep(tree->root, calc);
-    simplifyExpression(calc);
+    //Do all simplification.
+    simplifyExpression(&calc->tree);
 
+    //Print the final expression.
     fprintf(calc->texFile, "\n\nThe final expression\n \\[");
     texResult(calc->tree.root, calc->texFile);
     fprintf(calc->texFile, " \\]\n\n\\end{center}\\end{document}\n"
@@ -32,6 +36,7 @@ int findDerivative(const Tree *tree, calculator *calc)
     fclose(calc->texFile);
     calc->texFile = NULL;
 
+    //Call default browser to show the result.
     system("pdflatex -output-directory Tex/ Tex/Diff_Result");
     system("sensible-browser Tex/Diff_Result.pdf &");
 
@@ -86,6 +91,7 @@ case number:{                                                           \
 #undef DEF_CMD
 
 
+// func(u)' = func'(u)*u'
 Node *findComplexDerivative(const Node *node, calculator *calc,
                             Node *(func)(const Node *node, calculator *calc))
 {
@@ -99,6 +105,7 @@ Node *findComplexDerivative(const Node *node, calculator *calc,
 }
 
 
+// log(x)' = 1/x
 Node *logDerivative(const Node *node, calculator *calc)
 {
     assert(calc);
@@ -116,6 +123,7 @@ Node *logDerivative(const Node *node, calculator *calc)
 }
 
 
+// sin(x)' = cos(x)
 Node *sinDerivative(const Node *node, calculator *calc)
 {
     assert(calc);
@@ -131,6 +139,7 @@ Node *sinDerivative(const Node *node, calculator *calc)
 }
 
 
+// cos(x)' = -sin(x)
 Node *cosDerivative(const Node *node, calculator *calc)
 {
     assert(calc);
@@ -151,6 +160,7 @@ Node *cosDerivative(const Node *node, calculator *calc)
 }
 
 
+// (u + v)' = u' + v'
 Node *addDerivative(const Node *node, calculator *calc)
 {
     assert(calc);
@@ -169,6 +179,7 @@ Node *addDerivative(const Node *node, calculator *calc)
 }
 
 
+// (u - v)' = u' - v'
 Node *subDerivative(const Node *node, calculator *calc)
 {
     assert(calc);
@@ -187,6 +198,7 @@ Node *subDerivative(const Node *node, calculator *calc)
 }
 
 
+// (u*v)' = u*v' + v*u'
 Node *mulDerivative(const Node *node, calculator *calc)
 {
     assert(calc);
@@ -219,6 +231,7 @@ Node *mulDerivative(const Node *node, calculator *calc)
 }
 
 
+// (u/v)' = (u'*v - v'*u)/v^2
 Node *divDerivative(const Node *node, calculator *calc)
 {
     assert(calc);
@@ -247,23 +260,23 @@ Node *divDerivative(const Node *node, calculator *calc)
     connectLeft(minusNode, firstMulNode);
     connectRight(minusNode, secondMulNode);
 
-    Node *bottomMul = createSimpleNode(Mul, tree);
+    Node *bottomExp = createSimpleNode(Expo, tree);
 
-    Node *rightCopy1 = copyTree(node->right, tree);
-    Node *rightCopy2 = copyTree(node->right, tree);
+    Node *bottomRightCopy = copyTree(node->right, tree);
 
-    connectRight(bottomMul, rightCopy1);
-    connectLeft(bottomMul, rightCopy2);
+    connectRight(bottomExp, createNumericalNode(Number, 2, tree));
+    connectLeft(bottomExp, bottomRightCopy);
 
     Node *mainNode = createSimpleNode(Div, tree);
 
     connectLeft(mainNode, minusNode);
-    connectRight(mainNode, bottomMul);
+    connectRight(mainNode, bottomExp);
 
     return mainNode;
 }
 
 
+// u^v' = v*u^(v - 1)*u' + log(u)*v'*u^v
 Node *expDerivative(const Node *node, calculator *calc)
 {
     assert(calc);
@@ -373,12 +386,11 @@ int foldConstants(Node *node)
 }
 
 
-int simplifyExpression(calculator *calc)
+int simplifyExpression(Tree * tree)
 {
-    assert(calc);
-    assert(calc->tree.root);
+    assert(tree);
+    assert(tree->root);
 
-    Tree *tree = &calc->tree;
 
     visitTreePost(tree->root, simplifyTreeNumerical);
     visitTreePost(tree->root, foldConstantsGlobal);
@@ -406,6 +418,7 @@ int prepareTreeForSimplification(Node *node)
     {
         case Sub:
         {
+            // 5 + x = 5 + (-x)
             node->type = Add;
             if (node->right->type != Number)
             {
@@ -422,6 +435,7 @@ int prepareTreeForSimplification(Node *node)
         }
         case Mul:
         {
+            // 10*(x + y) = 10*x + 10*y
             if (node->left->type == Number && node->right->type == Add)
             {
                 double multiplier = node->left->value;
@@ -447,6 +461,8 @@ int prepareTreeForSimplification(Node *node)
 
                 return 1;
             }
+
+            // x*5  = 5*x
             if (node->right->type == Number
                 && node->left->type != Number)
             {
@@ -456,14 +472,6 @@ int prepareTreeForSimplification(Node *node)
 
                 return 1;
             }
-
-            int result = compareTrees(node->right, node->left);
-            if (!result)
-                return 0;
-
-            node->type = Expo;
-            destructNodeRec(node->right);
-            connectRight(node, createNumericalNode(Number, 2, node->myTree));
         }
         default:
             return 0;
@@ -548,7 +556,8 @@ double findNumericalSums(Node *node)
 
 int foldConstantsGlobal(Node *node)
 {
-    if (node->type == Add && (!node->parent || (node->parent && node->parent->type != Add)))
+    if (node->type == Add &&
+        ((node->parent && node->parent->type != Add) || !node->parent))
     {
         double sum = findNumericalSums(node);
         if (sum != 0)
@@ -575,7 +584,8 @@ int foldConstantsGlobal(Node *node)
 
 int simplifyTreeMultiplication(Node *node)
 {
-    if (node->type == Mul)
+    if (node->type == Mul &&
+        ((node->parent && node->parent->type != Mul) || !node->parent))
     {
         List lst = {};
         constructList(&lst);
@@ -586,6 +596,8 @@ int simplifyTreeMultiplication(Node *node)
         {
             if (lst.nodeCounter == 1 && lst.start->data != node->left)
             {
+                tree->eventFlag = 1;
+
                 double multiplier = lst.start->data->value;
                 lst.start->data->value = 1;
 
@@ -631,8 +643,6 @@ int simplifyTreeMultiplication(Node *node)
                 node->myTree->root = mainNode;
 
             connectRight(mainNode, node);
-
-            visitTreePost(mainNode, simplifyTreeNumerical);
         }
         destructList(lst.start);
     }
@@ -668,7 +678,7 @@ int prepareTreeForPrinting(Node *node)
 
 int simplifyTreeAddition(Node *node)
 {
-    if (node->type == Add)
+    if (node->type == Add && ((node->parent && node->parent->type != Add) || !node->parent))
     {
         List lst = {};
         constructList(&lst);
