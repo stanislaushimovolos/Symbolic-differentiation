@@ -5,8 +5,8 @@
  * @date 2018-8-15
  */
 
-#include "Differentiator.h"
-#include "../RecursiveDescent/Descent.h"
+#include "Differentiator/Differentiator.h"
+#include "RecursiveDescent/Descent.h"
 
 int main(int argc, char *argv[])
 {
@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
         status = constructParser(&pars, argv[1]);
     else
         status = constructParser(&pars, inputFilename);
+
     if (status)
         return status;
 

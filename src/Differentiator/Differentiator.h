@@ -12,8 +12,8 @@
 
 
 static const char outFileTex[] = "Tex/Diff_Result";
-static const char outFilenameForDotDump[] = "../picture/dotDump.txt";
-static const char outFilenameForDotPrint[] = "../picture/dotPrint.txt";
+static const char outFilenameForDotDump[] = "picture/dotDump.txt";
+static const char outFilenameForDotPrint[] = "picture/dotPrint.txt";
 
 #define NUMBER_OF_COMMENTS 7
 static const char *comments[] = {"After mental calculation: ",

@@ -1,19 +1,41 @@
 \documentclass{article}
 \begin{document} \begin{center} The original expression 
- \[\frac{5\cdot \sin(x^{2}\cdot 2)}{x}\]\[$$After mental calculation: 
+ \[5\cdot (x + \cos(x + 16\cdot x^{2} + x)) + 4\cdot \cos(x + 16\cdot x^{2} + x) + \frac{5}{x}\]\[$$After mental calculation: 
 $$(x^{2})' = \log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}\]
 \[$$It is well known that: 
-$$(x^{2}\cdot 2)' = 2\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + x^{2}\cdot 0\]
+$$(16\cdot x^{2})' = x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1})\]
 \[$$Using  WolframAlpha we have: 
-$$(\sin(x^{2}\cdot 2))' = (2\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + x^{2}\cdot 0)\cdot \cos(x^{2}\cdot 2)\]
+$$(x + 16\cdot x^{2})' = 1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1})\]
 \[$$Every child knows that: 
-$$(5\cdot \sin(x^{2}\cdot 2))' = \sin(x^{2}\cdot 2)\cdot 0 + 5\cdot (2\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + x^{2}\cdot 0)\cdot \cos(x^{2}\cdot 2)\]
+$$(x + 16\cdot x^{2} + x)' = 1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1\]
 \[$$For a detailed explanation you should purchase the paid version: 
-$$(\frac{5\cdot \sin(x^{2}\cdot 2)}{x})' = \frac{x\cdot (\sin(x^{2}\cdot 2)\cdot 0 + 5\cdot (2\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + x^{2}\cdot 0)\cdot \cos(x^{2}\cdot 2)) - 5\cdot \sin(x^{2}\cdot 2)\cdot 1}{x\cdot x}\]
+$$(\cos(x + 16\cdot x^{2} + x))' = (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x)\]
+\[$$If you are familiar with calculus: 
+$$((x + \cos(x + 16\cdot x^{2} + x)))' = 1 + (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x)\]
+\[$$It's not a secret that: 
+$$(5\cdot (x + \cos(x + 16\cdot x^{2} + x)))' = (x + \cos(x + 16\cdot x^{2} + x))\cdot 0 + 5\cdot (1 + (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x))\]
+\[$$After mental calculation: 
+$$(x^{2})' = \log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}\]
+\[$$It is well known that: 
+$$(16\cdot x^{2})' = x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1})\]
+\[$$Using  WolframAlpha we have: 
+$$(x + 16\cdot x^{2})' = 1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1})\]
+\[$$Every child knows that: 
+$$(x + 16\cdot x^{2} + x)' = 1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1\]
+\[$$For a detailed explanation you should purchase the paid version: 
+$$(\cos(x + 16\cdot x^{2} + x))' = (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x)\]
+\[$$If you are familiar with calculus: 
+$$(4\cdot \cos(x + 16\cdot x^{2} + x))' = \cos(x + 16\cdot x^{2} + x)\cdot 0 + 4\cdot (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x)\]
+\[$$It's not a secret that: 
+$$(5\cdot (x + \cos(x + 16\cdot x^{2} + x)) + 4\cdot \cos(x + 16\cdot x^{2} + x))' = (x + \cos(x + 16\cdot x^{2} + x))\cdot 0 + 5\cdot (1 + (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x)) + \cos(x + 16\cdot x^{2} + x)\cdot 0 + 4\cdot (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x)\]
+\[$$After mental calculation: 
+$$(\frac{5}{x})' = \frac{x\cdot 0 - 5\cdot 1}{x^{2}}\]
+\[$$It is well known that: 
+$$(5\cdot (x + \cos(x + 16\cdot x^{2} + x)) + 4\cdot \cos(x + 16\cdot x^{2} + x) + \frac{5}{x})' = (x + \cos(x + 16\cdot x^{2} + x))\cdot 0 + 5\cdot (1 + (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x)) + \cos(x + 16\cdot x^{2} + x)\cdot 0 + 4\cdot (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x) + \frac{x\cdot 0 - 5\cdot 1}{x^{2}}\]
 
 
 The final expression
- \[\frac{20\cdot x\cdot x\cdot \cos(2\cdot x^{2}) + (-5)\cdot \sin(2\cdot x^{2})}{x^{2}} \]
+ \[(-9)\cdot (32\cdot x + 2)\cdot \sin(2\cdot x + 16\cdot x^{2}) + 5 + \frac{(-5)}{x^{2}} \]
 
 \end{center}\end{document}
 \end
