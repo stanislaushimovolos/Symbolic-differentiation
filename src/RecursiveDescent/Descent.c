@@ -98,7 +98,7 @@ int getBuf(parser *data, const char *inputFileName)
 
     if (!file)
     {
-        printf("Couldn't open file:\n%s", inputFileName);
+        printf("Couldn't open file:\n%s\n", inputFileName);
         return FILE_OPENING_ERROR;
     }
     fseek(file, 0, SEEK_END);

@@ -23,7 +23,7 @@ int findDerivative(Tree *tree, calculator *calc)
     texResult(tree->root, calc->texFile);
     fprintf(calc->texFile, "\\]");
 
-    //Take derivative.
+    //Take a derivative.
     calc->tree.root = makeDerivativeStep(tree->root, calc);
     //Do all simplification.
     simplifyExpression(&calc->tree);
@@ -36,7 +36,7 @@ int findDerivative(Tree *tree, calculator *calc)
     fclose(calc->texFile);
     calc->texFile = NULL;
 
-    //Call default browser to show the result.
+    //Call a default browser to show the result.
     system("pdflatex -output-directory Tex/ Tex/Diff_Result");
     system("sensible-browser Tex/Diff_Result.pdf &");
 
@@ -386,7 +386,7 @@ int foldConstants(Node *node)
 }
 
 
-int simplifyExpression(Tree * tree)
+int simplifyExpression(Tree *tree)
 {
     assert(tree);
     assert(tree->root);
@@ -712,15 +712,13 @@ int simplifyTreeAddition(Node *node)
                     secondComparableNode = secondIterator->data;
                     secondSubTree = secondComparableNode;
 
-                    if (primarySubTree->type == Mul)
+                    if (primarySubTree->type == Mul && primarySubTree->left->type == Number)
                     {
-                        if (primarySubTree->left->type == Number)
-                        {
-                            primaryMultiplier = primarySubTree->left->value;
-                            primaryComparableNode = primarySubTree->right;
-                        }
+                        primaryMultiplier = primarySubTree->left->value;
+                        primaryComparableNode = primarySubTree->right;
+
                     }
-                    if (secondSubTree->type == Mul)
+                    if (secondSubTree->type == Mul && secondSubTree->left->type == Number)
                     {
                         if (secondSubTree->left->type == Number)
                         {

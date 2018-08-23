@@ -16,13 +16,13 @@ static const char outFilenameForDotDump[] = "picture/dotDump.txt";
 static const char outFilenameForDotPrint[] = "picture/dotPrint.txt";
 
 #define NUMBER_OF_COMMENTS 7
-static const char *comments[] = {"After mental calculation: ",
-                                 "It is well known that: ",
-                                 "Using  WolframAlpha we have: ",
-                                 "Every child knows that: ",
-                                 "For a detailed explanation you should purchase the paid version: ",
-                                 "If you are familiar with calculus: ",
-                                 "It's not a secret that: "};
+static const char *const comments[] = {"After mental calculation: ",
+                                       "It is well known that: ",
+                                       "Using  WolframAlpha we have: ",
+                                       "Every child knows that: ",
+                                       "For a detailed explanation you should purchase the paid version: ",
+                                       "If you are familiar with calculus: ",
+                                       "It's not a secret that: "};
 
 
 /*!

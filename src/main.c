@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     if (argc > 1)
         status = constructParser(&pars, argv[1]);
     else
-        status = constructParser(&pars, inputFilename);
+        status = constructParser(&pars, defaultInputFilename);
 
     if (status)
         return status;

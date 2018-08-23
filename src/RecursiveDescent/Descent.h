@@ -16,7 +16,7 @@
 #include "../Commands/Commands.h"
 
 //Default input for expressions.
-static const char inputFilename[] = "expression.txt";
+static const char defaultInputFilename[] = "expression.txt";
 
 /**
 * @brief The list of possible errors

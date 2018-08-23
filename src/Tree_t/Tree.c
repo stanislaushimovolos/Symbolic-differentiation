@@ -178,7 +178,7 @@ int dumpRecNode(const Node *n, FILE *outFile)
 
     fprintf(outFile,
             "Node%p [shape = record,  color = orange, label = \" {{ parent | '%p' } | { self | %p } "
-            "| { content | %s } | { type | '%d' }| { value | '%lg' } | { {right | %p} | { left | %p }} }\"]",
+            "| { content | %s } | { type |  '%d' }| { value | '%lg' } | { {right | %p} | { left | %p }} }\"]",
             n,
             n->parent,
             n,

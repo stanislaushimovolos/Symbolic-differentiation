@@ -1,41 +1,33 @@
 \documentclass{article}
 \begin{document} \begin{center} The original expression 
- \[5\cdot (x + \cos(x + 16\cdot x^{2} + x)) + 4\cdot \cos(x + 16\cdot x^{2} + x) + \frac{5}{x}\]\[$$After mental calculation: 
-$$(x^{2})' = \log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}\]
+ \[z^{z}\cdot 4 + 5\cdot abc^{abc} + 16\cdot abc^{2} + 4\cdot abc^{2}\cdot 16\]\[$$After mental calculation: 
+$$(z^{z})' = \log(z)\cdot 0\cdot z^{z} + z\cdot 0\cdot z^{z - 1}\]
 \[$$It is well known that: 
-$$(16\cdot x^{2})' = x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1})\]
+$$(z^{z}\cdot 4)' = 4\cdot (\log(z)\cdot 0\cdot z^{z} + z\cdot 0\cdot z^{z - 1}) + z^{z}\cdot 0\]
 \[$$Using  WolframAlpha we have: 
-$$(x + 16\cdot x^{2})' = 1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1})\]
+$$(abc^{abc})' = \log(abc)\cdot 1\cdot abc^{abc} + abc\cdot 1\cdot abc^{abc - 1}\]
 \[$$Every child knows that: 
-$$(x + 16\cdot x^{2} + x)' = 1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1\]
+$$(5\cdot abc^{abc})' = abc^{abc}\cdot 0 + 5\cdot (\log(abc)\cdot 1\cdot abc^{abc} + abc\cdot 1\cdot abc^{abc - 1})\]
 \[$$For a detailed explanation you should purchase the paid version: 
-$$(\cos(x + 16\cdot x^{2} + x))' = (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x)\]
+$$(abc^{2})' = \log(abc)\cdot 0\cdot abc^{2} + 2\cdot 1\cdot abc^{2 - 1}\]
 \[$$If you are familiar with calculus: 
-$$((x + \cos(x + 16\cdot x^{2} + x)))' = 1 + (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x)\]
+$$(16\cdot abc^{2})' = abc^{2}\cdot 0 + 16\cdot (\log(abc)\cdot 0\cdot abc^{2} + 2\cdot 1\cdot abc^{2 - 1})\]
 \[$$It's not a secret that: 
-$$(5\cdot (x + \cos(x + 16\cdot x^{2} + x)))' = (x + \cos(x + 16\cdot x^{2} + x))\cdot 0 + 5\cdot (1 + (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x))\]
+$$(5\cdot abc^{abc} + 16\cdot abc^{2})' = abc^{abc}\cdot 0 + 5\cdot (\log(abc)\cdot 1\cdot abc^{abc} + abc\cdot 1\cdot abc^{abc - 1}) + abc^{2}\cdot 0 + 16\cdot (\log(abc)\cdot 0\cdot abc^{2} + 2\cdot 1\cdot abc^{2 - 1})\]
 \[$$After mental calculation: 
-$$(x^{2})' = \log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}\]
+$$(z^{z}\cdot 4 + 5\cdot abc^{abc} + 16\cdot abc^{2})' = 4\cdot (\log(z)\cdot 0\cdot z^{z} + z\cdot 0\cdot z^{z - 1}) + z^{z}\cdot 0 + abc^{abc}\cdot 0 + 5\cdot (\log(abc)\cdot 1\cdot abc^{abc} + abc\cdot 1\cdot abc^{abc - 1}) + abc^{2}\cdot 0 + 16\cdot (\log(abc)\cdot 0\cdot abc^{2} + 2\cdot 1\cdot abc^{2 - 1})\]
 \[$$It is well known that: 
-$$(16\cdot x^{2})' = x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1})\]
+$$(abc^{2})' = \log(abc)\cdot 0\cdot abc^{2} + 2\cdot 1\cdot abc^{2 - 1}\]
 \[$$Using  WolframAlpha we have: 
-$$(x + 16\cdot x^{2})' = 1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1})\]
+$$(4\cdot abc^{2})' = abc^{2}\cdot 0 + 4\cdot (\log(abc)\cdot 0\cdot abc^{2} + 2\cdot 1\cdot abc^{2 - 1})\]
 \[$$Every child knows that: 
-$$(x + 16\cdot x^{2} + x)' = 1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1\]
+$$(4\cdot abc^{2}\cdot 16)' = 16\cdot (abc^{2}\cdot 0 + 4\cdot (\log(abc)\cdot 0\cdot abc^{2} + 2\cdot 1\cdot abc^{2 - 1})) + 4\cdot abc^{2}\cdot 0\]
 \[$$For a detailed explanation you should purchase the paid version: 
-$$(\cos(x + 16\cdot x^{2} + x))' = (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x)\]
-\[$$If you are familiar with calculus: 
-$$(4\cdot \cos(x + 16\cdot x^{2} + x))' = \cos(x + 16\cdot x^{2} + x)\cdot 0 + 4\cdot (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x)\]
-\[$$It's not a secret that: 
-$$(5\cdot (x + \cos(x + 16\cdot x^{2} + x)) + 4\cdot \cos(x + 16\cdot x^{2} + x))' = (x + \cos(x + 16\cdot x^{2} + x))\cdot 0 + 5\cdot (1 + (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x)) + \cos(x + 16\cdot x^{2} + x)\cdot 0 + 4\cdot (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x)\]
-\[$$After mental calculation: 
-$$(\frac{5}{x})' = \frac{x\cdot 0 - 5\cdot 1}{x^{2}}\]
-\[$$It is well known that: 
-$$(5\cdot (x + \cos(x + 16\cdot x^{2} + x)) + 4\cdot \cos(x + 16\cdot x^{2} + x) + \frac{5}{x})' = (x + \cos(x + 16\cdot x^{2} + x))\cdot 0 + 5\cdot (1 + (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x)) + \cos(x + 16\cdot x^{2} + x)\cdot 0 + 4\cdot (1 + x^{2}\cdot 0 + 16\cdot (\log(x)\cdot 0\cdot x^{2} + 2\cdot 1\cdot x^{2 - 1}) + 1)\cdot (-1)\cdot \sin(x + 16\cdot x^{2} + x) + \frac{x\cdot 0 - 5\cdot 1}{x^{2}}\]
+$$(z^{z}\cdot 4 + 5\cdot abc^{abc} + 16\cdot abc^{2} + 4\cdot abc^{2}\cdot 16)' = 4\cdot (\log(z)\cdot 0\cdot z^{z} + z\cdot 0\cdot z^{z - 1}) + z^{z}\cdot 0 + abc^{abc}\cdot 0 + 5\cdot (\log(abc)\cdot 1\cdot abc^{abc} + abc\cdot 1\cdot abc^{abc - 1}) + abc^{2}\cdot 0 + 16\cdot (\log(abc)\cdot 0\cdot abc^{2} + 2\cdot 1\cdot abc^{2 - 1}) + 16\cdot (abc^{2}\cdot 0 + 4\cdot (\log(abc)\cdot 0\cdot abc^{2} + 2\cdot 1\cdot abc^{2 - 1})) + 4\cdot abc^{2}\cdot 0\]
 
 
 The final expression
- \[(-9)\cdot (32\cdot x + 2)\cdot \sin(2\cdot x + 16\cdot x^{2}) + 5 + \frac{(-5)}{x^{2}} \]
+ \[5\cdot \log(abc)\cdot abc^{abc} + 5\cdot abc\cdot abc^{abc - 1} + 160\cdot abc \]
 
 \end{center}\end{document}
 \end
